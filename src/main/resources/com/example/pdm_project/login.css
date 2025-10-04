@@ -1,0 +1,65 @@
+.root {
+    -fx-font-family: "Inter", "Segoe UI", Roboto, Arial;
+    -fx-background-color: #f4f5f6;
+}
+
+/* Header */
+.app-bar {
+    -fx-background-color: rgba(255,255,255,0.9);
+    -fx-border-color: #e4e6eb;
+    -fx-border-width: 0 0 1 0;
+}
+.brand {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+/* Background overlay */
+.scrim {
+    -fx-background-color: rgba(0,0,0,0.25);
+}
+
+/* Card */
+.card {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 20, 0.2, 0, 6);
+}
+.label {
+    -fx-text-fill: #111827;
+    -fx-font-weight: 600;
+}
+.text-field, .password-field {
+    -fx-background-radius: 10;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10;
+}
+
+/* Buttons */
+.btn-primary {
+    -fx-background-color: #111827;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 10 14 10 14;
+}
+.btn-primary:hover { -fx-background-color: #0b1220; }
+
+.btn-pill {
+    -fx-background-color: #111827;
+    -fx-text-fill: white;
+    -fx-background-radius: 999;
+    -fx-padding: 6 12 6 12;
+}
+
+/* Hero text (optional, để giống ảnh mẫu) */
+.hero-text {
+    -fx-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+}
+
+/* Footer */
+.footer { -fx-background-color: rgba(255,255,255,0.9); }
+.footer-grid .label, .footer-grid .hyperlink { -fx-text-fill: #111827; }
