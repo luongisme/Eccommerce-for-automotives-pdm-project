@@ -2,8 +2,6 @@ package com.Main;
 
 import javax.swing.SwingUtilities;
 
-import com.UI.Profile.ProfileController;
-import com.UI.Profile.ProfileScreen;
 import com.UI.login.LoginScreen;
 
 public class App {
@@ -11,7 +9,6 @@ public class App {
         SwingUtilities.invokeLater(() -> {
             AppFrame frame = new AppFrame();
             frame.setScreen(new LoginScreen(frame));
-            
         });
     }
 }

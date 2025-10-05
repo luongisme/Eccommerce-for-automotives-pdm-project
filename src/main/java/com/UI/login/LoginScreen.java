@@ -2,6 +2,7 @@ package com.UI.login;
 
 import com.Main.AppFrame;
 import com.Main.Screen;
+import com.UI.Profile.ProfilePage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,6 +45,8 @@ public class LoginScreen extends Screen {
         panel = new BackgroundPanel("/images/login_bg.jpg");
         panel.setLayout(null);
         initUI();
+        Runnable onSuccess = () -> appFrame.setScreen(new ProfilePage(appFrame));
+        new LoginController(this, onSuccess);
     }
 
     @Override
