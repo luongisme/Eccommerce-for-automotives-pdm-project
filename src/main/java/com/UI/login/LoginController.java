@@ -2,7 +2,6 @@ package com.UI.login;
 
 import java.util.regex.Pattern;
 
-/** Controller: bắt sự kiện Submit, validate, và gọi điều hướng khi thành công. */
 public class LoginController {
 
     private final LoginScreen view;

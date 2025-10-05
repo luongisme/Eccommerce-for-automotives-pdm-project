@@ -1,6 +1,8 @@
 package com.Main;
 
 import javax.swing.*;
+import com.UI.Profile.ProfileScreen;
+import com.UI.Profile.ProfileController;
 
 public class AppFrame extends JFrame {
     private Screen currentScreen;
@@ -19,5 +21,7 @@ public class AppFrame extends JFrame {
         setContentPane(currentScreen.getPanel());
         revalidate();
         repaint();
+        
+        
     }
 }

@@ -48,6 +48,22 @@ public class LoginScreen extends Screen {
 
     @Override
 protected void initUI() {
+    int frameW = 700;  // match your AppFrame size
+    int brandH = 56;
+
+    JPanel brandBar = new JPanel(null);
+    brandBar.setOpaque(true);
+    brandBar.setBackground(new Color(245, 245, 245)); // a light grayish white
+    brandBar.setBounds(0, 0, frameW, brandH);
+
+    JLabel brand = new JLabel("AutoParts Pro");
+    brand.setForeground(Color.BLACK);
+    brand.setFont(new Font("Arial", Font.BOLD, 30));
+    brand.setBounds(18, 14, 300, 28);
+    brandBar.add(brand);
+
+    panel.add(brandBar);
+
     // ===== Tiêu đề =====
     JLabel title = new JLabel("Login");
     title.setFont(new Font("Arial", Font.BOLD, 50));
@@ -55,7 +71,6 @@ protected void initUI() {
     title.setBounds(300, 80, 150, 60);
     panel.add(title);
 
-    // ===== Form panel =====
     JPanel formPanel = new JPanel(null);
     formPanel.setOpaque(false);
     formPanel.setBounds(180, 150, 380, 250);
