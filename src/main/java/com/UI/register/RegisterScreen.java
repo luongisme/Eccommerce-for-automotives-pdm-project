@@ -55,7 +55,7 @@ public class RegisterScreen extends Screen {
         // Form panel
         JPanel formPanel = new JPanel(null);
         formPanel.setOpaque(false);
-        formPanel.setBounds(160, 150, 380, 440);
+        formPanel.setBounds(160, 150, 380, 450);
 
         int yPos = 0;
 
