@@ -68,10 +68,10 @@ protected void initUI() {
     panel.add(brandBar);
 
     // ===== Tiêu đề =====
-    JLabel title = new JLabel("Login");
-    title.setFont(new Font("Arial", Font.BOLD, 50));
+    JLabel title = new JLabel("Welcome Back");
+    title.setFont(new Font("Arial", Font.BOLD, 43));
     title.setForeground(Color.BLACK);
-    title.setBounds(300, 80, 150, 60);
+    title.setBounds(220, 80, 350, 60);
     panel.add(title);
 
     JPanel formPanel = new JPanel(null);
@@ -115,11 +115,11 @@ protected void initUI() {
     formPanel.add(passField);
 
     // Submit button
-    submitBtn = new JButton("Submit");
+    submitBtn = new JButton("Login");
     submitBtn.setBounds(0, 165, 380, 40);
     submitBtn.setBackground(Color.BLACK);
     submitBtn.setForeground(Color.WHITE);
-    submitBtn.setFont(new Font("Arial", Font.BOLD, 15));
+    submitBtn.setFont(new Font("Arial", Font.BOLD, 17));
     submitBtn.setFocusPainted(false);
     submitBtn.setBorder(BorderFactory.createEmptyBorder());
     formPanel.add(submitBtn);
