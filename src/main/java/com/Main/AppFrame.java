@@ -6,9 +6,9 @@ public class AppFrame extends JFrame {
     private Screen currentScreen;
 
     public AppFrame() {
-        setTitle("E-Commerce Platform - Automotive");
+        setTitle("AutoParts Pro - E-Commerce Platform");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 800);
+        setSize(1024, 1200);
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
