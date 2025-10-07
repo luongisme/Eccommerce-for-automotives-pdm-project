@@ -2,13 +2,14 @@ package com.Main;
 
 import javax.swing.SwingUtilities;
 
-import com.UI.login.LoginScreen;
+import com.UI.store.StoreScreen;
 
 public class App {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             AppFrame frame = new AppFrame();
-            frame.setScreen(new LoginScreen(frame));
+            // Start with Store screen (guest mode)
+            frame.setScreen(new StoreScreen(frame));
         });
     }
 }

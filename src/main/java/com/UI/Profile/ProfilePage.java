@@ -16,8 +16,8 @@ public class ProfilePage extends Screen {
     @Override
     protected void initUI() {
         view = new ProfileScreen();
-        new ProfileController(view);
         this.panel = view; 
+        new ProfileController(appFrame, view);
     }
 }
 
