@@ -55,7 +55,7 @@ public class RegisterScreen extends Screen {
         // Form panel
         JPanel formPanel = new JPanel(null);
         formPanel.setOpaque(false);
-        formPanel.setBounds(160, 150, 380, 380);
+        formPanel.setBounds(160, 150, 380, 440);
 
         int yPos = 0;
 
@@ -135,6 +135,14 @@ public class RegisterScreen extends Screen {
         formPanel.add(confirmPassField);
         yPos += 50;
 
+        // Error label (positioned above register button)
+        errorLabel = new JLabel("", SwingConstants.CENTER);
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        errorLabel.setBounds(0, yPos, 380, 30);
+        formPanel.add(errorLabel);
+        yPos += 35;
+
         // Register button
         registerBtn = new JButton("Register");
         registerBtn.setBounds(0, yPos, 380, 40);
@@ -146,20 +154,13 @@ public class RegisterScreen extends Screen {
         registerBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         registerBtn.addActionListener(e -> handleRegister());
         formPanel.add(registerBtn);
-        yPos += 50;
-
-        // Error label
-        errorLabel = new JLabel("", SwingConstants.CENTER);
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setBounds(0, yPos, 380, 25);
-        formPanel.add(errorLabel);
 
         panel.add(formPanel);
 
         // Login link
         JPanel loginPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         loginPanel.setOpaque(false);
-        loginPanel.setBounds(200, 560, 300, 30);
+        loginPanel.setBounds(200, 610, 300, 30);
 
         JLabel loginText = new JLabel("Already have an account? ");
         loginText.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -184,6 +185,10 @@ public class RegisterScreen extends Screen {
         String email = emailField.getText().trim();
         String password = new String(passField.getPassword());
         String confirmPassword = new String(confirmPassField.getPassword());
+        AuthService authService = AuthService.getInstance();
+
+        // Clear previous error
+        errorLabel.setText("");
 
         // Validation
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
@@ -191,21 +196,46 @@ public class RegisterScreen extends Screen {
             return;
         }
 
+        // Username validation
+        if (!authService.isValidUsername(username)) {
+            errorLabel.setText("Username must be 3-20 characters (letters, numbers, underscore)");
+            return;
+        }
+
+        // Email validation
+        if (!authService.isValidEmail(email)) {
+            errorLabel.setText("Invalid email format");
+            return;
+        }
+
+        // Check if email already exists
+        if (authService.emailExists(email)) {
+            errorLabel.setText("Email already registered");
+            return;
+        }
+
+        // Password match validation
         if (!password.equals(confirmPassword)) {
             errorLabel.setText("Passwords do not match");
             return;
         }
 
-        if (password.length() < 6) {
-            errorLabel.setText("Password must be at least 6 characters");
+        // Password strength validation
+        if (!authService.isValidPassword(password)) {
+            errorLabel.setText("Password must be 8+ chars with uppercase, lowercase, and digit");
             return;
         }
 
         // Register user
-        AuthService authService = AuthService.getInstance();
         boolean success = authService.register(username, email, password);
 
         if (success) {
+            // Show success message
+            JOptionPane.showMessageDialog(this.panel, 
+                "Registration successful! Welcome " + username + "!", 
+                "Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+            
             // Auto-login after registration
             com.model.User user = authService.authenticate(email, password);
             if (user != null) {
@@ -213,7 +243,7 @@ public class RegisterScreen extends Screen {
                 appFrame.setScreen(new StoreScreen(appFrame));
             }
         } else {
-            errorLabel.setText("Email already registered");
+            errorLabel.setText("Registration failed. Please try again.");
         }
     }
 }
