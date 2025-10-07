@@ -1,15 +1,19 @@
 package com.UI.Profile;
 
+import com.Main.AppFrame;
+import com.UI.OrderHistory.OrderHistoryScreen;
+
 import javax.swing.*;
 
-/** Controller: toggle Edit / Save / Cancel (UI only). */
+/** Controller: toggle Edit / Save / Cancel (UI only) + navigation. */
 public class ProfileController {
     private final ProfileScreen view;
+    private final AppFrame appFrame;
 
-    // snapshot để khôi phục khi Cancel
     private String sFirst, sLast, sPhone, sStreet, sCity, sDistrict, sZip, sCountry;
 
-    public ProfileController(ProfileScreen view) {
+    public ProfileController(AppFrame appFrame, ProfileScreen view) {
+        this.appFrame = appFrame;
         this.view = view;
         attach();
     }
@@ -29,8 +33,22 @@ public class ProfileController {
             view.setEditing(false);
             JOptionPane.showMessageDialog(view, "Profile updated (UI only).");
         });
+
+        // connect tab orrder history
+        view.tabOrders.addActionListener(e -> {
+            // chuyển màn hình sang OrderHistoryScreen
+            appFrame.setScreen(new OrderHistoryScreen(appFrame));
+        });
+
+        // if profile on then order history off
+        view.tabProfile.addActionListener(e -> {
+            
+            view.tabProfile.setSelected(true);
+            view.tabOrders.setSelected(false);
+        });
     }
 
+    // Snapshot / Restore 
     private void snapshot() {
         sFirst    = view.tfFirstName.getText();
         sLast     = view.tfLastName.getText();

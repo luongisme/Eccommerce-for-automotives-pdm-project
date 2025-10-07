@@ -10,8 +10,8 @@ import java.util.List;
 public class ProfileScreen extends JPanel {
 
     // Tabs + content
-    private final JToggleButton tabProfile = new JToggleButton("Profile Information");
-    private final JToggleButton tabOrders  = new JToggleButton("Order History");
+    protected final JToggleButton tabProfile = new JToggleButton("Profile Information");
+    protected final JToggleButton tabOrders  = new JToggleButton("Order History");
     private final CardLayout contentCards = new CardLayout();
     private final JPanel content = new JPanel(contentCards);
 
@@ -52,7 +52,7 @@ public class ProfileScreen extends JPanel {
         tabOrders.addActionListener(e ->  { styleTabs(); contentCards.show(content, "orders"); });
     }
 
-    /* --------- header title + tabs --------- */
+    //header title + tabs
     private JComponent buildTitleBar() {
         JPanel wrap = new JPanel();
         wrap.setOpaque(false);
