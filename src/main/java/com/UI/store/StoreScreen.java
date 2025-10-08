@@ -186,7 +186,7 @@ public class StoreScreen extends Screen {
             int endIndex = Math.min(startIndex + productsPerPage, currentProducts.size());
 
             for (int i = startIndex; i < endIndex; i++) {
-                ProductCard card = new ProductCard(currentProducts.get(i));
+                ProductCard card = new ProductCard(currentProducts.get(i), appFrame);
                 productGridPanel.add(card);
             }
         }
