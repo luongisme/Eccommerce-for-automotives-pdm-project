@@ -34,8 +34,10 @@ public class ProductService {
             double price = 50 + (Math.random() * 950); // Random price between $50-$1000
             double rating = 3.0 + (Math.random() * 2.0); // Random rating 3.0-5.0
             boolean isNew = i < 10; // First 10 products are "new"
+            int stockQty = (int)(Math.random() * 150); // Random stock 0-150
             
-            allProducts.add(new Product(
+            // Create product with basic constructor first
+            Product product = new Product(
                 id++,
                 category + " Part #" + (i + 1),
                 category,
@@ -43,9 +45,59 @@ public class ProductService {
                 Math.round(price * 100.0) / 100.0,
                 Math.round(rating * 10.0) / 10.0,
                 null, // No image URL for mock data
-                "High-quality " + category.toLowerCase() + " part from " + brand,
+                "Premium " + category.toLowerCase() + " component from " + brand + 
+                ". Designed for enhanced performance and fuel efficiency.",
                 isNew
-            ));
+            );
+            
+            // Set additional fields
+            product.setSku(category.substring(0, 3).toUpperCase() + "-" + brand.substring(0, 2).toUpperCase() + "-" + String.format("%03d", i + 1));
+            product.setStockQuantity(stockQty);
+            
+            // Add category-specific specifications
+            addSpecifications(product, category, brand);
+            
+            allProducts.add(product);
+        }
+    }
+    
+    private void addSpecifications(Product product, String category, String brand) {
+        // Add common specifications
+        product.addSpecification("Brand", brand);
+        product.addSpecification("Category", category);
+        
+        // Add category-specific specs
+        switch (category) {
+            case "Engine":
+                product.addSpecification("Material", "Iridium");
+                product.addSpecification("Gap", "0.028-0.031 inches");
+                product.addSpecification("Threads", "14mm");
+                product.addSpecification("Pack Size", "4 Plugs");
+                break;
+            case "Brakes":
+                product.addSpecification("Type", "Ceramic");
+                product.addSpecification("Position", "Front/Rear");
+                product.addSpecification("Warranty", "2 Years");
+                break;
+            case "Wheels & Tires":
+                product.addSpecification("Size", "17 inch");
+                product.addSpecification("Width", "225mm");
+                product.addSpecification("Load Index", "95");
+                break;
+            case "Suspension":
+                product.addSpecification("Type", "Gas Charged");
+                product.addSpecification("Position", "Front");
+                product.addSpecification("Warranty", "Limited Lifetime");
+                break;
+            case "Electrical":
+                product.addSpecification("Voltage", "12V");
+                product.addSpecification("Amperage", "60A");
+                product.addSpecification("Type", "AGM");
+                break;
+            default:
+                product.addSpecification("Weight", "2.5 lbs");
+                product.addSpecification("Dimensions", "8 x 6 x 4 inches");
+                break;
         }
     }
 

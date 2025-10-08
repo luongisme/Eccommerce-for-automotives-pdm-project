@@ -5,11 +5,11 @@
   <version>1.0.0</version>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
   </properties>
 
-  <!-- (tuỳ chọn) chạy nhanh với exec plugin -->
+
   <build>
     <plugins>
       <plugin>
@@ -22,4 +22,12 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.liferay.portal</groupId>
+      <artifactId>com.liferay.portal.kernel</artifactId>
+      <version>4.27.1</version>
+    </dependency>
+  </dependencies>
 </project>

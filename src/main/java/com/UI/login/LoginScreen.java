@@ -2,6 +2,7 @@ package com.UI.login;
 
 import com.Main.AppFrame;
 import com.Main.Screen;
+import com.liferay.document.library.kernel.store.Store;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,7 @@ class BackgroundPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 30, 0, getWidth(), getHeight(), this);
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
     }
 }
@@ -50,17 +51,17 @@ public class LoginScreen extends Screen {
 
         @Override
     protected void initUI() {
-        int frameW = 700;  // match your AppFrame size
-        int brandH = 56;
+        int frameW = 1024;  // match your AppFrame size
+        int brandH = 62;
 
         JPanel brandBar = new JPanel(null);
         brandBar.setOpaque(true);
-        brandBar.setBackground(new Color(245, 245, 245)); // a light grayish white
+        brandBar.setBackground(new Color(240, 240, 240)); // a light gray white
         brandBar.setBounds(0, 0, frameW, brandH);
 
         JLabel brand = new JLabel("AutoParts Pro");
         brand.setForeground(Color.BLACK);
-        brand.setFont(new Font("Arial", Font.BOLD, 30));
+        brand.setFont(new Font("Arial", Font.BOLD, 32));
         brand.setBounds(18, 14, 300, 28);
         brandBar.add(brand);
 
@@ -68,19 +69,19 @@ public class LoginScreen extends Screen {
 
         // ===== Tiêu đề =====
         JLabel title = new JLabel("Welcome Back");
-        title.setFont(new Font("Arial", Font.BOLD, 43));
+        title.setFont(new Font("Arial", Font.BOLD, 80));
         title.setForeground(Color.BLACK);
-        title.setBounds(220, 80, 350, 60);
+        title.setBounds(240, 90, 700, 100);
         panel.add(title);
 
         JPanel formPanel = new JPanel(null);
         formPanel.setOpaque(false);
-        formPanel.setBounds(180, 150, 380, 250);
+        formPanel.setBounds(320, 200, 380, 250);
 
         // Email label
         JLabel emailLabel = new JLabel("Email address");
         emailLabel.setForeground(Color.BLACK);
-        emailLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        emailLabel.setFont(new Font("Arial", Font.BOLD, 20));
         emailLabel.setBounds(0, 0, 200, 25);
         formPanel.add(emailLabel);
 
@@ -98,7 +99,7 @@ public class LoginScreen extends Screen {
         // Password label
         JLabel passLabel = new JLabel("Password");
         passLabel.setForeground(Color.BLACK);
-        passLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        passLabel.setFont(new Font("Arial", Font.BOLD, 20));
         passLabel.setBounds(0, 80, 200, 25);
         formPanel.add(passLabel);
 
@@ -118,7 +119,7 @@ public class LoginScreen extends Screen {
         submitBtn.setBounds(0, 165, 380, 40);
         submitBtn.setBackground(Color.BLACK);
         submitBtn.setForeground(Color.WHITE);
-        submitBtn.setFont(new Font("Arial", Font.BOLD, 17));
+        submitBtn.setFont(new Font("Arial", Font.BOLD, 20));
         submitBtn.setFocusPainted(false);
         submitBtn.setBorder(BorderFactory.createEmptyBorder());
         formPanel.add(submitBtn);
