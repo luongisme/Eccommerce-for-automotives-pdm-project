@@ -250,7 +250,7 @@ public class ProductDetailsScreen extends Screen {
         JLabel specTitle = new JLabel("Specifications");
         specTitle.setFont(new Font("Arial", Font.BOLD, 18));
         specTitle.setForeground(Color.BLACK);
-        specTitle.setBounds(500, 500, 200, 25);
+        specTitle.setBounds(500, 50, 200, 25);
         specPanel.add(specTitle);
 
         int currentY = 40;
