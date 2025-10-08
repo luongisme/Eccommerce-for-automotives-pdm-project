@@ -74,7 +74,7 @@ public class OrderHistoryPanel extends JPanel {
         GridBagConstraints gc = new GridBagConstraints();
         gc.gridx = 0; gc.gridy = 0; gc.insets = new Insets(24,0,12,0);
 
-        JLabel heart = new JLabel(new HeartIcon(96, new Color(28, 35, 42)));
+        JLabel heart = new JLabel(heartPng(96));
         emptyPanel.add(heart, gc);
 
         gc.gridy++;
@@ -98,7 +98,6 @@ public class OrderHistoryPanel extends JPanel {
         center.add(cardHost, BorderLayout.CENTER);
         add(center, BorderLayout.CENTER);
 
-        // default: EMPTY (giống mockup)
         showEmpty();
     }
 
@@ -167,6 +166,15 @@ public class OrderHistoryPanel extends JPanel {
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
+    private static Icon heartPng(int size) {
+    // Make sure the file is at: src/main/resources/images/heart.png
+    java.net.URL url = OrderHistoryPanel.class.getResource("/images/heart.png");
+    ImageIcon base = new ImageIcon(url);
+    Image scaled = base.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
+    return new ImageIcon(scaled);
+    
+    }
+
     // ================== ViewModel & TableModel ==================
     public static class OrderVM {
         public final String orderId;
@@ -214,36 +222,6 @@ public class OrderHistoryPanel extends JPanel {
         @Override public boolean isCellEditable(int r, int c) { return false; }
     }
 
-    // ================== Simple Heart Icon ==================
-    private static class HeartIcon implements Icon {
-        private final int size;
-        private final Color color;
-        public HeartIcon(int size, Color color) { this.size = size; this.color = color; }
-        @Override public int getIconWidth() { return size; }
-        @Override public int getIconHeight() { return size; }
-
-        @Override
-        public void paintIcon(Component c, Graphics g, int x, int y) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setStroke(new BasicStroke(Math.max(2f, size * 0.05f)));
-            g2.setColor(color);
-
-            int w = size, h = size;
-            int cx = x + w/2;
-            int cy = y + h/2 + (int)(h*0.08);
-
-            // Vẽ 2 cung + tam giác dưới: trái tim outline nhẹ nhàng
-            int r = (int)(w * 0.22);
-            g2.drawOval(cx - r - r/2, cy - r - r/2, 2*r, 2*r); // left circle
-            g2.drawOval(cx + r/2 - r,  cy - r - r/2, 2*r, 2*r); // right circle
-
-            Polygon p = new Polygon();
-            p.addPoint(cx - (int)(w*0.42), cy);
-            p.addPoint(cx, y + (int)(h*0.92));
-            p.addPoint(cx + (int)(w*0.42), cy);
-            g2.drawPolyline(p.xpoints, p.ypoints, p.npoints);
-            g2.dispose();
-        }
-    }
+    
+    
 }
