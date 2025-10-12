@@ -239,25 +239,32 @@ public class ProductDetailsScreen extends Screen {
 
     private void createSpecificationsBox(int yPos) {
         JPanel specPanel = new JPanel(null);
-        specPanel.setBounds(45, yPos, 430, 250);
+        specPanel.setBounds(45, yPos, 430, 320);
         specPanel.setBackground(Color.WHITE);
         specPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(230, 230, 230), 1),
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
             BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
 
-        // Title
+        // Title - positioned inside the panel
         JLabel specTitle = new JLabel("Specifications");
         specTitle.setFont(new Font("Arial", Font.BOLD, 18));
-        specTitle.setForeground(Color.BLACK);
-        specTitle.setBounds(500, 50, 200, 25);
+        specTitle.setForeground(new Color(40, 40, 40));
+        specTitle.setBounds(0, 0, 200, 25);
         specPanel.add(specTitle);
 
-        int currentY = 40;
+        // Add separator under title
+        JSeparator titleSeparator = new JSeparator();
+        titleSeparator.setBounds(0, 32, 390, 1);
+        titleSeparator.setForeground(new Color(220, 220, 220));
+        specPanel.add(titleSeparator);
+
+        int currentY = 48;
         Map<String, String> specs = product.getSpecifications();
         
-        if (specs.isEmpty()) {
-            // Add default specifications for demo
+        if (specs == null || specs.isEmpty()) {
+            // Add default specifications for demo - ensure all are shown
+            specs = new java.util.LinkedHashMap<>();
             specs.put("SKU", product.getSku() != null ? product.getSku() : "ENG-SP-002");
             specs.put("Material", "Iridium");
             specs.put("Gap", "0.028-0.031 inches");
@@ -265,31 +272,33 @@ public class ProductDetailsScreen extends Screen {
             specs.put("Pack Size", "4 Plugs");
         }
 
+        int index = 0;
         for (Map.Entry<String, String> entry : specs.entrySet()) {
+            // Add alternating background
+            if (index % 2 == 0) {
+                JPanel rowBg = new JPanel();
+                rowBg.setBackground(new Color(248, 248, 248));
+                rowBg.setBounds(0, currentY - 5, 390, 28);
+                specPanel.add(rowBg);
+            }
+
             // Spec key
-            JLabel keyLabel = new JLabel(entry.getKey() + ":");
-            keyLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-            keyLabel.setForeground(new Color(100, 100, 100));
-            keyLabel.setBounds(0, currentY, 150, 20);
+            JLabel keyLabel = new JLabel(entry.getKey());
+            keyLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            keyLabel.setForeground(new Color(80, 80, 80));
+            keyLabel.setBounds(5, currentY, 150, 20);
             specPanel.add(keyLabel);
 
             // Spec value
             JLabel valueLabel = new JLabel(entry.getValue());
-            valueLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+            valueLabel.setFont(new Font("Arial", Font.BOLD, 14));
             valueLabel.setForeground(Color.BLACK);
             valueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-            valueLabel.setBounds(150, currentY, 240, 20);
+            valueLabel.setBounds(160, currentY, 225, 20);
             specPanel.add(valueLabel);
 
-            currentY += 30;
-
-            // Add separator line
-            if (currentY < 200) {
-                JSeparator separator = new JSeparator();
-                separator.setBounds(0, currentY - 7, 390, 1);
-                separator.setForeground(new Color(240, 240, 240));
-                specPanel.add(separator);
-            }
+            currentY += 38;
+            index++;
         }
 
         mainContentPanel.add(specPanel);
@@ -297,48 +306,65 @@ public class ProductDetailsScreen extends Screen {
 
     private void createProductInformationBox(int yPos) {
         JPanel infoPanel = new JPanel(null);
-        infoPanel.setBounds(500, yPos, 445, 250);
+        infoPanel.setBounds(500, yPos, 445, 320);
         infoPanel.setBackground(Color.WHITE);
         infoPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(230, 230, 230), 1),
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
             BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
 
-        // Title
-        JLabel infoTitle = new JLabel("Product informations");
+        // Title - positioned inside the panel
+        JLabel infoTitle = new JLabel("Product Information");
         infoTitle.setFont(new Font("Arial", Font.BOLD, 18));
-        infoTitle.setForeground(Color.BLACK);
-        infoTitle.setBounds(0, 0, 250, 25);
+        infoTitle.setForeground(new Color(40, 40, 40));
+        infoTitle.setBounds(0, 0, 280, 25);
         infoPanel.add(infoTitle);
 
-        int currentY = 40;
+        // Add separator under title
+        JSeparator titleSeparator = new JSeparator();
+        titleSeparator.setBounds(0, 32, 405, 1);
+        titleSeparator.setForeground(new Color(220, 220, 220));
+        infoPanel.add(titleSeparator);
+
+        int currentY = 48;
+        int index = 0;
 
         // Brand
-        addInfoRow(infoPanel, "Brands:", product.getBrand(), currentY);
-        currentY += 50;
+        addInfoRowImproved(infoPanel, "Brand", product.getBrand(), currentY, index);
+        currentY += 38;
+        index++;
 
         // Category
-        addInfoRow(infoPanel, "Category:", product.getCategory(), currentY);
-        currentY += 50;
+        addInfoRowImproved(infoPanel, "Category", product.getCategory(), currentY, index);
+        currentY += 38;
+        index++;
 
-        // Stock status
-        JLabel stockLabel = new JLabel("Stock status:");
-        stockLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-        stockLabel.setForeground(new Color(100, 100, 100));
-        stockLabel.setBounds(0, currentY, 150, 20);
+        // Stock status with alternating background
+        if (index % 2 == 0) {
+            JPanel rowBg = new JPanel();
+            rowBg.setBackground(new Color(248, 248, 248));
+            rowBg.setBounds(0, currentY - 5, 405, 28);
+            infoPanel.add(rowBg);
+        }
+
+        JLabel stockLabel = new JLabel("Stock Status");
+        stockLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        stockLabel.setForeground(new Color(80, 80, 80));
+        stockLabel.setBounds(5, currentY, 150, 20);
         infoPanel.add(stockLabel);
 
-        JLabel stockValue = new JLabel(product.isInStock() ? "In stock" : "Out of stock");
-        stockValue.setFont(new Font("Arial", Font.BOLD, 13));
+        JLabel stockValue = new JLabel(product.isInStock() ? "In Stock" : "Out of Stock");
+        stockValue.setFont(new Font("Arial", Font.BOLD, 14));
         stockValue.setForeground(product.isInStock() ? new Color(34, 197, 94) : new Color(239, 68, 68));
         stockValue.setHorizontalAlignment(SwingConstants.RIGHT);
-        stockValue.setBounds(150, currentY, 255, 20);
+        stockValue.setBounds(160, currentY, 240, 20);
         infoPanel.add(stockValue);
-        currentY += 50;
+        currentY += 38;
+        index++;
 
         // Availability
-        addInfoRow(infoPanel, "Availability:", 
-            product.getStockQuantity() + " units", currentY);
+        addInfoRowImproved(infoPanel, "Availability", 
+            product.getStockQuantity() + " units", currentY, index);
 
         mainContentPanel.add(infoPanel);
     }
@@ -362,6 +388,29 @@ public class ProductDetailsScreen extends Screen {
         separator.setBounds(0, yPos + 28, 405, 1);
         separator.setForeground(new Color(240, 240, 240));
         parent.add(separator);
+    }
+
+    private void addInfoRowImproved(JPanel parent, String key, String value, int yPos, int index) {
+        // Add alternating background
+        if (index % 2 == 0) {
+            JPanel rowBg = new JPanel();
+            rowBg.setBackground(new Color(248, 248, 248));
+            rowBg.setBounds(0, yPos - 5, 405, 28);
+            parent.add(rowBg);
+        }
+
+        JLabel keyLabel = new JLabel(key);
+        keyLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        keyLabel.setForeground(new Color(80, 80, 80));
+        keyLabel.setBounds(5, yPos, 150, 20);
+        parent.add(keyLabel);
+
+        JLabel valueLabel = new JLabel(value);
+        valueLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        valueLabel.setForeground(Color.BLACK);
+        valueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        valueLabel.setBounds(160, yPos, 240, 20);
+        parent.add(valueLabel);
     }
 
     private void createReviewsSection(int yPos) {
