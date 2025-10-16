@@ -62,16 +62,15 @@ public class ProductService {
     }
     
     private void addSpecifications(Product product, String category, String brand) {
-        // Add common specifications
-        product.addSpecification("Brand", brand);
-        product.addSpecification("Category", category);
+        // Add SKU to specifications
+        product.addSpecification("SKU", product.getSku());
         
         // Add category-specific specs
         switch (category) {
             case "Engine":
-                product.addSpecification("Material", "Iridium");
                 product.addSpecification("Gap", "0.028-0.031 inches");
                 product.addSpecification("Threads", "14mm");
+                product.addSpecification("Material", "Iridium");
                 product.addSpecification("Pack Size", "4 Plugs");
                 break;
             case "Brakes":

@@ -275,12 +275,12 @@ public class ProductDetailsScreen extends Screen {
         int index = 0;
         for (Map.Entry<String, String> entry : specs.entrySet()) {
             // Add alternating background
-            if (index % 2 == 0) {
-                JPanel rowBg = new JPanel();
-                rowBg.setBackground(new Color(248, 248, 248));
-                rowBg.setBounds(0, currentY - 5, 390, 28);
-                specPanel.add(rowBg);
-            }
+            // if (index % 2 == 0) {
+            //     JPanel rowBg = new JPanel();
+            //     rowBg.setBackground(new Color(248, 248, 248));
+            //     rowBg.setBounds(0, currentY - 5, 390, 28);
+            //     specPanel.add(rowBg);
+            // }
 
             // Spec key
             JLabel keyLabel = new JLabel(entry.getKey());

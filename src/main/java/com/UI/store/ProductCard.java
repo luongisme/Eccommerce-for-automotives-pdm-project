@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 public class ProductCard extends JPanel {
     private Product product;
     private AppFrame appFrame;
+    private final Dimension size = new Dimension(170, 240);
 
     public ProductCard(Product product) {
         this(product, null);
@@ -22,7 +23,9 @@ public class ProductCard extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
-        setPreferredSize(new Dimension(170, 240));
+        setPreferredSize(size);
+        setMaximumSize(size);
+        setMinimumSize(size);
         initUI();
         addClickListener();
     }

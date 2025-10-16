@@ -299,7 +299,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private void createEnhancedSpecificationsBox(int yPos) {
         RoundedPanel specPanel = new RoundedPanel(16, true);
         specPanel.setLayout(null);
-        specPanel.setBounds(32, yPos, 472, 300);
+        specPanel.setBounds(32, yPos, 472, 265);
         specPanel.setBackground(CARD_BG);
         specPanel.setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -307,10 +307,10 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel specTitle = new JLabel("Specifications");
         specTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         specTitle.setForeground(TEXT_PRIMARY);
-        specTitle.setBounds(0, 0, 250, 28);
+        specTitle.setBounds(15, 15, 250, 28);
         specPanel.add(specTitle);
 
-        int currentY = 48;
+        int currentY = 68;
         Map<String, String> specs = product.getSpecifications();
         
         if (specs.isEmpty()) {
@@ -321,23 +321,27 @@ public class ProductDetailsScreenEnhanced extends Screen {
             specs.put("Pack Size", "4 Plugs");
         }
 
+        System.out.println("Specs map size: " + specs.size());
+        System.out.println("Specs: " + specs);
+
+        // Add specifications to panel
         int index = 0;
         for (Map.Entry<String, String> entry : specs.entrySet()) {
             if (index >= 5) break; // Limit to 5 specs for better UI
             
             // Alternate background for rows
-            if (index % 2 == 0) {
-                JPanel rowBg = new JPanel();
-                rowBg.setBackground(new Color(249, 250, 251));
-                rowBg.setBounds(0, currentY - 6, 424, 32);
-                specPanel.add(rowBg);
-            }
+            // if (index % 2 == 0) {
+            //     JPanel rowBg = new JPanel();
+            //     rowBg.setBackground(new Color(249, 250, 251));
+            //     rowBg.setBounds(100, currentY - 6, 424, 32);
+            //     specPanel.add(rowBg);
+            // }
             
             // Spec key
             JLabel keyLabel = new JLabel(entry.getKey());
             keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             keyLabel.setForeground(TEXT_SECONDARY);
-            keyLabel.setBounds(0, currentY, 180, 22);
+            keyLabel.setBounds(15, currentY, 180, 22);
             specPanel.add(keyLabel);
 
             // Spec value
@@ -345,7 +349,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
             valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
             valueLabel.setForeground(TEXT_PRIMARY);
             valueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-            valueLabel.setBounds(180, currentY, 244, 22);
+            valueLabel.setBounds(195, currentY, 244, 22);
             specPanel.add(valueLabel);
 
             currentY += 38;
@@ -358,7 +362,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private void createEnhancedProductInformationBox(int yPos) {
         RoundedPanel infoPanel = new RoundedPanel(16, true);
         infoPanel.setLayout(null);
-        infoPanel.setBounds(520, yPos, 472, 300);
+        infoPanel.setBounds(520, yPos, 460, 265);
         infoPanel.setBackground(CARD_BG);
         infoPanel.setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -366,54 +370,54 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel infoTitle = new JLabel("Product Information");
         infoTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         infoTitle.setForeground(TEXT_PRIMARY);
-        infoTitle.setBounds(0, 0, 300, 28);
+        infoTitle.setBounds(15, 15, 300, 28);
         infoPanel.add(infoTitle);
 
-        int currentY = 48;
+        int currentY = 68;
 
         // Brand
-        addEnhancedInfoRow(infoPanel, "Brand", product.getBrand(), currentY, 0);
-        currentY += 52;
+        addEnhancedInfoRow(infoPanel, "Brand", product.getBrand(),15, currentY, 0);
+        currentY += 42;
 
         // Category
-        addEnhancedInfoRow(infoPanel, "Category", product.getCategory(), currentY, 1);
-        currentY += 52;
+        addEnhancedInfoRow(infoPanel, "Category", product.getCategory(), 15, currentY, 1);
+        currentY += 42;
 
         // Stock status with badge
         JLabel stockLabel = new JLabel("Stock Status");
         stockLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         stockLabel.setForeground(TEXT_SECONDARY);
-        stockLabel.setBounds(0, currentY, 180, 22);
+        stockLabel.setBounds(15, currentY, 180, 22);
         infoPanel.add(stockLabel);
 
         JLabel stockBadge = new JLabel(product.isInStock() ? "● In Stock" : "● Out of Stock");
         stockBadge.setFont(new Font("Segoe UI", Font.BOLD, 14));
         stockBadge.setForeground(product.isInStock() ? SUCCESS_COLOR : ERROR_COLOR);
         stockBadge.setHorizontalAlignment(SwingConstants.RIGHT);
-        stockBadge.setBounds(180, currentY, 236, 22);
+        stockBadge.setBounds(190, currentY, 236, 22);
         infoPanel.add(stockBadge);
         currentY += 52;
 
         // Availability
         addEnhancedInfoRow(infoPanel, "Availability", 
-            product.getStockQuantity() + " units", currentY, 3);
+            product.getStockQuantity() + " units", 15, currentY, 3);
 
         mainContentPanel.add(infoPanel);
     }
 
-    private void addEnhancedInfoRow(JPanel parent, String key, String value, int yPos, int index) {
-        // Alternate background
-        if (index % 2 == 0) {
-            JPanel rowBg = new JPanel();
-            rowBg.setBackground(new Color(249, 250, 251));
-            rowBg.setBounds(0, yPos - 6, 424, 32);
-            parent.add(rowBg);
-        }
+    private void addEnhancedInfoRow(JPanel parent, String key, String value, int xPos, int yPos, int index) {
+        // // Alternate background
+        // if (index % 2 == 0) {
+        //     JPanel rowBg = new JPanel();
+        //     rowBg.setBackground(new Color(249, 250, 251));
+        //     rowBg.setBounds(xPos, yPos - 6, 424, 32);
+        //     parent.add(rowBg);
+        // }
         
         JLabel keyLabel = new JLabel(key);
         keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         keyLabel.setForeground(TEXT_SECONDARY);
-        keyLabel.setBounds(0, yPos, 180, 22);
+        keyLabel.setBounds(xPos, yPos, 180, 22);
         parent.add(keyLabel);
 
         JLabel valueLabel = new JLabel(value);
