@@ -4,6 +4,7 @@ import com.Main.AppFrame;
 import com.service.UserSession;
 import com.UI.login.LoginScreen;
 import com.UI.register.RegisterScreen;
+import com.UI.Payment.PaymentScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -212,8 +213,8 @@ public class StoreHeader extends JPanel {
         if (!UserSession.getInstance().isLoggedIn()) {
             navigateToLogin();
         } else {
-            // Navigate to cart page (to be implemented)
-            JOptionPane.showMessageDialog(this, "Cart functionality coming soon!");
+            // Navigate to in-app payment screen (Swing only)
+            appFrame.setScreen(new PaymentScreen(appFrame));
         }
     }
 }
