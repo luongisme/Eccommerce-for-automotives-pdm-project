@@ -13,6 +13,7 @@ public class Product {
     private String imageUrl;
     private String description;
     private boolean isNew;
+    private String carBrand; // e.g., "Sedan", "SUV", "Truck", etc.
     
     // Additional fields for product details
     private String sku; // Stock Keeping Unit
@@ -31,6 +32,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.description = description;
         this.isNew = isNew;
+        this.carBrand = "All Vehicles"; // Default value
         this.specifications = new HashMap<>();
         this.stockQuantity = 0;
         this.inStock = false;
@@ -49,6 +51,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.description = description;
         this.isNew = isNew;
+        this.carBrand = "All Vehicles"; // Default value
         this.sku = sku;
         this.stockQuantity = stockQuantity;
         this.inStock = stockQuantity > 0;
@@ -69,6 +72,7 @@ public class Product {
     public int getStockQuantity() { return stockQuantity; }
     public boolean isInStock() { return inStock; }
     public Map<String, String> getSpecifications() { return specifications; }
+    public String getCarBrand() { return carBrand; }
 
     // Setters
     public void setId(int id) { this.id = id; }
@@ -87,6 +91,7 @@ public class Product {
     }
     public void setInStock(boolean inStock) { this.inStock = inStock; }
     public void setSpecifications(Map<String, String> specifications) { this.specifications = specifications; }
+    public void setCarBrand(String carBrand) { this.carBrand = carBrand; }
     
     // Utility methods
     public void addSpecification(String key, String value) {

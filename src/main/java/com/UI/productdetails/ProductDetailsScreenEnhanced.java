@@ -496,7 +496,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel addReviewTitle = new JLabel("Write a Review");
         addReviewTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         addReviewTitle.setForeground(TEXT_PRIMARY);
-        addReviewTitle.setBounds(0, currentY, 300, 28);
+        addReviewTitle.setBounds(410, currentY+10, 300, 28);
         addReviewPanel.add(addReviewTitle);
         currentY += 44;
 
@@ -504,7 +504,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel ratingLabel = new JLabel("Your Rating:");
         ratingLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         ratingLabel.setForeground(TEXT_PRIMARY);
-        ratingLabel.setBounds(0, currentY, 120, 28);
+        ratingLabel.setBounds(45, currentY, 120, 28);
         addReviewPanel.add(ratingLabel);
 
         StarRatingPanel ratingSelector = new StarRatingPanel(5, 26, true);
@@ -516,7 +516,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel titleLabel = new JLabel("Review Title:");
         titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         titleLabel.setForeground(TEXT_PRIMARY);
-        titleLabel.setBounds(0, currentY, 120, 28);
+        titleLabel.setBounds(45, currentY, 120, 28);
         addReviewPanel.add(titleLabel);
 
         JTextField titleField = new JTextField();
@@ -533,7 +533,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel bodyLabel = new JLabel("Your Review:");
         bodyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         bodyLabel.setForeground(TEXT_PRIMARY);
-        bodyLabel.setBounds(0, currentY, 120, 28);
+        bodyLabel.setBounds(45, currentY, 120, 28);
         addReviewPanel.add(bodyLabel);
 
         JTextArea bodyArea = new JTextArea();
