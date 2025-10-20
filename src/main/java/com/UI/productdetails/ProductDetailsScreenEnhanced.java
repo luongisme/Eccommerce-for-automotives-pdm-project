@@ -224,7 +224,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         // Star rating with review count
         JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         ratingPanel.setOpaque(false);
-        ratingPanel.setBounds(xPos, currentY, 300, 28);
+        ratingPanel.setBounds(xPos-10, currentY, 300, 28);
         
         StarRatingPanel stars = new StarRatingPanel(product.getRating(), 18, false);
         ratingPanel.add(stars);
