@@ -1,8 +1,5 @@
 package com.UI.Payment;
 
-import javax.swing.*;
-import java.awt.Desktop;
-import java.net.URI;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -57,43 +54,11 @@ public class PaymentController {
         return true;
     }
 
-
-    public String buildDemoCheckoutUrl(String itemName, int quantity, String currency) {
-        double total = getTotal();
-        String amount = String.format(Locale.US, "%.2f", total);
-       
-        return "https://example.com/checkout?item=" + urlEncode(itemName) +
-               "&qty=" + quantity +
-               "&currency=" + currency +
-               "&amount=" + amount;
-    }
-
-    // Try to open system browser to the gateway URL
-    public void openPaymentGateway(String checkoutUrl) {
-        try {
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(new URI(checkoutUrl));
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Desktop browsing is not supported on this system.\nOpen this URL manually:\n" + checkoutUrl,
-                        "Open Payment Gateway",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Failed to open browser. URL:\n" + checkoutUrl + "\n\n" + ex.getMessage(),
-                    "Open Payment Gateway",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty() || s.equalsIgnoreCase("Value");
     }
 
     private double round2(double v) { return Math.round(v * 100.0) / 100.0; }
 
-    private String urlEncode(String s) {
-        try { return java.net.URLEncoder.encode(s, "UTF-8"); } catch (Exception e) { return s; }
-    }
+    
 }

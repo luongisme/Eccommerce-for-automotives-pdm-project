@@ -211,9 +211,23 @@ public class PaymentScreen extends Screen {
             JOptionPane.showMessageDialog(panel, payError, "Invalid Payment", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        String checkoutUrl = controller.buildDemoCheckoutUrl("Spark Plug Set (4-Pack)", 1, "USD");
-        controller.openPaymentGateway(checkoutUrl);
 
+        // Process payment
+        boolean success = controller.processPaymentLocally();
+        if (success) {
+            String message = String.format(
+                "SUCCESSFULLY PURCHASED\n\n" +
+                "Item: Spark Plug Set (4-Pack)\n" +
+                "Quantity: 1\n" +
+                "Total Amount: %s\n\n" +
+                "Thank you for your purchase!",
+                controller.formatUSD(controller.getTotal())
+            );
+            JOptionPane.showMessageDialog(panel, message, "Purchase Successful", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(panel, "Payment processing failed. Please try again.", 
+                "Payment Failed", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private RoundedPanel createCardPanel() {
