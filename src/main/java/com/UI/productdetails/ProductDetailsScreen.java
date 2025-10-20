@@ -422,11 +422,87 @@ public class ProductDetailsScreen extends Screen {
         mainContentPanel.add(reviewsTitle);
         yPos += 45;
 
+        // Filter panel with better styling
+        JPanel filterPanel = new JPanel(null);
+        filterPanel.setBackground(new Color(248, 248, 248));
+        filterPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
+        filterPanel.setBounds(45, yPos, 930, 55);
+        
+        // Filter label
+        JLabel filterLabel = new JLabel("Filter by rating:");
+        filterLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        filterLabel.setForeground(new Color(80, 80, 80));
+        filterLabel.setBounds(16, 15, 110, 24);
+        filterPanel.add(filterLabel);
+        
+        // Star rating filter ComboBox with improved styling
+        String[] filterOptions = {"All Reviews", "5 Stars", "4 Stars", "3 Stars", "2 Stars", "1 Star"};
+        JComboBox<String> starFilterCombo = new JComboBox<>(filterOptions);
+        starFilterCombo.setFont(new Font("Arial", Font.PLAIN, 14));
+        starFilterCombo.setBackground(Color.WHITE);
+        starFilterCombo.setForeground(Color.BLACK);
+        starFilterCombo.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(6, 12, 6, 12)
+        ));
+        starFilterCombo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        starFilterCombo.setBounds(130, 12, 180, 30);
+        
+        final int reviewsStartY = yPos + 70;
+        starFilterCombo.addActionListener(e -> {
+            String selected = (String) starFilterCombo.getSelectedItem();
+            filterAndDisplayReviews(selected, reviewsStartY);
+        });
+        filterPanel.add(starFilterCombo);
+        
+        mainContentPanel.add(filterPanel);
+        yPos += 70;
+
         // Get reviews for this product
         List<Review> reviews = reviewService.getReviewsByProductId(product.getId());
+        displayReviewCards(reviews, yPos);
+    }
+
+    private void filterAndDisplayReviews(String filterOption, int yPos) {
+        List<Review> allReviews = reviewService.getReviewsByProductId(product.getId());
+        List<Review> filteredReviews = new java.util.ArrayList<>();
+
+        if (filterOption.equals("All Reviews")) {
+            filteredReviews = allReviews;
+        } else {
+            int targetRating = Integer.parseInt(filterOption.split(" ")[0]);
+            for (Review review : allReviews) {
+                if (review.getRating() == targetRating) {
+                    filteredReviews.add(review);
+                }
+            }
+        }
+
+        // Remove old review cards and add review section
+        java.awt.Component[] components = mainContentPanel.getComponents();
+        for (java.awt.Component comp : components) {
+            if (comp instanceof ReviewCard || (comp instanceof JLabel && 
+                comp.getBounds().y >= yPos && ((JLabel)comp).getText().equals("No reviews yet. Be the first to review!"))) {
+                mainContentPanel.remove(comp);
+            }
+        }
+
+        displayReviewCards(filteredReviews, yPos);
+        
+        // Recalculate height and refresh
+        int totalHeight = calculateContentHeight();
+        mainContentPanel.setPreferredSize(new Dimension(1024, totalHeight));
+        mainContentPanel.revalidate();
+        mainContentPanel.repaint();
+    }
+
+    private void displayReviewCards(List<Review> reviews, int yPos) {
 
         if (reviews.isEmpty()) {
-            JLabel noReviews = new JLabel("No reviews yet. Be the first to review!");
+            JLabel noReviews = new JLabel("No reviews match the selected filter.");
             noReviews.setFont(new Font("Arial", Font.PLAIN, 14));
             noReviews.setForeground(new Color(150, 150, 150));
             noReviews.setBounds(45, yPos, 400, 30);

@@ -435,9 +435,82 @@ public class ProductDetailsScreenEnhanced extends Screen {
         reviewsTitle.setForeground(TEXT_PRIMARY);
         reviewsTitle.setBounds(32, yPos, 300, 32);
         mainContentPanel.add(reviewsTitle);
-        yPos += 48;
+        yPos += 50;
+
+        // Star rating filter
+        RoundedPanel filterPanel = new RoundedPanel(12, true);
+        filterPanel.setBackground(CARD_BG);
+        filterPanel.setLayout(null);
+        filterPanel.setBounds(32, yPos, 350, 70);
+        
+        // Filter label
+        JLabel filterLabel = new JLabel("Filter by rating:");
+        filterLabel.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        filterLabel.setForeground(TEXT_SECONDARY);
+        filterLabel.setBounds(24, 18, 120, 24);
+        filterPanel.add(filterLabel);
+        
+        // Star rating filter ComboBox with improved styling
+        String[] filterOptions = {"All Reviews", "5 Stars", "4 Stars", "3 Stars", "2 Stars", "1 Star"};
+        JComboBox<String> starFilterCombo = new JComboBox<>(filterOptions);
+        starFilterCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        starFilterCombo.setBackground(Color.WHITE);
+        starFilterCombo.setForeground(TEXT_PRIMARY);
+        starFilterCombo.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(BORDER_COLOR, 1),
+            BorderFactory.createEmptyBorder(6, 12, 6, 12)
+        ));
+        starFilterCombo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        starFilterCombo.setBounds(150, 15, 180, 40);
+        
+        final int reviewsStartY = yPos + 75;
+        starFilterCombo.addActionListener(e -> {
+            String selected = (String) starFilterCombo.getSelectedItem();
+            filterAndDisplayReviews(selected, reviewsStartY);
+        });
+        filterPanel.add(starFilterCombo);
+        
+        mainContentPanel.add(filterPanel);
+        yPos += 75;
 
         List<Review> reviews = reviewService.getReviewsByProductId(product.getId());
+        displayReviewCards(reviews, yPos);
+    }
+
+    private void filterAndDisplayReviews(String filterOption, int yPos) {
+        List<Review> allReviews = reviewService.getReviewsByProductId(product.getId());
+        List<Review> filteredReviews = new java.util.ArrayList<>();
+
+        if (filterOption.equals("All Reviews")) {
+            filteredReviews = allReviews;
+        } else {
+            int targetRating = Integer.parseInt(filterOption.split(" ")[0]);
+            for (Review review : allReviews) {
+                if (review.getRating() == targetRating) {
+                    filteredReviews.add(review);
+                }
+            }
+        }
+
+        // Remove old review cards and add review section
+        java.awt.Component[] components = mainContentPanel.getComponents();
+        for (java.awt.Component comp : components) {
+            if (comp instanceof ReviewCard || (comp instanceof com.UI.components.RoundedPanel && 
+                comp.getBounds().y >= yPos)) {
+                mainContentPanel.remove(comp);
+            }
+        }
+
+        displayReviewCards(filteredReviews, yPos);
+        
+        // Recalculate height and refresh
+        int totalHeight = calculateContentHeight();
+        mainContentPanel.setPreferredSize(new Dimension(1024, totalHeight));
+        mainContentPanel.revalidate();
+        mainContentPanel.repaint();
+    }
+
+    private void displayReviewCards(List<Review> reviews, int yPos) {
 
         if (reviews.isEmpty()) {
             RoundedPanel noReviewsPanel = new RoundedPanel(12, true);
@@ -445,7 +518,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
             noReviewsPanel.setBounds(32, yPos, 960, 100);
             noReviewsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 30));
             
-            JLabel noReviews = new JLabel("No reviews yet. Be the first to review!");
+            JLabel noReviews = new JLabel("No reviews match the selected filter.");
             noReviews.setFont(new Font("Segoe UI", Font.PLAIN, 15));
             noReviews.setForeground(TEXT_SECONDARY);
             noReviewsPanel.add(noReviews);
