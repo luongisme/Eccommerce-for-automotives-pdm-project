@@ -6,7 +6,6 @@ import com.UI.store.StoreScreen;
 
 import javax.swing.*;
 import java.awt.*;
-import com.UI.*;
 import com.UI.Profile.ProfilePage;
 
 import java.util.List;

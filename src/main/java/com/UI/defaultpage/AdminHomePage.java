@@ -272,7 +272,7 @@ public class AdminHomePage extends JFrame {
 
     private void navigateToAdminDashboard() {
         AdminDashboard adminDashboard = new AdminDashboard();
-        adminDashboard.setVisible(true);
+        adminDashboard.setScreen();
         this.dispose();
     }
 
