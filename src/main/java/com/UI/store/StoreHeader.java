@@ -42,15 +42,52 @@ public class StoreHeader extends JPanel {
         searchPanel.setBackground(Color.WHITE);
         searchPanel.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
 
-        JTextField searchField = new JTextField("Hinted search text");
+        JTextField searchField = new JTextField();
+        String placeholder = "Search products...";
+
+        searchField.setText(placeholder);
         searchField.setFont(new Font("Arial", Font.PLAIN, 13));
         searchField.setForeground(new Color(150, 150, 150));
         searchField.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
         searchPanel.add(searchField, BorderLayout.CENTER);
 
         JLabel searchIcon = new JLabel("🔍");
         searchIcon.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
         searchPanel.add(searchIcon, BorderLayout.EAST);
+
+        // Non-focusable search bar at beginning
+        searchField.setFocusable(false);
+
+        // Make it focusable when clicked
+        searchField.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                searchField.setFocusable(true);
+                searchField.requestFocusInWindow();
+            }
+        });
+
+        // Placeholder behaviour
+        searchField.addFocusListener(new java.awt.event.FocusAdapter() {
+            // Case: Entering the search bar
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (searchField.getText().equals(placeholder)) {
+                    searchField.setText("");
+                    searchField.setForeground(Color.BLACK);
+                }
+            }
+
+            // Case: Leaving the search field
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (searchField.getText().isEmpty()) {
+                    searchField.setText(placeholder);
+                    searchField.setForeground(new Color(150, 150, 150));
+                }
+            }
+        });
 
         add(searchPanel);
 
@@ -86,13 +123,13 @@ public class StoreHeader extends JPanel {
                 adminBtn.setBounds(rightX, 23, 50, 24);
                 // adminBtn.addActionListener(e -> navigateToAdminDashboard());
                 add(adminBtn);
-                
+
                 rightX += 60;
             }
-            
+
             // Show user info (clickable to go to profile)
             String displayName = session.isAdmin() ? "Admin" : session.getCurrentUser().getUsername();
-            
+
             userLabel = new JLabel(displayName);
             userLabel.setFont(new Font("Arial", Font.PLAIN, 14));
             userLabel.setForeground(Color.BLACK);
@@ -206,7 +243,7 @@ public class StoreHeader extends JPanel {
 
     // // Navigate to admin dashboard
     // private void navigateToAdminDashboard() {
-    //     appFrame.setScreen(new com.UI.admin.AdminDashboard());
+    // appFrame.setScreen(new com.UI.admin.AdminDashboard());
     // }
 
     private void handleCartClick() {
