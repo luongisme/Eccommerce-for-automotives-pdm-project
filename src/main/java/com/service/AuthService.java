@@ -36,7 +36,7 @@ public class AuthService {
                 users = loadedUsers;
                 // Calculate next user ID
                 nextUserId = users.values().stream()
-                    .mapToInt(User::getId)
+                    .mapToInt(User::getUserID)
                     .max()
                     .orElse(0) + 1;
                 System.out.println("Loaded " + users.size() + " users from file");
@@ -56,8 +56,10 @@ public class AuthService {
         nextUserId = 1;
         
         // Default mock users
-        User user1 = new User(nextUserId++, "User", "user123@gmail.com", "Password123", UserRole.USER);
-        User admin = new User(nextUserId++, "Admin", "admin123@gmail.com", "Password123", UserRole.ADMIN);
+        User user1 = new User(nextUserId++,"user123@gmail.com", "Luong", "Gia", "Duong",
+                              java.time.LocalDateTime.now(), "Userpass1@", UserRole.USER);
+        User admin = new User(nextUserId++, "admin123@gmail.com", "Son", "Van", "Nguyen",
+                              java.time.LocalDateTime.now(), "Adminpass1@", UserRole.ADMIN);
         
         users.put(user1.getEmail(), user1);
         users.put(admin.getEmail(), admin);
@@ -85,7 +87,8 @@ public class AuthService {
             return false; // User already exists
         }
         
-        User newUser = new User(nextUserId++, username, email, password, UserRole.USER);
+        User newUser = new User(nextUserId++, email, "", "", username,
+                                java.time.LocalDateTime.now(), password, UserRole.USER);
         users.put(email, newUser);
         saveUsers(); // Persist to file
         return true;

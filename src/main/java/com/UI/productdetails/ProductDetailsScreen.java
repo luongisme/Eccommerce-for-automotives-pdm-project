@@ -577,10 +577,10 @@ public class ProductDetailsScreen extends Screen {
         // Create and add review
         User currentUser = UserSession.getInstance().getCurrentUser();
         Review newReview = new Review(
-            0, // ID will be set by service
+            0,
             product.getId(),
-            currentUser.getId(),
-            currentUser.getUsername(),
+            currentUser.getUserID(),
+            currentUser.getFullName(),
             rating,
             title,
             body,

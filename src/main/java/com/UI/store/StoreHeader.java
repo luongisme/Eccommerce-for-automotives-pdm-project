@@ -128,7 +128,7 @@ public class StoreHeader extends JPanel {
             }
 
             // Show user info (clickable to go to profile)
-            String displayName = session.isAdmin() ? "Admin" : session.getCurrentUser().getUsername();
+            String displayName = session.isAdmin() ? "Admin" : session.getCurrentUser().getFullName();
 
             userLabel = new JLabel(displayName);
             userLabel.setFont(new Font("Arial", Font.PLAIN, 14));
