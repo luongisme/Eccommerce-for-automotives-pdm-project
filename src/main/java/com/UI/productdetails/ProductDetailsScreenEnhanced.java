@@ -720,7 +720,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private int calculateContentHeight() {
         int baseHeight = 1050;
         List<Review> reviews = reviewService.getReviewsByProductId(
-            product != null ? product.getId() : ""
+            product != null ? product.getId() : "0"
         );
         int reviewRows = (int) Math.ceil((double) reviews.size() / 3);
         int reviewHeight = reviews.isEmpty() ? 116 : reviewRows * 221;
