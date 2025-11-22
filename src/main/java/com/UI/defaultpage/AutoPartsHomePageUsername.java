@@ -85,7 +85,15 @@ public class AutoPartsHomePageUsername extends JFrame {
             userBtn.setBorderPainted(false);
             userBtn.setFocusPainted(false);
             userBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            userBtn.addActionListener(e -> navigateToLogin());
+            userBtn.addActionListener(e -> {
+                JFrame profileFrame = new JFrame("Profile");
+                profileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                profileFrame.add(new com.UI.Profile.ProfileScreen());
+                profileFrame.pack();
+                profileFrame.setSize(700, 800);
+                profileFrame.setLocationRelativeTo(null);
+                profileFrame.setVisible(true);
+            });
             topBar.add(Box.createRigidArea(new Dimension(12, 0)));
             topBar.add(userBtn);
 
