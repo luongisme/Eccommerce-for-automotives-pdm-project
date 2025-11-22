@@ -1,6 +1,7 @@
 package com.UI.store;
 
 import com.Main.AppFrame;
+import com.service.SearchFunctionality;
 import com.service.UserSession;
 import com.UI.login.LoginScreen;
 import com.UI.register.RegisterScreen;
@@ -8,9 +9,14 @@ import com.UI.Payment.PaymentScreen;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+
+import java.util.List;
+import java.util.Set;
 
 public class StoreHeader extends JPanel {
     private AppFrame appFrame;
@@ -19,6 +25,8 @@ public class StoreHeader extends JPanel {
     private JButton registerBtn;
     private JLabel userLabel;
     private JLabel cartIcon;
+
+    private SearchFunctionality searchService = new SearchFunctionality();
 
     public StoreHeader(AppFrame appFrame) {
         this.appFrame = appFrame;
@@ -89,6 +97,27 @@ public class StoreHeader extends JPanel {
             }
         });
 
+        // Press Enter to search
+        searchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String keyword = searchField.getText().trim();
+                    if (!keyword.isEmpty() && !keyword.equals(placeholder)) {
+
+                        // Default: no filters applied
+                        performSearch(
+                                keyword,
+                                Set.of(), // categories
+                                Set.of(), // brands
+                                null, // minPrice
+                                null // maxPrice
+                        );
+                    }
+                }
+            }
+        });
+
         add(searchPanel);
 
         // Right side buttons
@@ -128,7 +157,7 @@ public class StoreHeader extends JPanel {
             }
 
             // Show user info (clickable to go to profile)
-            String displayName = session.isAdmin() ? "Admin" : session.getCurrentUser().getFullName();
+            String displayName = session.isAdmin() ? "Admin" : session.getCurrentUser().getUsername();
 
             userLabel = new JLabel(displayName);
             userLabel.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -209,6 +238,33 @@ public class StoreHeader extends JPanel {
             }
         });
         add(cartIcon);
+    }
+
+    private void performSearch(String keyword,
+            Set<String> categories,
+            Set<String> brands,
+            Double minPrice,
+            Double maxPrice) {
+        try {
+            List<com.model.Product> results = searchService.mixedSearch(
+                    keyword,
+                    categories,
+                    brands,
+                    minPrice,
+                    maxPrice);
+
+            if (results.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No products found for: " + keyword);
+            } else {
+                StringBuilder sb = new StringBuilder("Search results:\n");
+                for (com.model.Product p : results) {
+                    sb.append(p.getName()).append(" (ID: ").append(p.getId()).append(")\n");
+                }
+                JOptionPane.showMessageDialog(this, sb.toString());
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Search failed: " + e.getMessage());
+        }
     }
 
     private ImageIcon loadImage(String path, int width, int height) {

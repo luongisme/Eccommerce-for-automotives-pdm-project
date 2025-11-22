@@ -232,8 +232,8 @@ public class RegisterScreen extends Screen {
         if (success) {
             // Show success message
             JOptionPane.showMessageDialog(this.panel, 
-                "Registration successful! Welcome " + username + "!", 
-                "Success", 
+                "Registration successful! Welcome!",
+                "Success",
                 JOptionPane.INFORMATION_MESSAGE);
             
             // Auto-login after registration

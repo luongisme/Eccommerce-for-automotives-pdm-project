@@ -591,8 +591,8 @@ public class ProductDetailsScreenEnhanced extends Screen {
         Review newReview = new Review(
             0,
             product.getId(),
-            currentUser.getId(),
-            currentUser.getUsername(),
+            currentUser.getUserID(),
+            currentUser.getFullName(),
             rating,
             title,
             body,

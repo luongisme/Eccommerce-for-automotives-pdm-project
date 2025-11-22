@@ -25,7 +25,8 @@ public class StoreFooter extends JPanel {
         contentPanel.add(titleLabel);
 
         // Subtitle
-        JLabel subtitleLabel = new JLabel("Subscribe to our newsletter and be the first to know about new products and exclusive offers");
+        JLabel subtitleLabel = new JLabel(
+                "Subscribe to our newsletter and be the first to know about new products and exclusive offers");
         subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 13));
         subtitleLabel.setForeground(Color.WHITE);
         subtitleLabel.setBounds(180, 80, 680, 20);
@@ -38,12 +39,38 @@ public class StoreFooter extends JPanel {
         emailPanel.setBounds(310, 115, 260, 42);
         emailPanel.setBorder(BorderFactory.createEmptyBorder());
 
-        JTextField emailField = new JTextField("Enter your email");
+        // Email annotation declaration
+        JTextField emailField = new JTextField();
+        String placeholder = "Enter your email";
+
+        // Set theme styles
+        emailField.setText(placeholder);
         emailField.setFont(new Font("Arial", Font.PLAIN, 14));
         emailField.setForeground(new Color(150, 150, 150));
         emailField.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-        emailPanel.add(emailField, BorderLayout.CENTER);
 
+        // Placeholder behaviour
+        emailField.addFocusListener(new java.awt.event.FocusAdapter() {
+            // Case: Entering the email
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (emailField.getText().equals(placeholder)) {
+                    emailField.setText("");
+                    emailField.setForeground(Color.BLACK);
+                }
+            }
+
+            // Case: Leaving the email field
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (emailField.getText().isEmpty()) {
+                    emailField.setText(placeholder);
+                    emailField.setForeground(new Color(150, 150, 150));
+                }
+            }
+        });
+
+        emailPanel.add(emailField, BorderLayout.CENTER);
         contentPanel.add(emailPanel);
 
         // Subscribe button
@@ -58,7 +85,8 @@ public class StoreFooter extends JPanel {
         subscribeBtn.addActionListener(e -> {
             String email = emailField.getText();
             if (!email.isEmpty() && !email.equals("Enter your email")) {
-                JOptionPane.showMessageDialog(this, "Thank you for subscribing!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Thank you for subscribing!", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 emailField.setText("Enter your email");
             }
         });
