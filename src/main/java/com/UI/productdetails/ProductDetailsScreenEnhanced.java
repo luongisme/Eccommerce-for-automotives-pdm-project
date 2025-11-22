@@ -224,7 +224,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         // Star rating with review count
         JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         ratingPanel.setOpaque(false);
-        ratingPanel.setBounds(xPos, currentY, 300, 28);
+        ratingPanel.setBounds(xPos-10, currentY, 300, 28);
         
         StarRatingPanel stars = new StarRatingPanel(product.getRating(), 18, false);
         ratingPanel.add(stars);
@@ -299,7 +299,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private void createEnhancedSpecificationsBox(int yPos) {
         RoundedPanel specPanel = new RoundedPanel(16, true);
         specPanel.setLayout(null);
-        specPanel.setBounds(32, yPos, 472, 300);
+        specPanel.setBounds(32, yPos, 472, 265);
         specPanel.setBackground(CARD_BG);
         specPanel.setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -307,10 +307,10 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel specTitle = new JLabel("Specifications");
         specTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         specTitle.setForeground(TEXT_PRIMARY);
-        specTitle.setBounds(0, 0, 250, 28);
+        specTitle.setBounds(15, 15, 250, 28);
         specPanel.add(specTitle);
 
-        int currentY = 48;
+        int currentY = 68;
         Map<String, String> specs = product.getSpecifications();
         
         if (specs.isEmpty()) {
@@ -321,23 +321,27 @@ public class ProductDetailsScreenEnhanced extends Screen {
             specs.put("Pack Size", "4 Plugs");
         }
 
+        System.out.println("Specs map size: " + specs.size());
+        System.out.println("Specs: " + specs);
+
+        // Add specifications to panel
         int index = 0;
         for (Map.Entry<String, String> entry : specs.entrySet()) {
             if (index >= 5) break; // Limit to 5 specs for better UI
             
             // Alternate background for rows
-            if (index % 2 == 0) {
-                JPanel rowBg = new JPanel();
-                rowBg.setBackground(new Color(249, 250, 251));
-                rowBg.setBounds(0, currentY - 6, 424, 32);
-                specPanel.add(rowBg);
-            }
+            // if (index % 2 == 0) {
+            //     JPanel rowBg = new JPanel();
+            //     rowBg.setBackground(new Color(249, 250, 251));
+            //     rowBg.setBounds(100, currentY - 6, 424, 32);
+            //     specPanel.add(rowBg);
+            // }
             
             // Spec key
             JLabel keyLabel = new JLabel(entry.getKey());
             keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             keyLabel.setForeground(TEXT_SECONDARY);
-            keyLabel.setBounds(0, currentY, 180, 22);
+            keyLabel.setBounds(15, currentY, 180, 22);
             specPanel.add(keyLabel);
 
             // Spec value
@@ -345,7 +349,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
             valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
             valueLabel.setForeground(TEXT_PRIMARY);
             valueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-            valueLabel.setBounds(180, currentY, 244, 22);
+            valueLabel.setBounds(195, currentY, 244, 22);
             specPanel.add(valueLabel);
 
             currentY += 38;
@@ -358,7 +362,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private void createEnhancedProductInformationBox(int yPos) {
         RoundedPanel infoPanel = new RoundedPanel(16, true);
         infoPanel.setLayout(null);
-        infoPanel.setBounds(520, yPos, 472, 300);
+        infoPanel.setBounds(520, yPos, 460, 265);
         infoPanel.setBackground(CARD_BG);
         infoPanel.setBorder(new EmptyBorder(24, 24, 24, 24));
 
@@ -366,54 +370,54 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel infoTitle = new JLabel("Product Information");
         infoTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         infoTitle.setForeground(TEXT_PRIMARY);
-        infoTitle.setBounds(0, 0, 300, 28);
+        infoTitle.setBounds(15, 15, 300, 28);
         infoPanel.add(infoTitle);
 
-        int currentY = 48;
+        int currentY = 68;
 
         // Brand
-        addEnhancedInfoRow(infoPanel, "Brand", product.getBrand(), currentY, 0);
-        currentY += 52;
+        addEnhancedInfoRow(infoPanel, "Brand", product.getBrand(),15, currentY, 0);
+        currentY += 42;
 
         // Category
-        addEnhancedInfoRow(infoPanel, "Category", product.getCategory(), currentY, 1);
-        currentY += 52;
+        addEnhancedInfoRow(infoPanel, "Category", product.getCategory(), 15, currentY, 1);
+        currentY += 42;
 
         // Stock status with badge
         JLabel stockLabel = new JLabel("Stock Status");
         stockLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         stockLabel.setForeground(TEXT_SECONDARY);
-        stockLabel.setBounds(0, currentY, 180, 22);
+        stockLabel.setBounds(15, currentY, 180, 22);
         infoPanel.add(stockLabel);
 
         JLabel stockBadge = new JLabel(product.isInStock() ? "● In Stock" : "● Out of Stock");
         stockBadge.setFont(new Font("Segoe UI", Font.BOLD, 14));
         stockBadge.setForeground(product.isInStock() ? SUCCESS_COLOR : ERROR_COLOR);
         stockBadge.setHorizontalAlignment(SwingConstants.RIGHT);
-        stockBadge.setBounds(180, currentY, 236, 22);
+        stockBadge.setBounds(190, currentY, 236, 22);
         infoPanel.add(stockBadge);
         currentY += 52;
 
         // Availability
         addEnhancedInfoRow(infoPanel, "Availability", 
-            product.getStockQuantity() + " units", currentY, 3);
+            product.getStockQuantity() + " units", 15, currentY, 3);
 
         mainContentPanel.add(infoPanel);
     }
 
-    private void addEnhancedInfoRow(JPanel parent, String key, String value, int yPos, int index) {
-        // Alternate background
-        if (index % 2 == 0) {
-            JPanel rowBg = new JPanel();
-            rowBg.setBackground(new Color(249, 250, 251));
-            rowBg.setBounds(0, yPos - 6, 424, 32);
-            parent.add(rowBg);
-        }
+    private void addEnhancedInfoRow(JPanel parent, String key, String value, int xPos, int yPos, int index) {
+        // // Alternate background
+        // if (index % 2 == 0) {
+        //     JPanel rowBg = new JPanel();
+        //     rowBg.setBackground(new Color(249, 250, 251));
+        //     rowBg.setBounds(xPos, yPos - 6, 424, 32);
+        //     parent.add(rowBg);
+        // }
         
         JLabel keyLabel = new JLabel(key);
         keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         keyLabel.setForeground(TEXT_SECONDARY);
-        keyLabel.setBounds(0, yPos, 180, 22);
+        keyLabel.setBounds(xPos, yPos, 180, 22);
         parent.add(keyLabel);
 
         JLabel valueLabel = new JLabel(value);
@@ -431,9 +435,82 @@ public class ProductDetailsScreenEnhanced extends Screen {
         reviewsTitle.setForeground(TEXT_PRIMARY);
         reviewsTitle.setBounds(32, yPos, 300, 32);
         mainContentPanel.add(reviewsTitle);
-        yPos += 48;
+        yPos += 50;
+
+        // Star rating filter
+        RoundedPanel filterPanel = new RoundedPanel(12, true);
+        filterPanel.setBackground(CARD_BG);
+        filterPanel.setLayout(null);
+        filterPanel.setBounds(32, yPos, 350, 70);
+        
+        // Filter label
+        JLabel filterLabel = new JLabel("Filter by rating:");
+        filterLabel.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        filterLabel.setForeground(TEXT_SECONDARY);
+        filterLabel.setBounds(24, 18, 120, 24);
+        filterPanel.add(filterLabel);
+        
+        // Star rating filter ComboBox with improved styling
+        String[] filterOptions = {"All Reviews", "5 Stars", "4 Stars", "3 Stars", "2 Stars", "1 Star"};
+        JComboBox<String> starFilterCombo = new JComboBox<>(filterOptions);
+        starFilterCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        starFilterCombo.setBackground(Color.WHITE);
+        starFilterCombo.setForeground(TEXT_PRIMARY);
+        starFilterCombo.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(BORDER_COLOR, 1),
+            BorderFactory.createEmptyBorder(6, 12, 6, 12)
+        ));
+        starFilterCombo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        starFilterCombo.setBounds(150, 15, 180, 40);
+        
+        final int reviewsStartY = yPos + 75;
+        starFilterCombo.addActionListener(e -> {
+            String selected = (String) starFilterCombo.getSelectedItem();
+            filterAndDisplayReviews(selected, reviewsStartY);
+        });
+        filterPanel.add(starFilterCombo);
+        
+        mainContentPanel.add(filterPanel);
+        yPos += 75;
 
         List<Review> reviews = reviewService.getReviewsByProductId(product.getId());
+        displayReviewCards(reviews, yPos);
+    }
+
+    private void filterAndDisplayReviews(String filterOption, int yPos) {
+        List<Review> allReviews = reviewService.getReviewsByProductId(product.getId());
+        List<Review> filteredReviews = new java.util.ArrayList<>();
+
+        if (filterOption.equals("All Reviews")) {
+            filteredReviews = allReviews;
+        } else {
+            int targetRating = Integer.parseInt(filterOption.split(" ")[0]);
+            for (Review review : allReviews) {
+                if (review.getRating() == targetRating) {
+                    filteredReviews.add(review);
+                }
+            }
+        }
+
+        // Remove old review cards and add review section
+        java.awt.Component[] components = mainContentPanel.getComponents();
+        for (java.awt.Component comp : components) {
+            if (comp instanceof ReviewCard || (comp instanceof com.UI.components.RoundedPanel && 
+                comp.getBounds().y >= yPos)) {
+                mainContentPanel.remove(comp);
+            }
+        }
+
+        displayReviewCards(filteredReviews, yPos);
+        
+        // Recalculate height and refresh
+        int totalHeight = calculateContentHeight();
+        mainContentPanel.setPreferredSize(new Dimension(1024, totalHeight));
+        mainContentPanel.revalidate();
+        mainContentPanel.repaint();
+    }
+
+    private void displayReviewCards(List<Review> reviews, int yPos) {
 
         if (reviews.isEmpty()) {
             RoundedPanel noReviewsPanel = new RoundedPanel(12, true);
@@ -441,7 +518,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
             noReviewsPanel.setBounds(32, yPos, 960, 100);
             noReviewsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 30));
             
-            JLabel noReviews = new JLabel("No reviews yet. Be the first to review!");
+            JLabel noReviews = new JLabel("No reviews match the selected filter.");
             noReviews.setFont(new Font("Segoe UI", Font.PLAIN, 15));
             noReviews.setForeground(TEXT_SECONDARY);
             noReviewsPanel.add(noReviews);
@@ -492,7 +569,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel addReviewTitle = new JLabel("Write a Review");
         addReviewTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         addReviewTitle.setForeground(TEXT_PRIMARY);
-        addReviewTitle.setBounds(0, currentY, 300, 28);
+        addReviewTitle.setBounds(410, currentY+10, 300, 28);
         addReviewPanel.add(addReviewTitle);
         currentY += 44;
 
@@ -500,7 +577,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel ratingLabel = new JLabel("Your Rating:");
         ratingLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         ratingLabel.setForeground(TEXT_PRIMARY);
-        ratingLabel.setBounds(0, currentY, 120, 28);
+        ratingLabel.setBounds(45, currentY, 120, 28);
         addReviewPanel.add(ratingLabel);
 
         StarRatingPanel ratingSelector = new StarRatingPanel(5, 26, true);
@@ -512,7 +589,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel titleLabel = new JLabel("Review Title:");
         titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         titleLabel.setForeground(TEXT_PRIMARY);
-        titleLabel.setBounds(0, currentY, 120, 28);
+        titleLabel.setBounds(45, currentY, 120, 28);
         addReviewPanel.add(titleLabel);
 
         JTextField titleField = new JTextField();
@@ -529,7 +606,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         JLabel bodyLabel = new JLabel("Your Review:");
         bodyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         bodyLabel.setForeground(TEXT_PRIMARY);
-        bodyLabel.setBounds(0, currentY, 120, 28);
+        bodyLabel.setBounds(45, currentY, 120, 28);
         addReviewPanel.add(bodyLabel);
 
         JTextArea bodyArea = new JTextArea();

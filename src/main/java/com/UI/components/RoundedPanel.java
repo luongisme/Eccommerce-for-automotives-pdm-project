@@ -63,6 +63,14 @@ public class RoundedPanel extends JPanel {
         // Custom border painting handled in paintComponent
     }
 
+    @Override
+    public Insets getInsets() {
+        if (hasShadow) {
+            return new Insets(shadowSize, shadowSize, shadowSize, shadowSize);
+        }
+        return new Insets(0, 0, 0, 0);
+    }
+
     public void setShadowEnabled(boolean enabled) {
         this.hasShadow = enabled;
         this.shadowSize = enabled ? 8 : 0;
