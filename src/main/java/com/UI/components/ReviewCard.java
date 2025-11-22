@@ -1,10 +1,18 @@
 package com.UI.components;
 
-import com.model.Review;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.time.format.DateTimeFormatter;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import com.model.Review;
 
 /**
  * A card component to display a single review
@@ -43,7 +51,7 @@ public class ReviewCard extends JPanel {
         yPos += 25;
 
         // Review body (truncated if too long)
-        String bodyText = review.getBody();
+        String bodyText = review.getComment();
         if (bodyText.length() > 80) {
             bodyText = bodyText.substring(0, 77) + "...";
         }

@@ -9,18 +9,34 @@ public class Review {
     private String username;
     private int rating; // 1-5 stars
     private String title;
-    private String body;
+    private String comment;
     private LocalDateTime createdAt;
 
+<<<<<<< HEAD
     public Review(String id, String productId, String userId, String username, int rating,
                   String title, String body, LocalDateTime createdAt) {
+=======
+    public Review(int id, int productId, int userId, int rating, 
+                  String comment, LocalDateTime createdAt) {
+        this.id = id;
+        this.productId = productId;
+        this.userId = userId;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = createdAt;
+    }
+
+    // Constructor with all fields
+    public Review(int id, int productId, int userId, String username, int rating, 
+                  String title, String comment, LocalDateTime createdAt) {
+>>>>>>> 0924c12 (Fix model)
         this.id = id;
         this.productId = productId;
         this.userId = userId;
         this.username = username;
         this.rating = rating;
         this.title = title;
-        this.body = body;
+        this.comment = comment;
         this.createdAt = createdAt;
     }
 
@@ -33,7 +49,7 @@ public class Review {
     public String getUsername() { return username; }
     public int getRating() { return rating; }
     public String getTitle() { return title; }
-    public String getBody() { return body; }
+    public String getComment() { return comment; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     // Setters
@@ -43,6 +59,6 @@ public class Review {
     public void setUsername(String username) { this.username = username; }
     public void setRating(int rating) { this.rating = rating; }
     public void setTitle(String title) { this.title = title; }
-    public void setBody(String body) { this.body = body; }
+    public void setComment(String comment) { this.comment = comment; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

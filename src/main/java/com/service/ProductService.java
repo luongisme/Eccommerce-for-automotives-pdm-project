@@ -1,8 +1,12 @@
 package com.service;
 
-import com.model.Product;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.model.Product;
 
 public class ProductService {
     private static ProductService instance;
@@ -117,8 +121,8 @@ public class ProductService {
         List<Product> sorted = new ArrayList<>(products);
         
         switch (sortBy) {
-            case "new":
-                sorted.sort((p1, p2) -> Boolean.compare(p2.isNew(), p1.isNew()));
+            case "available":
+                sorted.sort((p1, p2) -> Boolean.compare(p2.isAvailable(), p1.isAvailable()));
                 break;
             case "price_asc":
                 sorted.sort(Comparator.comparingDouble(Product::getPrice));

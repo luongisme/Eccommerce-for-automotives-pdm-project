@@ -12,17 +12,24 @@ public class Product {
     private double rating;
     private String imageUrl;
     private String description;
-    private boolean isNew;
-    private String carBrand; // e.g., "Sedan", "SUV", "Truck", etc.
+    private boolean isAvailable;
+    private String carBrand; // e.g., "Toyota", "Honda", "Porsche", "BMW", etc.
     
     // Additional fields for product details
+    private int coID;
+    private double partNumber;
     private String sku; // Stock Keeping Unit
     private int stockQuantity;
     private boolean inStock;
     private Map<String, String> specifications; // e.g., "Material" -> "Iridium", "Gap" -> "0.028-0.031 inches"
     
+<<<<<<< HEAD
     public Product(String id, String name, String category, String brand, double price,
                    double rating, String imageUrl, String description, boolean isNew) {
+=======
+    public Product(int id, String name, String category, String brand, double price, 
+                   double rating, String imageUrl, String description, boolean isAvailable) {
+>>>>>>> 0924c12 (Fix model)
         this.id = id;
         this.name = name;
         this.category = category;
@@ -31,31 +38,47 @@ public class Product {
         this.rating = rating;
         this.imageUrl = imageUrl;
         this.description = description;
-        this.isNew = isNew;
+        this.isAvailable = isAvailable;
         this.carBrand = "All Vehicles"; // Default value
         this.specifications = new HashMap<>();
         this.stockQuantity = 0;
         this.inStock = false;
     }
+
+    /*  int id, String brand, boolean isAvailable, String sku, String name, String description
+        double rating, double price,  double partPrice, Map<String, String> specifications, int stockQuantity,
+        String imageUrl, String category, int coID
+    */
     
     // Constructor with all fields
+<<<<<<< HEAD
     public Product(String id, String name, String category, String brand, double price,
                    double rating, String imageUrl, String description, boolean isNew,
                    String sku, int stockQuantity, Map<String, String> specifications) {
         this.id = id;
         this.name = name;
         this.category = category;
+=======
+    public Product(int id, String brand, boolean isAvailable, String sku, String name, String description,
+                   double rating, double price, double partNumber, Map<String, String> specifications, 
+                   int stockQuantity, String imageUrl, String category, int coID) {
+        this.id = id;        
+>>>>>>> 0924c12 (Fix model)
         this.brand = brand;
-        this.price = price;
-        this.rating = rating;
-        this.imageUrl = imageUrl;
-        this.description = description;
-        this.isNew = isNew;
-        this.carBrand = "All Vehicles"; // Default value
+        this.isAvailable = isAvailable;
         this.sku = sku;
-        this.stockQuantity = stockQuantity;
-        this.inStock = stockQuantity > 0;
+        this.name = name;
+        this.description = description;
+        this.rating = rating;
+        this.price = price;
+        this.partNumber = partNumber;
         this.specifications = specifications != null ? specifications : new HashMap<>();
+        this.stockQuantity = stockQuantity;
+        this.imageUrl = imageUrl;
+        this.category = category;
+        this.coID = coID;
+        this.carBrand = "All Vehicles"; // Default value
+        this.inStock = stockQuantity > 0;
     }
 
     // Getters
@@ -67,12 +90,14 @@ public class Product {
     public double getRating() { return rating; }
     public String getImageUrl() { return imageUrl; }
     public String getDescription() { return description; }
-    public boolean isNew() { return isNew; }
+    public boolean isAvailable() { return isAvailable; }
     public String getSku() { return sku; }
     public int getStockQuantity() { return stockQuantity; }
     public boolean isInStock() { return inStock; }
     public Map<String, String> getSpecifications() { return specifications; }
     public String getCarBrand() { return carBrand; }
+    public int getCoID() { return coID; }
+    public double getPartNumber() { return partNumber; }
 
     // Setters
     public void setId(String id) { this.id = id; }
@@ -83,7 +108,7 @@ public class Product {
     public void setRating(double rating) { this.rating = rating; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public void setDescription(String description) { this.description = description; }
-    public void setNew(boolean isNew) { this.isNew = isNew; }
+    public void setAvailable(boolean isAvailable) { this.isAvailable = isAvailable; }
     public void setSku(String sku) { this.sku = sku; }
     public void setStockQuantity(int stockQuantity) { 
         this.stockQuantity = stockQuantity; 
@@ -92,6 +117,8 @@ public class Product {
     public void setInStock(boolean inStock) { this.inStock = inStock; }
     public void setSpecifications(Map<String, String> specifications) { this.specifications = specifications; }
     public void setCarBrand(String carBrand) { this.carBrand = carBrand; }
+    public void setCoID(int coID) { this.coID = coID; }
+    public void setPartNumber(double partNumber) { this.partNumber = partNumber; }
     
     // Utility methods
     public void addSpecification(String key, String value) {
