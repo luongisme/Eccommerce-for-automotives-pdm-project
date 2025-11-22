@@ -58,8 +58,9 @@ public class JdbcConnector {
      * @return a new {@link Connection}
      * @throws Exception if something goes wrong
      */
-    public Connection connect() throws Exception {
+    public static Connection connect() throws Exception {
         Properties properties = new Properties();
+        readPassword();
 
         // JDBC URL
         // MYSQL jdbc url: jdbc:mysql://<HOST>:<PORT>/<DATABASE>

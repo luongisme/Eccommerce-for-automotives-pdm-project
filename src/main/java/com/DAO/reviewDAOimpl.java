@@ -8,17 +8,17 @@ import java.util.List;
 public class reviewDAOimpl implements reviewDAO {
 
     @Override
-    public Review findById(int rid) {
+    public Review findById(String rid) {
         return null;
     }
 
     @Override
-    public List<Review> findByProductId(int pid) {
+    public List<Review> findByProductId(String pid) {
         return List.of();
     }
 
     @Override
-    public List<Review> findByUserId(int userID) {
+    public List<Review> findByUserId(String userID) {
         return List.of();
     }
 
@@ -33,7 +33,7 @@ public class reviewDAOimpl implements reviewDAO {
     }
 
     @Override
-    public boolean delete(int rid) {
+    public boolean delete(String rid) {
         return false;
     }
 }

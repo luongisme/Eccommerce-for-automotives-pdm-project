@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class User implements Serializable {
-    private int userID;
+    private String userID;
     private String email;
     private String lastName;
     private String midName;
@@ -13,12 +13,16 @@ public class User implements Serializable {
     private String password;
     private UserRole role;
 
-
-    public enum UserRole {
-        USER, ADMIN
+    public User() {
+        
     }
 
-    public User(int userID, String email, String lastName, String midName, String firstName,
+
+    public enum UserRole {
+        CUSTOMER,ADMIN
+    }
+
+    public User(String userID, String email, String lastName, String midName, String firstName,
                 LocalDateTime dateCreated, String password, UserRole role) {
         this.userID = userID;
         this.email = email;
@@ -63,7 +67,7 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
@@ -111,7 +115,7 @@ public class User implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 }

@@ -8,13 +8,13 @@ public class Order {
     private LocalDateTime orderDate;
     private BigDecimal totalAmount;
     private String orderStatus;
-    private int userID;
+    private String userID;
     private int paymentID;
 
     public Order() {}
 
     public Order(int orderID, LocalDateTime orderDate, BigDecimal totalAmount,
-                 String orderStatus, int userID, int paymentID) {
+                 String orderStatus, String userID, int paymentID) {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
@@ -63,11 +63,11 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 }

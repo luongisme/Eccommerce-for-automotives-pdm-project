@@ -38,7 +38,7 @@ public class ProductService {
             
             // Create product with basic constructor first
             Product product = new Product(
-                id++,
+                "1",
                 category + " Part #" + (i + 1),
                 category,
                 brand,

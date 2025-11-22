@@ -29,23 +29,23 @@ public class ReviewService {
 
     private void initializeMockReviews() {
         // Mock reviews for testing
-        reviews.add(new Review(1, 1, 1, "John Doe", 5, 
-            "Excellent product!", 
+        reviews.add(new Review("1", "1", "1", "John Doe", 5,
+            "Excellent product!",
             "These spark plugs exceeded my expectations. Great quality and performance.",
             LocalDateTime.now().minusDays(5)));
         
-        reviews.add(new Review(2, 1, 2, "Jane Smith", 4, 
-            "Good value", 
+        reviews.add(new Review("2", "1", "2", "Jane Smith", 4,
+            "Good value",
             "Good quality for the price. Installation was straightforward.",
             LocalDateTime.now().minusDays(10)));
         
-        reviews.add(new Review(3, 1, 3, "Mike Johnson", 5, 
-            "Perfect fit!", 
+        reviews.add(new Review("3", "1", "3", "Mike Johnson", 5,
+            "Perfect fit!",
             "Fits perfectly in my vehicle. Notice better fuel efficiency already.",
             LocalDateTime.now().minusDays(15)));
         
-        reviews.add(new Review(4, 2, 4, "Sarah Williams", 4, 
-            "Great product", 
+        reviews.add(new Review("4", "2", "4", "Sarah Williams", 4,
+            "Great product",
             "Very satisfied with this purchase. Would recommend to others.",
             LocalDateTime.now().minusDays(3)));
     }
@@ -53,9 +53,9 @@ public class ReviewService {
     /**
      * Get all reviews for a specific product
      */
-    public List<Review> getReviewsByProductId(int productId) {
+    public List<Review> getReviewsByProductId(String productId) {
         return reviews.stream()
-            .filter(r -> r.getProductId() == productId)
+            .filter(r -> r.getProductId().equals(productId))
             .collect(Collectors.toList());
     }
 
@@ -65,7 +65,7 @@ public class ReviewService {
     public boolean addReview(Review review) {
         try {
             // In real implementation, this would save to database
-            review.setId(reviews.size() + 1);
+            review.setId("12");
             review.setCreatedAt(LocalDateTime.now());
             reviews.add(review);
             return true;
@@ -78,7 +78,7 @@ public class ReviewService {
     /**
      * Get average rating for a product
      */
-    public double getAverageRating(int productId) {
+    public double getAverageRating(String productId) {
         List<Review> productReviews = getReviewsByProductId(productId);
         if (productReviews.isEmpty()) {
             return 0.0;
@@ -94,24 +94,23 @@ public class ReviewService {
     /**
      * Get total review count for a product
      */
-    public int getReviewCount(int productId) {
+    public int getReviewCount(String productId) {
         return (int) reviews.stream()
-            .filter(r -> r.getProductId() == productId)
+            .filter(r -> r.getProductId().equals(productId))
             .count();
     }
 
     /**
      * Check if a user has already reviewed a product
      */
-    public boolean hasUserReviewed(int userId, int productId) {
-        return reviews.stream()
-            .anyMatch(r -> r.getUserId() == userId && r.getProductId() == productId);
+    public boolean hasUserReviewed(String userId, String productId) {
+        return reviews.stream().anyMatch(r -> r.getUserId().equals(userId) && r.getProductId().equals(productId));
     }
 
     /**
      * Delete a review (admin functionality)
      */
-    public boolean deleteReview(int reviewId) {
-        return reviews.removeIf(r -> r.getId() == reviewId);
+    public boolean deleteReview(String reviewId) {
+        return reviews.removeIf(r -> r.getId().equals(reviewId));
     }
 }

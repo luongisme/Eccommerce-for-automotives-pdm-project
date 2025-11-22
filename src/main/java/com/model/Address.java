@@ -8,13 +8,13 @@ public class Address {
     private String postalCode;
     private String country;
     private boolean isDefaultShipping;
-    private int userID;
+    private String userID;
 
     public Address() {}
 
     public Address(int aid, String street, String city, String state,
                    String postalCode, String country, boolean isDefaultShipping,
-                   int userID) {
+                   String userID) {
         this.aid = aid;
         this.street = street;
         this.city = city;
@@ -81,11 +81,11 @@ public class Address {
         this.street = street;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 }

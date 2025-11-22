@@ -666,7 +666,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
 
         User currentUser = UserSession.getInstance().getCurrentUser();
         Review newReview = new Review(
-            0,
+            "2",
             product.getId(),
             currentUser.getUserID(),
             currentUser.getFullName(),
@@ -696,7 +696,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private int calculateContentHeight() {
         int baseHeight = 1050;
         List<Review> reviews = reviewService.getReviewsByProductId(
-            product != null ? product.getId() : 0
+            product != null ? product.getId() : ""
         );
         int reviewRows = (int) Math.ceil((double) reviews.size() / 3);
         int reviewHeight = reviews.isEmpty() ? 116 : reviewRows * 221;

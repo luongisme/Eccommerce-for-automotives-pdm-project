@@ -12,7 +12,6 @@ public class AuthService {
     private Map<String, User> users;
     private static final String USERS_FILE = "users.dat";
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-    private int nextUserId;
 
     private AuthService() {
         loadUsers();
@@ -34,11 +33,6 @@ public class AuthService {
                 @SuppressWarnings("unchecked")
                 Map<String, User> loadedUsers = (Map<String, User>) ois.readObject();
                 users = loadedUsers;
-                // Calculate next user ID
-                nextUserId = users.values().stream()
-                    .mapToInt(User::getUserID)
-                    .max()
-                    .orElse(0) + 1;
                 System.out.println("Loaded " + users.size() + " users from file");
             } catch (Exception e) {
                 System.err.println("Error loading users: " + e.getMessage());
@@ -53,12 +47,11 @@ public class AuthService {
     
     private void initDefaultUsers() {
         users.clear();
-        nextUserId = 1;
-        
-        // Default mock users
-        User user1 = new User(nextUserId++,"user123@gmail.com", "Luong", "Gia", "Duong",
-                              java.time.LocalDateTime.now(), "Userpass1@", UserRole.USER);
-        User admin = new User(nextUserId++, "admin123@gmail.com", "Son", "Van", "Nguyen",
+
+        // Default mock users với UserID dạng String
+        User user1 = new User("U001", "user123@gmail.com", "Luong", "Gia", "Duong",
+                              java.time.LocalDateTime.now(), "Userpass1@", UserRole.CUSTOMER);
+        User admin = new User("U002", "admin123@gmail.com", "Son", "Van", "Nguyen",
                               java.time.LocalDateTime.now(), "Adminpass1@", UserRole.ADMIN);
         
         users.put(user1.getEmail(), user1);
@@ -87,8 +80,11 @@ public class AuthService {
             return false; // User already exists
         }
         
-        User newUser = new User(nextUserId++, email, "", "", username,
-                                java.time.LocalDateTime.now(), password, UserRole.USER);
+        // Generate UserID dạng String (ví dụ: U + 8 ký tự hex ngẫu nhiên)
+        String userID = "U" + String.format("%08x", (int)(Math.random() * 0xFFFFFFFF));
+
+        User newUser = new User(userID, email, "", "", username,
+                                java.time.LocalDateTime.now(), password, UserRole.CUSTOMER);
         users.put(email, newUser);
         saveUsers(); // Persist to file
         return true;

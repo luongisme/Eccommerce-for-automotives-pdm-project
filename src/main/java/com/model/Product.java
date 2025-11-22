@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Product {
-    private int id;
+    private String id;
     private String name;
     private String category;
     private String brand;
@@ -21,7 +21,7 @@ public class Product {
     private boolean inStock;
     private Map<String, String> specifications; // e.g., "Material" -> "Iridium", "Gap" -> "0.028-0.031 inches"
     
-    public Product(int id, String name, String category, String brand, double price, 
+    public Product(String id, String name, String category, String brand, double price,
                    double rating, String imageUrl, String description, boolean isNew) {
         this.id = id;
         this.name = name;
@@ -39,7 +39,7 @@ public class Product {
     }
     
     // Constructor with all fields
-    public Product(int id, String name, String category, String brand, double price, 
+    public Product(String id, String name, String category, String brand, double price,
                    double rating, String imageUrl, String description, boolean isNew,
                    String sku, int stockQuantity, Map<String, String> specifications) {
         this.id = id;
@@ -59,7 +59,7 @@ public class Product {
     }
 
     // Getters
-    public int getId() { return id; }
+    public String getId() { return id; }
     public String getName() { return name; }
     public String getCategory() { return category; }
     public String getBrand() { return brand; }
@@ -75,7 +75,7 @@ public class Product {
     public String getCarBrand() { return carBrand; }
 
     // Setters
-    public void setId(int id) { this.id = id; }
+    public void setId(String id) { this.id = id; }
     public void setName(String name) { this.name = name; }
     public void setCategory(String category) { this.category = category; }
     public void setBrand(String brand) { this.brand = brand; }
