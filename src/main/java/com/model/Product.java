@@ -16,16 +16,16 @@ public class Product {
     private String carBrand; // e.g., "Toyota", "Honda", "Porsche", "BMW", etc.
     
     // Additional fields for product details
-    private String coID;
+    private int coID;
     private double partNumber;
     private String sku; // Stock Keeping Unit
     private int stockQuantity;
     private boolean inStock;
     private Map<String, String> specifications; // e.g., "Material" -> "Iridium", "Gap" -> "0.028-0.031 inches"
     
-
-    public Product(String id, String name, String category, String brand, double price, 
-                   double rating, String imageUrl, String description, boolean isAvailable) {
+    // Basic constructor
+    public Product(String id, String name, String category, String brand, double price,
+                   double rating, String imageUrl, String description, boolean isNew) {
 
         this.id = id;
         this.name = name;
@@ -43,9 +43,10 @@ public class Product {
     }
     
     // Constructor with all fields
+
     public Product(String id, String brand, boolean isAvailable, String sku, String name, String description,
                    double rating, double price, double partNumber, Map<String, String> specifications, 
-                   int stockQuantity, String imageUrl, String category, String coID) {
+                   int stockQuantity, String imageUrl, String category, int coID) {
         this.id = id;        
         this.brand = brand;
         this.isAvailable = isAvailable;
@@ -79,7 +80,7 @@ public class Product {
     public boolean isInStock() { return inStock; }
     public Map<String, String> getSpecifications() { return specifications; }
     public String getCarBrand() { return carBrand; }
-    public String getCoID() { return coID; }
+    public int getCoID() { return coID; }
     public double getPartNumber() { return partNumber; }
 
     // Setters
@@ -100,7 +101,7 @@ public class Product {
     public void setInStock(boolean inStock) { this.inStock = inStock; }
     public void setSpecifications(Map<String, String> specifications) { this.specifications = specifications; }
     public void setCarBrand(String carBrand) { this.carBrand = carBrand; }
-    public void setCoID(String coID) { this.coID = coID; }
+    public void setCoID(int coID) { this.coID = coID; }
     public void setPartNumber(double partNumber) { this.partNumber = partNumber; }
     
     // Utility methods
