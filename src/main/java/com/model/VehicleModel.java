@@ -1,41 +1,41 @@
 package com.model;
 
 public class VehicleModel {
-    private int moID;
-    private int maID;
-    private int coID;
+    private String moID;
+    private String maID;
+    private String coID;
     private String moName;
 
     public VehicleModel() {}
 
-    public VehicleModel(int moID, int maID, int coID, String moName) {
+    public VehicleModel(String moID, String maID, String coID, String moName) {
         this.moID = moID;
         this.maID = maID;
         this.coID = coID;
         this.moName = moName;
     }
 
-    public int getCoID() {
+    public String getCoID() {
         return coID;
     }
 
-    public void setCoID(int coID) {
+    public void setCoID(String coID) {
         this.coID = coID;
     }
 
-    public int getMaID() {
+    public String getMaID() {
         return maID;
     }
 
-    public void setMaID(int maID) {
+    public void setMaID(String maID) {
         this.maID = maID;
     }
 
-    public int getMoID() {
+    public String getMoID() {
         return moID;
     }
 
-    public void setMoID(int moID) {
+    public void setMoID(String moID) {
         this.moID = moID;
     }
 

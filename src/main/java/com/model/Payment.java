@@ -3,14 +3,14 @@ package com.model;
 import java.math.BigDecimal;
 
 public class Payment {
-    private int paymentID;
+    private String paymentID;
     private BigDecimal amount;
     private String paymentMethod;
     private String status;
 
     public Payment() {}
 
-    public Payment(int paymentID, BigDecimal amount, String paymentMethod, String status) {
+    public Payment(String paymentID, BigDecimal amount, String paymentMethod, String status) {
         this.paymentID = paymentID;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
@@ -33,11 +33,11 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
-    public int getPaymentID() {
+    public String getPaymentID() {
         return paymentID;
     }
 
-    public void setPaymentID(int paymentID) {
+    public void setPaymentID(String paymentID) {
         this.paymentID = paymentID;
     }
 

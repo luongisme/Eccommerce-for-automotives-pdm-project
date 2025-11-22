@@ -2,12 +2,12 @@ package com.model;
 
 
 public class ShoppingCart {
-    private int cartID;
+    private String cartID;
     private String userID;
 
     public ShoppingCart() {}
 
-    public ShoppingCart(int cartID, String userID) {
+    public ShoppingCart(String cartID, String userID) {
         this.cartID = cartID;
         this.userID = userID;
     }
@@ -20,11 +20,11 @@ public class ShoppingCart {
         this.userID = userID;
     }
 
-    public int getCartID() {
+    public String getCartID() {
         return cartID;
     }
 
-    public void setCartID(int cartID) {
+    public void setCartID(String cartID) {
         this.cartID = cartID;
     }
 }

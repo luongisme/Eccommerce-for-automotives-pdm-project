@@ -1,21 +1,21 @@
 package com.model;
 
 public class VehicleMake {
-    private int maID;
+    private String maID;
     private String maName;
 
     public VehicleMake() {}
 
-    public VehicleMake(int maID, String maName) {
+    public VehicleMake(String maID, String maName) {
         this.maID = maID;
         this.maName = maName;
     }
 
-    public int getMaID() {
+    public String getMaID() {
         return maID;
     }
 
-    public void setMaID(int maID) {
+    public void setMaID(String maID) {
         this.maID = maID;
     }
 

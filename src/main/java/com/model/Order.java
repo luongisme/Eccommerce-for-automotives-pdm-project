@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Order {
-    private int orderID;
+    private String orderID;
     private LocalDateTime orderDate;
     private BigDecimal totalAmount;
     private String orderStatus;
     private String userID;
-    private int paymentID;
+    private String paymentID;
 
     public Order() {}
 
-    public Order(int orderID, LocalDateTime orderDate, BigDecimal totalAmount,
-                 String orderStatus, String userID, int paymentID) {
+    public Order(String orderID, LocalDateTime orderDate, BigDecimal totalAmount,
+                 String orderStatus, String userID, String paymentID) {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
@@ -31,11 +31,11 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public int getOrderID() {
+    public String getOrderID() {
         return orderID;
     }
 
-    public void setOrderID(int orderID) {
+    public void setOrderID(String orderID) {
         this.orderID = orderID;
     }
 
@@ -47,11 +47,11 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public int getPaymentID() {
+    public String getPaymentID() {
         return paymentID;
     }
 
-    public void setPaymentID(int paymentID) {
+    public void setPaymentID(String paymentID) {
         this.paymentID = paymentID;
     }
 

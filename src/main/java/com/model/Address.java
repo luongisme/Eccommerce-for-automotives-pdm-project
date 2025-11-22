@@ -1,7 +1,7 @@
 package com.model;
 
 public class Address {
-    private int aid;
+    private String aid;
     private String street;
     private String city;
     private String state;
@@ -12,7 +12,7 @@ public class Address {
 
     public Address() {}
 
-    public Address(int aid, String street, String city, String state,
+    public Address(String aid, String street, String city, String state,
                    String postalCode, String country, boolean isDefaultShipping,
                    String userID) {
         this.aid = aid;
@@ -25,11 +25,11 @@ public class Address {
         this.userID = userID;
     }
 
-    public int getAid() {
+    public String getAid() {
         return aid;
     }
 
-    public void setAid(int aid) {
+    public void setAid(String aid) {
         this.aid = aid;
     }
 

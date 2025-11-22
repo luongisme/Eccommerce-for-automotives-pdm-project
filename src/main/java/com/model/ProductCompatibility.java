@@ -1,14 +1,14 @@
 package com.model;
 
 public class ProductCompatibility {
-    private int coID;
+    private String coID;
     private int yearStart;
     private String specifications;
     private int yearEnd;
 
     public ProductCompatibility() {}
 
-    public ProductCompatibility(int coID, int yearStart, String specifications, int yearEnd) {
+    public ProductCompatibility(String coID, int yearStart, String specifications, int yearEnd) {
         this.coID = coID;
         this.yearStart = yearStart;
         this.specifications = specifications;
@@ -39,11 +39,11 @@ public class ProductCompatibility {
         this.specifications = specifications;
     }
 
-    public int getCoID() {
+    public String getCoID() {
         return coID;
     }
 
-    public void setCoID(int coID) {
+    public void setCoID(String coID) {
         this.coID = coID;
     }
 }

@@ -5,15 +5,15 @@ package com.model;
 import java.math.BigDecimal;
 
 public class OrderItem {
-    private int oiID;
-    private int orderID;
-    private int pid;
+    private String oiID;
+    private String orderID;
+    private String pid;
     private int quantity;
     private BigDecimal priceAtPurchase;
 
     public OrderItem() {}
 
-    public OrderItem(int oiID, int orderID, int pid, int quantity, BigDecimal priceAtPurchase) {
+    public OrderItem(String oiID, String orderID, String pid, int quantity, BigDecimal priceAtPurchase) {
         this.oiID = oiID;
         this.orderID = orderID;
         this.pid = pid;
@@ -37,27 +37,27 @@ public class OrderItem {
         this.priceAtPurchase = priceAtPurchase;
     }
 
-    public int getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(int pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
-    public int getOrderID() {
+    public String getOrderID() {
         return orderID;
     }
 
-    public void setOrderID(int orderID) {
+    public void setOrderID(String orderID) {
         this.orderID = orderID;
     }
 
-    public int getOiID() {
+    public String getOiID() {
         return oiID;
     }
 
-    public void setOiID(int oiID) {
+    public void setOiID(String oiID) {
         this.oiID = oiID;
     }
 }

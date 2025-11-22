@@ -1,41 +1,41 @@
 package com.model;
 
 public class CartItem {
-    private int ciID;
-    private int cartID;
-    private int pid;
+    private String ciID;
+    private String cartID;
+    private String pid;
     private int quantity;
 
     public CartItem() {}
 
-    public CartItem(int ciID, int cartID, int pid, int quantity) {
+    public CartItem(String ciID, String cartID, String pid, int quantity) {
         this.ciID = ciID;
         this.cartID = cartID;
         this.pid = pid;
         this.quantity = quantity;
     }
 
-    public int getCartID() {
+    public String getCartID() {
         return cartID;
     }
 
-    public void setCartID(int cartID) {
+    public void setCartID(String cartID) {
         this.cartID = cartID;
     }
 
-    public int getCiID() {
+    public String getCiID() {
         return ciID;
     }
 
-    public void setCiID(int ciID) {
+    public void setCiID(String ciID) {
         this.ciID = ciID;
     }
 
-    public int getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(int pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 

@@ -12,11 +12,7 @@ public class Review {
     private String comment;
     private LocalDateTime createdAt;
 
-<<<<<<< HEAD
-    public Review(String id, String productId, String userId, String username, int rating,
-                  String title, String body, LocalDateTime createdAt) {
-=======
-    public Review(int id, int productId, int userId, int rating, 
+    public Review(String id, String productId, String userId, int rating, 
                   String comment, LocalDateTime createdAt) {
         this.id = id;
         this.productId = productId;
@@ -27,9 +23,8 @@ public class Review {
     }
 
     // Constructor with all fields
-    public Review(int id, int productId, int userId, String username, int rating, 
+    public Review(String id, String productId, String userId, String username, int rating, 
                   String title, String comment, LocalDateTime createdAt) {
->>>>>>> 0924c12 (Fix model)
         this.id = id;
         this.productId = productId;
         this.userId = userId;
