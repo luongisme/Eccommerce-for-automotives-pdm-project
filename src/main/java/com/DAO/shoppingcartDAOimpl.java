@@ -9,12 +9,12 @@ import java.util.List;
 public class shoppingcartDAOimpl implements shoppingcartDAO {
 
     @Override
-    public ShoppingCart findById(int cartID) {
+    public ShoppingCart findById(String cartID) {
         return null;
     }
 
     @Override
-    public ShoppingCart findByUserId(int userID) {
+    public ShoppingCart findByUserId(String userID) {
         return null;
     }
 
@@ -29,7 +29,7 @@ public class shoppingcartDAOimpl implements shoppingcartDAO {
     }
 
     @Override
-    public boolean delete(int cartID) {
+    public boolean delete(String cartID) {
         return false;
     }
 }

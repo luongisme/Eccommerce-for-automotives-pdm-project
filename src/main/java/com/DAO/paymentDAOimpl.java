@@ -9,7 +9,7 @@ import java.util.List;
 public class paymentDAOimpl implements paymentDAO {
 
     @Override
-    public Payment findById(int paymentID) {
+    public Payment findById(String paymentID) {
         return null;
     }
 
@@ -29,7 +29,7 @@ public class paymentDAOimpl implements paymentDAO {
     }
 
     @Override
-    public boolean delete(int paymentID) {
+    public boolean delete(String paymentID) {
         return false;
     }
 }

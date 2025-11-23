@@ -7,7 +7,7 @@ import java.util.List;
 
 public class vehicalmakeDAOimpl implements vehiclemakeDAO {
     @Override
-    public VehicleMake findById(int maID) {
+    public VehicleMake findById(String maID) {
         return null;
     }
 
@@ -27,7 +27,7 @@ public class vehicalmakeDAOimpl implements vehiclemakeDAO {
     }
 
     @Override
-    public boolean delete(int maID) {
+    public boolean delete(String maID) {
         return false;
     }
 }

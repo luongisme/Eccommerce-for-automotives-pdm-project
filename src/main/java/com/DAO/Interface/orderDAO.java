@@ -5,10 +5,10 @@ import com.model.Order;
 import java.util.List;
 
 public interface orderDAO {
-    Order findById(int orderID);
-    List<Order> findByUserId(int userID);
+    Order findById(String orderID);
+    List<Order> findByUserId(String userID);
     List<Order> findAll();
     boolean insert(Order order);
     boolean update(Order order);
-    boolean delete(int orderID);
+    boolean delete(String orderID);
 }

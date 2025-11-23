@@ -5,9 +5,9 @@ import com.model.VehicleMake;
 import java.util.List;
 
 public interface vehiclemakeDAO {
-    VehicleMake findById(int maID);
+    VehicleMake findById(String maID);
     List<VehicleMake> findAll();
     boolean insert(VehicleMake make);
     boolean update(VehicleMake make);
-    boolean delete(int maID);
+    boolean delete(String maID);
 }

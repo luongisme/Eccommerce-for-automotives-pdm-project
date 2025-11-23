@@ -5,11 +5,11 @@ import java.util.List;
 import  com.model.Address;
 
 public interface addressDAO {
-    Address findById(int aid);
-    List<Address> findByUserId(int userID);
+    Address findById(String aid);
+    List<Address> findByUserId(String userID);
     List<Address> findAll();
     boolean insert(Address address);
     boolean update(Address address);
-    boolean delete(int aid);
+    boolean delete(String aid);
 
 }

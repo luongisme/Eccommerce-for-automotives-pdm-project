@@ -5,9 +5,9 @@ import com.model.ProductCompatibility;
 import java.util.List;
 
 public interface productcompatibilityDAO {
-    ProductCompatibility findById(int coID);
+    ProductCompatibility findById(String coID);
     List<ProductCompatibility> findAll();
     boolean insert(ProductCompatibility pc);
     boolean update(ProductCompatibility pc);
-    boolean delete(int coID);
+    boolean delete(String coID);
 }

@@ -7,12 +7,12 @@ import java.util.List;
 
 public class orderDAOimpl implements orderDAO {
     @Override
-    public Order findById(int orderID) {
+    public Order findById(String orderID) {
         return null;
     }
 
     @Override
-    public List<Order> findByUserId(int userID) {
+    public List<Order> findByUserId(String userID) {
         return List.of();
     }
 
@@ -32,7 +32,7 @@ public class orderDAOimpl implements orderDAO {
     }
 
     @Override
-    public boolean delete(int orderID) {
+    public boolean delete(String orderID) {
         return false;
     }
 }

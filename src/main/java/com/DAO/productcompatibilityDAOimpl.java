@@ -9,7 +9,7 @@ import java.util.List;
 public class productcompatibilityDAOimpl implements productcompatibilityDAO {
 
     @Override
-    public ProductCompatibility findById(int coID) {
+    public ProductCompatibility findById(String coID) {
         return null;
     }
 
@@ -29,7 +29,7 @@ public class productcompatibilityDAOimpl implements productcompatibilityDAO {
     }
 
     @Override
-    public boolean delete(int coID) {
+    public boolean delete(String coID) {
         return false;
     }
 }

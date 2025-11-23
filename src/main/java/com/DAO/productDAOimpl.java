@@ -14,7 +14,7 @@ import java.util.List;
 
 public class productDAOimpl implements productDAO {
     @Override
-    public Product findById(int pid) {
+    public Product findById(String pid) {
         return null;
     }
 
@@ -29,7 +29,7 @@ public class productDAOimpl implements productDAO {
     }
 
     @Override
-    public List<Product> findByCompatibility(int coID) {
+    public List<Product> findByCompatibility(String coID) {
         return List.of();
     }
 
@@ -44,7 +44,7 @@ public class productDAOimpl implements productDAO {
     }
 
     @Override
-    public boolean delete(int pid) {
+    public boolean delete(String pid) {
         return false;
     }
 }

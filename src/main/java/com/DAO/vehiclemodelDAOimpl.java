@@ -7,12 +7,12 @@ import java.util.List;
 
 public class vehiclemodelDAOimpl implements vehiclemodelDAO {
     @Override
-    public VehicleModel findById(int moID) {
+    public VehicleModel findById(String moID) {
         return null;
     }
 
     @Override
-    public List<VehicleModel> findByMakeId(int maID) {
+    public List<VehicleModel> findByMakeId(String maID) {
         return List.of();
     }
 
@@ -32,7 +32,7 @@ public class vehiclemodelDAOimpl implements vehiclemodelDAO {
     }
 
     @Override
-    public boolean delete(int moID) {
+    public boolean delete(String moID) {
         return false;
     }
 }

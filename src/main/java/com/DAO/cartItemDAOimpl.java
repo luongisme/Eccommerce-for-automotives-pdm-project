@@ -9,12 +9,12 @@ import java.util.List;
 public class cartItemDAOimpl implements cartitemDAO {
 
     @Override
-    public CartItem findById(int ciID) {
+    public CartItem findById(String ciID) {
         return null;
     }
 
     @Override
-    public List<CartItem> findByCartId(int cartID) {
+    public List<CartItem> findByCartId(String cartID) {
         return List.of();
     }
 
@@ -29,12 +29,12 @@ public class cartItemDAOimpl implements cartitemDAO {
     }
 
     @Override
-    public boolean delete(int ciID) {
+    public boolean delete(String ciID) {
         return false;
     }
 
     @Override
-    public boolean deleteByCartId(int cartID) {
+    public boolean deleteByCartId(String cartID) {
         return false;
     }
 }
