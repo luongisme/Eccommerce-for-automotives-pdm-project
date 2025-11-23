@@ -19,8 +19,7 @@ public class addressDAOimpl implements addressDAO {
         address.setAid(rs.getString("AID"));
         address.setStreet(rs.getString("Street"));
         address.setCity(rs.getString("City"));
-        address.setState(rs.getString("State"));
-        address.setPostalCode(rs.getString("PostalCode"));
+        address.setPostalCode(rs.getString("Postal_Code"));
         address.setCountry(rs.getString("Country"));
         address.setDefaultShipping(false);
         address.setUserID(rs.getString("UserID"));
@@ -53,11 +52,16 @@ public class addressDAOimpl implements addressDAO {
         List<Address> addressList = new ArrayList<>();
         try (Connection conn = JdbcConnector.connect();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
+            ) {
 
-            while (rs.next()) {
-                addressList.add(mapRow(rs));
+            ps.setString(1, userID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    addressList.add(mapRow(rs));
+                }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -82,12 +86,12 @@ public class addressDAOimpl implements addressDAO {
         } catch (Exception e) {
             throw new RuntimeException();
         }
-        return List.of();
+        return addressList;
     }
 
     @Override
     public boolean insert(Address address) {
-        String sql = "INSERT INTO Address (AID, Street, City, State, PostalCode, Country, UserID)"
+        String sql = "INSERT INTO Address (AID, Street, City, Postal_Code, Country, isDefaultShipping, UserID)"
                 + "VALUES (?,?,?,?,?,?,?)";
         try (Connection conn = JdbcConnector.connect();
             PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -95,11 +99,10 @@ public class addressDAOimpl implements addressDAO {
             ps.setString(1, address.getAid());
             ps.setString(2, address.getStreet());
             ps.setString(3, address.getCity());
-            ps.setString(4, address.getState());
-            ps.setString(5, address.getPostalCode());
-            ps.setString(6, address.getCountry());
-            ps.setBoolean(7, address.isDefaultShipping());
-            ps.setString(8, address.getUserID());
+            ps.setString(4, address.getPostalCode());
+            ps.setString(5, address.getCountry());
+            ps.setBoolean(6, address.isDefaultShipping());
+            ps.setString(7, address.getUserID());
 
             int affected = ps.executeUpdate();
             return affected > 0;
@@ -114,19 +117,20 @@ public class addressDAOimpl implements addressDAO {
 
     @Override
     public boolean update(Address address) {
-        String sql = "UPDATE Address set AID = ?, Street = ?, City = ?, State = ?, " +
-                "PostalCode = ?, Country = ?, UserID = ? WHERE AID = ?";
+        String sql = "UPDATE Address SET AID = ?, Street = ?, City = ?," +
+                "Postal_Code = ?, Country = ?,isDefaultShipping = ?, UserID = ? " +
+                "WHERE AID = ?";
         try (Connection conn = JdbcConnector.connect();
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, address.getAid());
             ps.setString(2, address.getStreet());
             ps.setString(3, address.getCity());
-            ps.setString(4, address.getState());
-            ps.setString(5, address.getPostalCode());
-            ps.setString(6, address.getCountry());
-            ps.setBoolean(7, address.isDefaultShipping());
-            ps.setString(8, address.getUserID());
+            ps.setString(4, address.getPostalCode());
+            ps.setString(5, address.getCountry());
+            ps.setBoolean(6, address.isDefaultShipping());
+            ps.setString(7, address.getUserID());
+            ps.setString(8, address.getAid());
 
             int affected = ps.executeUpdate();
             return affected > 0;

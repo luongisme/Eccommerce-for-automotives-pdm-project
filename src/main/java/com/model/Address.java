@@ -4,7 +4,6 @@ public class Address {
     private String aid;
     private String street;
     private String city;
-    private String state;
     private String postalCode;
     private String country;
     private boolean isDefaultShipping;
@@ -12,13 +11,11 @@ public class Address {
 
     public Address() {}
 
-    public Address(String aid, String street, String city, String state,
-                   String postalCode, String country, boolean isDefaultShipping,
-                   String userID) {
+    public Address(String aid, String street, String city, String postalCode,
+                   String country, boolean isDefaultShipping,  String userID) {
         this.aid = aid;
         this.street = street;
         this.city = city;
-        this.state = state;
         this.postalCode = postalCode;
         this.country = country;
         this.isDefaultShipping = isDefaultShipping;
@@ -63,14 +60,6 @@ public class Address {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     public String getStreet() {
