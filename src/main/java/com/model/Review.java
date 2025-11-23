@@ -35,8 +35,6 @@ public class Review {
         this.createdAt = createdAt;
     }
 
-
-
     // Getters
     public String getId() { return id; }
     public String getProductId() { return productId; }

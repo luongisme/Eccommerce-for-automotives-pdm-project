@@ -1,4 +1,38 @@
 package com.DAO;
 
-public class vehiclemodelDAOimpl {
+import com.DAO.Interface.vehiclemodelDAO;
+import com.model.VehicleModel;
+
+import java.util.List;
+
+public class vehiclemodelDAOimpl implements vehiclemodelDAO {
+    @Override
+    public VehicleModel findById(int moID) {
+        return null;
+    }
+
+    @Override
+    public List<VehicleModel> findByMakeId(int maID) {
+        return List.of();
+    }
+
+    @Override
+    public List<VehicleModel> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public boolean insert(VehicleModel model) {
+        return false;
+    }
+
+    @Override
+    public boolean update(VehicleModel model) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(int moID) {
+        return false;
+    }
 }

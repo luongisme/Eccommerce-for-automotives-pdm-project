@@ -22,7 +22,9 @@ public class Product {
     private int stockQuantity;
     private boolean inStock;
     private Map<String, String> specifications; // e.g., "Material" -> "Iridium", "Gap" -> "0.028-0.031 inches"
-    
+
+    public Product() {}
+
     // Basic constructor
     public Product(String id, String name, String category, String brand, double price,
                    double rating, String imageUrl, String description, boolean isNew) {
