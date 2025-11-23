@@ -71,12 +71,7 @@ public class AutoPartsHomePage extends JFrame {
             loginBtn.setBorderPainted(false);
             loginBtn.setFocusPainted(false);
             loginBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            loginBtn.addActionListener(e -> {
-                com.Main.AppFrame frame = new com.Main.AppFrame();
-                frame.setScreen(new com.UI.login.LoginScreen(frame));
-                frame.setVisible(true);
-                dispose();
-            });
+            loginBtn.addActionListener(e -> navigateToLogin());
             topBar.add(Box.createRigidArea(new Dimension(12, 0)));
             topBar.add(loginBtn);
 
@@ -263,17 +258,10 @@ public class AutoPartsHomePage extends JFrame {
     }
 
     private void navigateToRegister() {
-        // For now, navigate to login screen since registration screen is not implemented
         com.Main.AppFrame frame = new com.Main.AppFrame();
-        frame.setScreen(new com.UI.login.LoginScreen(frame));
+        frame.setScreen(new com.UI.register.RegisterScreen(frame));
         frame.setVisible(true);
         this.dispose();
-        
-        // TODO: Uncomment and implement when registration screen is available
-        // com.Main.AppFrame frame = new com.Main.AppFrame();
-        // frame.setScreen(new com.UI.register.RegisterScreen(frame));
-        // frame.setVisible(true);
-        // this.dispose();
     }
 
     private JPanel createProductCard(String name, String description, String price) {
