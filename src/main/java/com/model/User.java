@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 public class User implements Serializable {
     private String userID;
+    private String username;
     private String email;
     private String lastName;
     private String midName;
@@ -22,8 +23,9 @@ public class User implements Serializable {
         CUSTOMER,ADMIN
     }
 
-    public User(String userID, String email, String lastName, String midName, String firstName,
+    public User(String userID,String ysername, String email, String lastName, String midName, String firstName,
                 LocalDateTime dateCreated, String password, UserRole role) {
+        this.username = username;
         this.userID = userID;
         this.email = email;
         this.lastName = lastName;
@@ -61,6 +63,14 @@ public class User implements Serializable {
             name.append(lastName);
         }
         return name.length() > 0 ? name.toString() : email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setEmail(String email) {

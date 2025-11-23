@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,7 @@ public class userDAOimpl implements userDAO {
     private User mapRow(ResultSet rs) throws SQLException {
         User user = new User();
         user.setUserID(rs.getString("UserID"));
+        user.setUsername(rs.getString("Username"));
         user.setEmail(rs.getString("Email"));
         user.setPassword(rs.getString("Password"));
         user.setFirstName(rs.getString("FirstName"));
@@ -89,20 +89,21 @@ public class userDAOimpl implements userDAO {
 
     @Override
     public boolean insert(User user) {
-        String sql = "INSERT INTO User (UserID, Email, LastName, MidName, FirstName, DateCreated, Password, Role) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO User (UserID,Username, Email, LastName, MidName, FirstName, DateCreated, Password, Role) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
 
         try (Connection conn = JdbcConnector.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUserID());                              // UserID
-            ps.setString(2, user.getEmail());                               // Email
-            ps.setString(3, user.getLastName());                            // LastName
-            ps.setString(4, user.getMidName());                             // MidName
-            ps.setString(5, user.getFirstName());                           // FirstName
-            ps.setTimestamp(6, java.sql.Timestamp.valueOf(user.getDateCreated())); // DateCreated
-            ps.setString(7, user.getPassword());                            // Password
-            ps.setString(8, user.getRole().name());                         // Role (ADMIN/CUSTOMER)
+            ps.setString(2, user.getUsername());                            // Username
+            ps.setString(3, user.getEmail());                               // Email
+            ps.setString(4, user.getLastName());                            // LastName
+            ps.setString(5, user.getMidName());                             // MidName
+            ps.setString(6, user.getFirstName());                           // FirstName
+            ps.setTimestamp(7, java.sql.Timestamp.valueOf(user.getDateCreated())); // DateCreated
+            ps.setString(8, user.getPassword());                            // Password
+            ps.setString(9, user.getRole().name());                         // Role (ADMIN/CUSTOMER)
 
             int affected = ps.executeUpdate();
             return affected > 0;

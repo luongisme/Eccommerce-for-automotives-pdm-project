@@ -1,20 +1,24 @@
 package com.service;
 
+import com.DAO.Interface.userDAO;
+import com.DAO.userDAOimpl;
 import com.model.User;
 import com.model.User.UserRole;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.*;
+
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class AuthService {
     private static AuthService instance;
-    private Map<String, User> users;
-    private static final String USERS_FILE = "users.dat";
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+
+
+    private final userDAO userDAO;
+
+    private static final String EMAIL_REGEX =
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
     private AuthService() {
-        loadUsers();
+        this.userDAO = new userDAOimpl();
     }
 
     public static AuthService getInstance() {
@@ -24,97 +28,69 @@ public class AuthService {
         return instance;
     }
 
-    private void loadUsers() {
-        users = new HashMap<>();
-        File file = new File(USERS_FILE);
-        
-        if (file.exists()) {
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                @SuppressWarnings("unchecked")
-                Map<String, User> loadedUsers = (Map<String, User>) ois.readObject();
-                users = loadedUsers;
-                System.out.println("Loaded " + users.size() + " users from file");
-            } catch (Exception e) {
-                System.err.println("Error loading users: " + e.getMessage());
-                initDefaultUsers();
-            }
-        } else {
-            // First time - create default users
-            initDefaultUsers();
-            saveUsers();
-        }
-    }
-    
-    private void initDefaultUsers() {
-        users.clear();
-
-        // Default mock users với UserID dạng String
-        User user1 = new User("U001", "user123@gmail.com", "Luong", "Gia", "Duong",
-                              java.time.LocalDateTime.now(), "Userpass1@", UserRole.CUSTOMER);
-        User admin = new User("U002", "admin123@gmail.com", "Son", "Van", "Nguyen",
-                              java.time.LocalDateTime.now(), "Adminpass1@", UserRole.ADMIN);
-        
-        users.put(user1.getEmail(), user1);
-        users.put(admin.getEmail(), admin);
-    }
-    
-    private void saveUsers() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(USERS_FILE))) {
-            oos.writeObject(users);
-            System.out.println("Saved " + users.size() + " users to file");
-        } catch (Exception e) {
-            System.err.println("Error saving users: " + e.getMessage());
-        }
-    }
-
+    // lấy user theo email từ DB, rồi check password
     public User authenticate(String email, String password) {
-        User user = users.get(email);
+        User user = userDAO.findByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
             return user;
         }
         return null;
     }
 
+    // Register user mới vào DB bằng DAO
     public boolean register(String username, String email, String password) {
-        if (users.containsKey(email)) {
-            return false; // User already exists
+        // 1. Kiểm tra email đã tồn tại trong DB chưa
+        User existing = userDAO.findByEmail(email);
+        if (existing != null) {
+            return false; // user đã tồn tại
         }
-        
-        // Generate UserID dạng String (ví dụ: U + 8 ký tự hex ngẫu nhiên)
-        String userID = "U" + String.format("%08x", (int)(Math.random() * 0xFFFFFFFF));
 
-        User newUser = new User(userID, email, "", "", username,
-                                java.time.LocalDateTime.now(), password, UserRole.CUSTOMER);
-        users.put(email, newUser);
-        saveUsers(); // Persist to file
-        return true;
+        // 2. Tạo UserID (tạm thời random, sau này có thể để DB sinh)
+        String userID = "U" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
+        // 3. Tạo đối tượng User – chú ý mapping đúng với constructor của bạn
+        User newUser = new User(
+                userID,
+                username,
+                email,
+                /* lastName */  "",
+                /* midName  */  "",
+                /* firstName*/  username,
+                java.time.LocalDateTime.now(),
+                password,
+                UserRole.CUSTOMER
+        );
+
+        // 4. Ghi vào DB qua DAO
+        return userDAO.insert(newUser);
     }
-    
-    // Validation methods
+
+
     public boolean isValidEmail(String email) {
         return Pattern.matches(EMAIL_REGEX, email);
     }
-    
+
     public boolean isValidPassword(String password) {
         // At least 8 characters, 1 uppercase, 1 lowercase, 1 digit
         if (password.length() < 8) return false;
-        
+
         boolean hasUpper = false, hasLower = false, hasDigit = false;
         for (char c : password.toCharArray()) {
             if (Character.isUpperCase(c)) hasUpper = true;
             if (Character.isLowerCase(c)) hasLower = true;
             if (Character.isDigit(c)) hasDigit = true;
         }
-        
+
         return hasUpper && hasLower && hasDigit;
     }
-    
+
     public boolean isValidUsername(String username) {
         // 3-20 characters, alphanumeric and underscore only
         return username.matches("^[a-zA-Z0-9_]{3,20}$");
     }
-    
+
     public boolean emailExists(String email) {
-        return users.containsKey(email);
+        // Hỏi thẳng DB luôn
+        return userDAO.findByEmail(email) != null;
     }
 }

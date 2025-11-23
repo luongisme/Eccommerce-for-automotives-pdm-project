@@ -19,34 +19,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.util.Properties;
 
-/**
- * MySQL JDBC Connector<br>
- * This is generated code. The {@link JdbcConnector#connect()} method is implemented to connect to the
- * MySQL Database using the appropriate JDBC Driver.
- *
- * <p><u>DRIVER LIBRARIES</u></p>
- * To run this class you will need to integrate the MySQL JDBC Driver libraries in your project<br>
- * e.g. by using Maven Project Object Model (POM) <a href="https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.33/mysql-connector-java-8.0.33.pom">mysql-connector-java-8.0.33.pom</a><br>
- * Additional features may require other libraries to be added to the runtime. Please read the MySQL JDBC documentation for additional details.
- *
- * <p><u>JDBC URL</u></p>
- * The connection is using a JDBC URL of type "Database"<br>
- * URL pattern: "jdbc:mysql://&lt;HOST&gt;:&lt;PORT&gt;/&lt;DATABASE&gt;"<br>
- * <ul>
- *   <li>HOST: the hostname or IP address of the machine where the database is running</li>
- *   <li>PORT: the TCP port number on which the MySQL database listener is listening for incoming connections</li>
- *   <li>DATABASE: the name of the database to connect to</li>
- * </ul>
- *
- * <p><u>AUTHENTICATION</u></p>
- * The connection uses "User / Password" authentication
- * User and Password are passed as properties to the driver
- * <ul>
- *   <li>Property "user": the name of the user </li>
- *   <li>Property "password": the password for the account</li>
- * </ul>
- * The connection uses "User / Password" authentication
- */
+
 public class JdbcConnector {
     private static final String PROP_USER = "user";
     private static final String PROP_PASSWORD = "password";
@@ -66,7 +39,7 @@ public class JdbcConnector {
         // MYSQL jdbc url: jdbc:mysql://<HOST>:<PORT>/<DATABASE>
         String host = "localhost";
         String port = "3306";
-        String database = "e_commerce";
+        String database = "e_commercedb";
         String jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database;
 
         // AUTHENTICATION
