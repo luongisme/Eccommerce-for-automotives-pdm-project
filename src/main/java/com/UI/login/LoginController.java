@@ -1,5 +1,9 @@
 package com.UI.login;
 
+import com.model.User;
+import com.service.AuthService;
+import com.service.UserSession;
+
 import java.util.regex.Pattern;
 
 public class LoginController {
@@ -39,9 +43,18 @@ public class LoginController {
             return;
         }
 
-        // UI-only: coi như đăng nhập thành công
-        view.clearError();
-        if (onSuccess != null) onSuccess.run();
+        // Authenticate with AuthService
+        AuthService authService = AuthService.getInstance();
+        User user = authService.authenticate(email, pass);
+
+        if (user != null) {
+            // Login successful
+            UserSession.getInstance().login(user);
+            view.clearError();
+            if (onSuccess != null) onSuccess.run();
+        } else {
+            view.setError("Invalid email or password.");
+        }
     }
 
     private static final Pattern EMAIL_PTN =

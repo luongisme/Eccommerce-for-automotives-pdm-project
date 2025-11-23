@@ -23,7 +23,7 @@ public class AdminDBOrders extends JFrame {
 
     public AdminDBOrders() {
         setTitle("Admin Dashboard - Orders");
-        setSize(1200, 800);
+        setSize(1024, 1200);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

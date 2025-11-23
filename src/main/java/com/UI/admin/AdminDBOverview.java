@@ -18,7 +18,7 @@ public class AdminDBOverview extends JFrame {
 
     public AdminDBOverview() {
         setTitle("Admin Dashboard");
-        setSize(1000, 800);
+        setSize(1024, 1200);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

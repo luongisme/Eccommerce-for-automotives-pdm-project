@@ -22,7 +22,7 @@ public class AdminDBProducts extends JFrame {
 
     public AdminDBProducts() {
         setTitle("Admin Dashboard - Products");
-        setSize(1200, 800);
+        setSize(1024, 1200);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
