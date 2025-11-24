@@ -21,7 +21,7 @@ public class addressDAOimpl implements addressDAO {
         address.setCity(rs.getString("City"));
         address.setPostalCode(rs.getString("Postal_Code"));
         address.setCountry(rs.getString("Country"));
-        address.setDefaultShipping(false);
+        address.setDefaultShipping(rs.getBoolean("isDefaultShipping"));
         address.setUserID(rs.getString("UserID"));
         return address;
     }
@@ -91,8 +91,8 @@ public class addressDAOimpl implements addressDAO {
 
     @Override
     public boolean insert(Address address) {
-        String sql = "INSERT INTO Address (AID, Street, City, Postal_Code, Country, isDefaultShipping, UserID)"
-                + "VALUES (?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Address (AID, Street, City, Postal_Code, Country, isDefaultShipping, UserID) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = JdbcConnector.connect();
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -117,20 +117,19 @@ public class addressDAOimpl implements addressDAO {
 
     @Override
     public boolean update(Address address) {
-        String sql = "UPDATE Address SET AID = ?, Street = ?, City = ?," +
-                "Postal_Code = ?, Country = ?,isDefaultShipping = ?, UserID = ? " +
-                "WHERE AID = ?";
+        String sql = "UPDATE Address SET Street = ?, City = ?,  " +
+                     "Postal_Code = ?, Country = ?, isDefaultShipping = ?, UserID = ? " +
+                     "WHERE AID = ?";
         try (Connection conn = JdbcConnector.connect();
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, address.getAid());
-            ps.setString(2, address.getStreet());
-            ps.setString(3, address.getCity());
-            ps.setString(4, address.getPostalCode());
-            ps.setString(5, address.getCountry());
-            ps.setBoolean(6, address.isDefaultShipping());
-            ps.setString(7, address.getUserID());
-            ps.setString(8, address.getAid());
+            ps.setString(1, address.getStreet());
+            ps.setString(2, address.getCity());
+            ps.setString(3, address.getPostalCode());
+            ps.setString(4, address.getCountry());
+            ps.setBoolean(5, address.isDefaultShipping());
+            ps.setString(6, address.getUserID());
+            ps.setString(7, address.getAid());
 
             int affected = ps.executeUpdate();
             return affected > 0;

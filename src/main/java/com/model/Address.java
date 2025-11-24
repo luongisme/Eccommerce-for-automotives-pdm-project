@@ -11,7 +11,8 @@ public class Address {
 
     public Address() {}
 
-    public Address(String aid, String street, String city, String postalCode,
+    public Address(String aid, String street, String city,
+                   String postalCode,
                    String country, boolean isDefaultShipping,  String userID) {
         this.aid = aid;
         this.street = street;

@@ -3,7 +3,7 @@ package com.model;
 public class VehicleModel {
     private String moID;
     private String maID;
-    private String coID;
+
     private String moName;
 
     public VehicleModel() {}
@@ -11,17 +11,11 @@ public class VehicleModel {
     public VehicleModel(String moID, String maID, String coID, String moName) {
         this.moID = moID;
         this.maID = maID;
-        this.coID = coID;
+
         this.moName = moName;
     }
 
-    public String getCoID() {
-        return coID;
-    }
 
-    public void setCoID(String coID) {
-        this.coID = coID;
-    }
 
     public String getMaID() {
         return maID;

@@ -202,7 +202,7 @@ public class ProductDetailsScreen extends Screen {
         currentY += 40;
 
         // Star rating
-        StarRatingPanel stars = new StarRatingPanel(product.getRating(), 20, false);
+        StarRatingPanel stars = new StarRatingPanel(product.getPrice(), 20, false);
         stars.setBounds(xPos, currentY, 120, 24);
         mainContentPanel.add(stars);
         currentY += 35;
@@ -483,12 +483,12 @@ public class ProductDetailsScreen extends Screen {
         yPos += 70;
 
         // Get reviews for this product
-        List<Review> reviews = reviewService.getReviewsByProductId(product.getId());
+        List<Review> reviews = reviewService.getReviewsByProductId(product.getPid());
         displayReviewCards(reviews, yPos);
     }
 
     private void filterAndDisplayReviews(String filterOption, int yPos) {
-        List<Review> allReviews = reviewService.getReviewsByProductId(product.getId());
+        List<Review> allReviews = reviewService.getReviewsByProductId(product.getPid());
         List<Review> filteredReviews = new java.util.ArrayList<>();
 
         if (filterOption.equals("All Reviews")) {
@@ -675,7 +675,7 @@ public class ProductDetailsScreen extends Screen {
         User currentUser = UserSession.getInstance().getCurrentUser();
         Review newReview = new Review(
             "1",
-            product.getId(),
+            product.getPid(),
             currentUser.getUserID(),
             currentUser.getFullName(),
             rating,
@@ -706,7 +706,7 @@ public class ProductDetailsScreen extends Screen {
         // Approximate total content height
         int baseHeight = 950; // Fixed sections
         List<Review> reviews = reviewService.getReviewsByProductId(
-            product != null ? product.getId() : ""
+            product != null ? product.getPid() : ""
         );
         int reviewRows = (int) Math.ceil((double) reviews.size() / 3);
         int reviewHeight = reviewRows * 195;

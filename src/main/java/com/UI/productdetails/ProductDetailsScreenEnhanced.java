@@ -247,7 +247,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         currentY += 75;
 
         // Star rating with review count
-        JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        /*JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         ratingPanel.setOpaque(false);
         ratingPanel.setBounds(xPos-10, currentY, 300, 28);
         
@@ -259,14 +259,14 @@ public class ProductDetailsScreenEnhanced extends Screen {
         ratingText.setForeground(TEXT_PRIMARY);
         ratingPanel.add(ratingText);
         
-        int reviewCount = reviewService.getReviewCount(product.getId());
+        int reviewCount = reviewService.getReviewCount(product.getPid());
         JLabel reviewCountLabel = new JLabel("(" + reviewCount + " reviews)");
         reviewCountLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         reviewCountLabel.setForeground(TEXT_SECONDARY);
         ratingPanel.add(reviewCountLabel);
         
         container.add(ratingPanel);
-        currentY += 36;
+        currentY += 36;*/
 
         // Product description with better styling
         JTextArea description = new JTextArea(product.getDescription());
@@ -498,12 +498,12 @@ public class ProductDetailsScreenEnhanced extends Screen {
         mainContentPanel.add(filterPanel);
         yPos += 75;
 
-        List<Review> reviews = reviewService.getReviewsByProductId(product.getId());
+        List<Review> reviews = reviewService.getReviewsByProductId(product.getPid());
         displayReviewCards(reviews, yPos);
     }
 
     private void filterAndDisplayReviews(String filterOption, int yPos) {
-        List<Review> allReviews = reviewService.getReviewsByProductId(product.getId());
+        List<Review> allReviews = reviewService.getReviewsByProductId(product.getPid());
         List<Review> filteredReviews = new java.util.ArrayList<>();
 
         if (filterOption.equals("All Reviews")) {
@@ -692,7 +692,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         User currentUser = UserSession.getInstance().getCurrentUser();
         Review newReview = new Review(
             "2",
-            product.getId(),
+            product.getPid(),
             currentUser.getUserID(),
             currentUser.getFullName(),
             rating,
@@ -721,7 +721,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private int calculateContentHeight() {
         int baseHeight = 1050;
         List<Review> reviews = reviewService.getReviewsByProductId(
-            product != null ? product.getId() : "0"
+            product != null ? product.getPid() : "0"
         );
         int reviewRows = (int) Math.ceil((double) reviews.size() / 3);
         int reviewHeight = reviews.isEmpty() ? 116 : reviewRows * 221;

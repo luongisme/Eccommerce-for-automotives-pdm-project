@@ -25,7 +25,6 @@ public class OrderHistoryScreen extends Screen {
         this.panel = new JPanel(new BorderLayout());
         view = new OrderHistoryPanel();
 
-        // Mock data (để bạn thấy chế độ LIST khi test). Set thành List.of() để thấy EMPTY.
         Supplier<List<OrderHistoryPanel.OrderVM>> dataSource = () -> List.of(); 
        
 

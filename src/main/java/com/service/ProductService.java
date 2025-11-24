@@ -42,16 +42,18 @@ public class ProductService {
             
             // Create product with basic constructor first
             Product product = new Product(
-                "1",
-                category + " Part #" + (i + 1),
-                category,
+                "P" + String.format("%04d", id++),
                 brand,
+                stockQty > 0,
+                "",
+                brand + " " + category + " Part " + (i + 1),
+                "High quality " + category.toLowerCase() + " part from " + brand + ".",
                 Math.round(price * 100.0) / 100.0,
-                Math.round(rating * 10.0) / 10.0,
-                null, // No image URL for mock data
-                "Premium " + category.toLowerCase() + " component from " + brand + 
-                ". Designed for enhanced performance and fuel efficiency.",
-                isNew
+                "123123-XYZ",
+                null,
+                stockQty,
+                "/images/products/" + category.toLowerCase().replace(" & ", "_").replace(" ", "_") + "_" + (i + 1) + ".jpg",
+                category
             );
             
             // Set additional fields
@@ -131,7 +133,7 @@ public class ProductService {
                 sorted.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()));
                 break;
             case "rating":
-                sorted.sort((p1, p2) -> Double.compare(p2.getRating(), p1.getRating()));
+                sorted.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice())); // Assuming price as a proxy for rating
                 break;
         }
         

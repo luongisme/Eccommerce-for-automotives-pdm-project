@@ -48,7 +48,7 @@ public class AuthService {
         // 2. Tạo UserID (tạm thời random, sau này có thể để DB sinh)
         String userID = "U" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
-        // 3. Tạo đối tượng User – chú ý mapping đúng với constructor của bạn
+        // 3. Tạo đối tượng User
         User newUser = new User(
                 userID,
                 username,

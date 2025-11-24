@@ -24,13 +24,11 @@ public class ProfileScreen extends JPanel {
     final JTextField tfFirstName = new JTextField("Admin");
     final JTextField tfLastName  = new JTextField("Pro");
     final JTextField tfEmail     = new JTextField("admin@gmail.com");
-    final JTextField tfPhone     = new JTextField("123456789");
 
-    final JTextField tfStreet   = new JTextField("123 Main Street");
-    final JTextField tfCity     = new JTextField("Thu Duc");
-    final JTextField tfDistrict = new JTextField("Tan Lap");
-    final JTextField tfZip      = new JTextField("1231234321");
-    final JTextField tfCountry  = new JTextField("Viet Nam");
+    final JTextField tfStreet      = new JTextField("123 Main Street");
+    final JTextField tfCity        = new JTextField("Thu Duc");
+    final JTextField tfPostalCode  = new JTextField("1231234321");
+    final JTextField tfCountry     = new JTextField("Viet Nam");
 
     private final List<JTextField> editableFields = new ArrayList<>();
 
@@ -136,27 +134,22 @@ public class ProfileScreen extends JPanel {
   
 
         sectionContact.add(emailNote);
-        sectionContact.add(oneCol(field("Phone Number", tfPhone)));
 
         JPanel sectionAddress = section("Shipping Address");
         sectionAddress.add(oneCol(field("Street Address", tfStreet)));
+        sectionAddress.add(oneCol(
+        field("City",     tfCity)));
         sectionAddress.add(twoCols(
-        field("City",     tfCity),
-        field("District", tfDistrict)
-        ));
-        sectionAddress.add(twoCols(
-        field("Zip Code", tfZip),
+        field("Postal Code", tfPostalCode),
         field("Country",  tfCountry)
         ));
 
         // collect editable fields (email readonly)
         editableFields.add(tfFirstName);
         editableFields.add(tfLastName);
-        editableFields.add(tfPhone);
         editableFields.add(tfStreet);
         editableFields.add(tfCity);
-        editableFields.add(tfDistrict);
-        editableFields.add(tfZip);
+        editableFields.add(tfPostalCode);
         editableFields.add(tfCountry);
 
         // assemble card
