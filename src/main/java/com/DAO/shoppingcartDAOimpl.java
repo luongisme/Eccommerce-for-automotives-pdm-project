@@ -1,7 +1,6 @@
 package com.DAO;
 
 import com.DAO.Interface.shoppingcartDAO;
-import com.model.Address;
 import com.model.ShoppingCart;
 import com.Util.JdbcConnector;
 
@@ -9,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

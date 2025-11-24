@@ -143,6 +143,11 @@ public class productDAOimpl implements productDAO {
     }
 
     @Override
+    public List<Product> findByVehicleMake(String make) {
+        return List.of();
+    }
+
+    @Override
     public boolean insert(Product product) {
         String sql = "INSERT INTO Product (PID, Brand, isAvailable, SKU, PName, Description, " +
                      "Price, PartNumber, Specifications, StockQuantity, Image, Category) " +

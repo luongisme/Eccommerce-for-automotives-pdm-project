@@ -247,14 +247,14 @@ public class ProductDetailsScreenEnhanced extends Screen {
         currentY += 75;
 
         // Star rating with review count
-        /*JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        JPanel ratingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         ratingPanel.setOpaque(false);
         ratingPanel.setBounds(xPos-10, currentY, 300, 28);
         
-        StarRatingPanel stars = new StarRatingPanel(product.getRating(), 18, false);
+        StarRatingPanel stars = new StarRatingPanel(reviewService.getAverageRating(product.getPid()), 18, false);
         ratingPanel.add(stars);
         
-        JLabel ratingText = new JLabel(String.format("%.1f", product.getRating()));
+        JLabel ratingText = new JLabel(String.format("%.1f", reviewService.getAverageRating(product.getPid())));
         ratingText.setFont(new Font("Segoe UI", Font.BOLD, 14));
         ratingText.setForeground(TEXT_PRIMARY);
         ratingPanel.add(ratingText);
@@ -266,7 +266,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         ratingPanel.add(reviewCountLabel);
         
         container.add(ratingPanel);
-        currentY += 36;*/
+        currentY += 36;
 
         // Product description with better styling
         JTextArea description = new JTextArea(product.getDescription());
@@ -337,14 +337,6 @@ public class ProductDetailsScreenEnhanced extends Screen {
 
         int currentY = 68;
         Map<String, String> specs = product.getSpecifications();
-        
-        if (specs.isEmpty()) {
-            specs.put("SKU", product.getSku() != null ? product.getSku() : "ENG-SP-002");
-            specs.put("Material", "Iridium");
-            specs.put("Gap", "0.028-0.031 inches");
-            specs.put("Threads", "14mm");
-            specs.put("Pack Size", "4 Plugs");
-        }
 
         System.out.println("Specs map size: " + specs.size());
         System.out.println("Specs: " + specs);
@@ -352,16 +344,8 @@ public class ProductDetailsScreenEnhanced extends Screen {
         // Add specifications to panel
         int index = 0;
         for (Map.Entry<String, String> entry : specs.entrySet()) {
-            if (index >= 5) break; // Limit to 5 specs for better UI
-            
-            // Alternate background for rows
-            // if (index % 2 == 0) {
-            //     JPanel rowBg = new JPanel();
-            //     rowBg.setBackground(new Color(249, 250, 251));
-            //     rowBg.setBounds(100, currentY - 6, 424, 32);
-            //     specPanel.add(rowBg);
-            // }
-            
+            if (index >= 5) break;
+
             // Spec key
             JLabel keyLabel = new JLabel(entry.getKey());
             keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -431,13 +415,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
     }
 
     private void addEnhancedInfoRow(JPanel parent, String key, String value, int xPos, int yPos, int index) {
-        // // Alternate background
-        // if (index % 2 == 0) {
-        //     JPanel rowBg = new JPanel();
-        //     rowBg.setBackground(new Color(249, 250, 251));
-        //     rowBg.setBounds(xPos, yPos - 6, 424, 32);
-        //     parent.add(rowBg);
-        // }
+
         
         JLabel keyLabel = new JLabel(key);
         keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -498,12 +476,12 @@ public class ProductDetailsScreenEnhanced extends Screen {
         mainContentPanel.add(filterPanel);
         yPos += 75;
 
-        List<Review> reviews = reviewService.getReviewsByProductId(product.getPid());
+        List<Review> reviews = reviewService.getReviewByProductId(product.getPid());
         displayReviewCards(reviews, yPos);
     }
 
     private void filterAndDisplayReviews(String filterOption, int yPos) {
-        List<Review> allReviews = reviewService.getReviewsByProductId(product.getPid());
+        List<Review> allReviews = reviewService.getReviewByProductId(product.getPid());
         List<Review> filteredReviews = new java.util.ArrayList<>();
 
         if (filterOption.equals("All Reviews")) {
@@ -720,7 +698,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
 
     private int calculateContentHeight() {
         int baseHeight = 1050;
-        List<Review> reviews = reviewService.getReviewsByProductId(
+        List<Review> reviews = reviewService.getReviewByProductId(
             product != null ? product.getPid() : "0"
         );
         int reviewRows = (int) Math.ceil((double) reviews.size() / 3);

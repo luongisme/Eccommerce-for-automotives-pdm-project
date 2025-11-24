@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.DAO.productDAOimpl;
 import com.model.Product;
 
 public class ProductService {
     private static ProductService instance;
-    private List<Product> allProducts;
+    private final productDAOimpl productDAO;
 
     private ProductService() {
-        initMockData();
+        this.productDAO = new productDAOimpl();
     }
 
     public static ProductService getInstance() {
@@ -23,95 +24,37 @@ public class ProductService {
         return instance;
     }
 
-    private void initMockData() {
-        allProducts = new ArrayList<>();
-        
-        // Mock data with various categories and brands
-        String[] categories = {"Engine", "Brakes", "Wheels & Tires", "Suspension", "Electrical", 
-                               "Transmission", "Exhaust", "Body parts", "Interior", "Fluids & Chemicals"};
-        String[] brands = {"Bosch", "Brembo", "Michelin", "Monroe", "ACDelco", "NGK", "Denso", "Gates", "Continental", "Moog"};
-        
-        int id = 1;
-        for (int i = 0; i < 50; i++) {
-            String category = categories[i % categories.length];
-            String brand = brands[i % brands.length];
-            double price = 50 + (Math.random() * 950); // Random price between $50-$1000
-            double rating = 3.0 + (Math.random() * 2.0); // Random rating 3.0-5.0
-            boolean isNew = i < 10; // First 10 products are "new"
-            int stockQty = (int)(Math.random() * 150); // Random stock 0-150
-            
-            // Create product with basic constructor first
-            Product product = new Product(
-                "P" + String.format("%04d", id++),
-                brand,
-                stockQty > 0,
-                "",
-                brand + " " + category + " Part " + (i + 1),
-                "High quality " + category.toLowerCase() + " part from " + brand + ".",
-                Math.round(price * 100.0) / 100.0,
-                "123123-XYZ",
-                null,
-                stockQty,
-                "/images/products/" + category.toLowerCase().replace(" & ", "_").replace(" ", "_") + "_" + (i + 1) + ".jpg",
-                category
-            );
-            
-            // Set additional fields
-            product.setSku(category.substring(0, 3).toUpperCase() + "-" + brand.substring(0, 2).toUpperCase() + "-" + String.format("%03d", i + 1));
-            product.setStockQuantity(stockQty);
-            
-            // Add category-specific specifications
-            addSpecifications(product, category, brand);
-            
-            allProducts.add(product);
-        }
-    }
-    
-    private void addSpecifications(Product product, String category, String brand) {
-        // Add SKU to specifications
-        product.addSpecification("SKU", product.getSku());
-        
-        // Add category-specific specs
-        switch (category) {
-            case "Engine":
-                product.addSpecification("Gap", "0.028-0.031 inches");
-                product.addSpecification("Threads", "14mm");
-                product.addSpecification("Material", "Iridium");
-                product.addSpecification("Pack Size", "4 Plugs");
-                break;
-            case "Brakes":
-                product.addSpecification("Type", "Ceramic");
-                product.addSpecification("Position", "Front/Rear");
-                product.addSpecification("Warranty", "2 Years");
-                break;
-            case "Wheels & Tires":
-                product.addSpecification("Size", "17 inch");
-                product.addSpecification("Width", "225mm");
-                product.addSpecification("Load Index", "95");
-                break;
-            case "Suspension":
-                product.addSpecification("Type", "Gas Charged");
-                product.addSpecification("Position", "Front");
-                product.addSpecification("Warranty", "Limited Lifetime");
-                break;
-            case "Electrical":
-                product.addSpecification("Voltage", "12V");
-                product.addSpecification("Amperage", "60A");
-                product.addSpecification("Type", "AGM");
-                break;
-            default:
-                product.addSpecification("Weight", "2.5 lbs");
-                product.addSpecification("Dimensions", "8 x 6 x 4 inches");
-                break;
-        }
+    public List<Product> getAllProducts() {
+        return productDAO.findAll();
     }
 
-    public List<Product> getAllProducts() {
-        return new ArrayList<>(allProducts);
+    public Product getProductById(String pid) {
+        return productDAO.findById(pid);
+    }
+
+    public List<Product> getProductsByCategory(String category) {
+        return productDAO.findByCategory(category);
+    }
+
+    public List<Product> getProductsByCompatibility(String coID) {
+        return productDAO.findByCompatibility(coID);
+    }
+
+    public boolean addProduct(Product product) {
+        return productDAO.insert(product);
+    }
+
+    public boolean updateProduct(Product product) {
+        return productDAO.update(product);
+    }
+
+    public boolean deleteProduct(String pid) {
+        return productDAO.delete(pid);
     }
 
     public List<Product> filterProducts(Set<String> categories, Set<String> brands, 
                                        double minPrice, double maxPrice) {
+        List<Product> allProducts = getAllProducts();
         return allProducts.stream()
             .filter(p -> categories.isEmpty() || categories.contains(p.getCategory()))
             .filter(p -> brands.isEmpty() || brands.contains(p.getBrand()))
@@ -135,12 +78,16 @@ public class ProductService {
             case "rating":
                 sorted.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice())); // Assuming price as a proxy for rating
                 break;
+            default:
+                // No sorting
+                break;
         }
         
         return sorted;
     }
 
     public List<String> getAllCategories() {
+        List<Product> allProducts = getAllProducts();
         return allProducts.stream()
             .map(Product::getCategory)
             .distinct()
@@ -149,6 +96,7 @@ public class ProductService {
     }
 
     public List<String> getAllBrands() {
+        List<Product> allProducts = getAllProducts();
         return allProducts.stream()
             .map(Product::getBrand)
             .distinct()
