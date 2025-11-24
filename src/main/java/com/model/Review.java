@@ -3,7 +3,7 @@ package com.model;
 import java.time.LocalDateTime;
 
 public class Review {
-    private String id;
+    private String rid;
     private String productId;
     private String userId;
     private String username;
@@ -12,9 +12,11 @@ public class Review {
     private String comment;
     private LocalDateTime createdAt;
 
-    public Review(String id, String productId, String userId, int rating, 
+    public Review() {}
+
+    public Review(String rid, String productId, String userId, int rating,
                   String comment, LocalDateTime createdAt) {
-        this.id = id;
+        this.rid = rid;
         this.productId = productId;
         this.userId = userId;
         this.rating = rating;
@@ -23,9 +25,9 @@ public class Review {
     }
 
     // Constructor with all fields
-    public Review(String id, String productId, String userId, String username, int rating, 
+    public Review(String rid, String productId, String userId, String username, int rating,
                   String title, String comment, LocalDateTime createdAt) {
-        this.id = id;
+        this.rid = rid;
         this.productId = productId;
         this.userId = userId;
         this.username = username;
@@ -36,7 +38,7 @@ public class Review {
     }
 
     // Getters
-    public String getId() { return id; }
+    public String getRid() { return rid; }
     public String getProductId() { return productId; }
     public String getUserId() { return userId; }
     public String getUsername() { return username; }
@@ -46,7 +48,7 @@ public class Review {
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     // Setters
-    public void setId(String id) { this.id = id; }
+    public void setRid(String rid) { this.rid = rid; }
     public void setProductId(String productId) { this.productId = productId; }
     public void setUserId(String userId) { this.userId = userId; }
     public void setUsername(String username) { this.username = username; }

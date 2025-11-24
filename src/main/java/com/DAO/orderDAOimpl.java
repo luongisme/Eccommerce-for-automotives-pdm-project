@@ -110,7 +110,7 @@ public class orderDAOimpl implements orderDAO {
 
     @Override
     public boolean update(Order order) {
-        String sql = "UPDATE Order SET OrderDate = ?, OrderStatus = ?, UserID = ?, PaymentID = ? " +
+        String sql = "UPDATE Order SET OrderID = ?, OrderDate = ?, OrderStatus = ?, UserID = ?, PaymentID = ? " +
                 "WHERE OrderID = ?";
         try (Connection conn = JdbcConnector.connect();
         PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -120,6 +120,7 @@ public class orderDAOimpl implements orderDAO {
             ps.setString(4, order.getOrderStatus());
             ps.setString(5, order.getUserID());
             ps.setString(6, order.getPaymentID());
+            ps.setString(7, order.getOrderID());
 
             int affected = ps.executeUpdate();
             return affected > 0;

@@ -65,7 +65,7 @@ public class ReviewService {
     public boolean addReview(Review review) {
         try {
             // In real implementation, this would save to database
-            review.setId("12");
+            review.setRid("12");
             review.setCreatedAt(LocalDateTime.now());
             reviews.add(review);
             return true;
@@ -111,6 +111,6 @@ public class ReviewService {
      * Delete a review (admin functionality)
      */
     public boolean deleteReview(String reviewId) {
-        return reviews.removeIf(r -> r.getId().equals(reviewId));
+        return reviews.removeIf(r -> r.getRid().equals(reviewId));
     }
 }

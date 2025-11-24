@@ -1,28 +1,163 @@
 package com.DAO;
 
-import java.util.List;
-
 import com.DAO.Interface.reviewDAO;
+import com.Util.JdbcConnector;
+import com.model.Address;
 import com.model.Review;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class reviewDAOimpl implements reviewDAO {
 
-    @Override
-    public Review findById(String rid) { return null; }
+    private Review mapRow(ResultSet rs) throws SQLException {
+        Review rv = new Review();
+        rv.setRid(rs.getString("RID"));
+        rv.setProductId(rs.getString("PID"));
+        rv.setUserId(rs.getString("UserID"));
+        rv.setRating(rs.getInt("Rating"));
+        rv.setComment(rs.getString("Comment"));
+        rv.setCreatedAt(rs.getTimestamp("CreatedAt").toLocalDateTime());
+        return rv;
+    }
 
     @Override
-    public List<Review> findByProductId(String pid) { return List.of(); }
+    public Review findById(String rid) {
+        String sql = "SELECT * FROM review WHERE RID = ?";
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, rid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+        return null;
+    }
 
     @Override
-    public List<Review> findByUserId(String userID) { return List.of();}
+    public List<Review> findByProductId(String pid) {
+        String sql = "SELECT * FROM review WHERE PID = ?";
+        List<Review> reviews = new ArrayList<>();
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+
+            ps.setString(1, pid);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    reviews.add(mapRow(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return reviews;
+    }
 
     @Override
-    public boolean insert(Review review) { return false; }
+    public List<Review> findByUserId(String userID) {
+        String sql = "SELECT * FROM review WHERE UserID = ?";
+        List<Review> reviews = new ArrayList<>();
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+
+            ps.setString(1, userID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    reviews.add(mapRow(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return reviews;
+    }
 
     @Override
-    public boolean update(Review review) { return false; }
+    public boolean insert(Review review) {
+        String sql = "INSERT INTO review (RID, UserID, PID, Rating, Comment, CreatedAt) " +
+                "VALUES(?,?,?,?,?,?)";
+        try (Connection conn = JdbcConnector.connect();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, review.getRid());
+            ps.setString(2, review.getUserId());
+            ps.setString(3, review.getProductId());
+            ps.setInt(4, review.getRating());
+            ps.setString(5, review.getComment());
+            ps.setTimestamp(6, java.sql.Timestamp.valueOf(review.getCreatedAt()));
+
+            int affected = ps.executeUpdate();
+            return affected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
     @Override
-    public boolean delete(String rid) { return false; }
+    public boolean update(Review review) {
+        String sql = "UPDATE review SET RID = ?, UserID = ?, PID = ?, " +
+                "Rating = ?, Comment = ?, CreatedAt = ? " +
+                "WHERE RID = ?";
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, review.getRid());
+            ps.setString(2, review.getUserId());
+            ps.setString(3, review.getProductId());
+            ps.setInt(4, review.getRating());
+            ps.setString(5, review.getComment());
+            ps.setTimestamp(6, java.sql.Timestamp.valueOf(review.getCreatedAt()));
+            ps.setString(7, review.getRid());
+
+            int affected = ps.executeUpdate();
+            return affected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean delete(String rid) {
+        String sql = "DELETE FROM review WHERE RID = ?";
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, rid);
+            int affected = ps.executeUpdate();
+            return affected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 }
-
