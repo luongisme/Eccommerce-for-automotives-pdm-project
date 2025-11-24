@@ -1,7 +1,7 @@
 package com.model;
 
 public class ProductCompatibility {
-    private String PCID;
+    private String CoID;
     private String PID;
     private String MoID;
     private String CDID;
@@ -11,8 +11,8 @@ public class ProductCompatibility {
 
     public ProductCompatibility() {}
 
-    public ProductCompatibility(String PCID, String PID, String MoID, String CDID, int yearStart, int yearEnd, String specifications) {
-        this.PCID = PCID;
+    public ProductCompatibility(String CoID, String PID, String MoID, String CDID, int yearStart, int yearEnd, String specifications) {
+        this.CoID = CoID;
         this.PID = PID;
         this.MoID = MoID;
         this.CDID = CDID;
@@ -45,12 +45,12 @@ public class ProductCompatibility {
         this.specifications = specifications;
     }
 
-    public String getPCID() {
-        return PCID;
+    public String getCoID() {
+        return CoID;
     }
 
-    public void setPCID(String PCID) {
-        this.PCID = PCID;
+    public void setCoID(String CoID) {
+        this.CoID = CoID;
     }
 
     public String getPID() {

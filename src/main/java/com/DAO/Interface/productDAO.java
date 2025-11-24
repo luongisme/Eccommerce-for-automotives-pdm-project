@@ -9,6 +9,7 @@ public interface productDAO {
     List<Product> findAll();
     List<Product> findByCategory(String category);
     List<Product> findByCompatibility(String coID);
+    List<Product> findByVehicleMake(String make);
     boolean insert(Product product);
     boolean update(Product product);
     boolean delete(String pid);

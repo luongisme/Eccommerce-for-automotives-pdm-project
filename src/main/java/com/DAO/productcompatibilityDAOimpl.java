@@ -17,7 +17,7 @@ public class productcompatibilityDAOimpl implements productcompatibilityDAO {
 
     private ProductCompatibility mapRow(ResultSet rs) throws SQLException {
         ProductCompatibility pc = new ProductCompatibility();
-        pc.setPCID(rs.getString("PCID"));
+        pc.setCoID(rs.getString("CoID"));
         pc.setPID(rs.getString("PID"));
         pc.setMoID(rs.getString("MOID"));
         pc.setCDID(rs.getString("CDID"));
@@ -29,7 +29,7 @@ public class productcompatibilityDAOimpl implements productcompatibilityDAO {
 
     @Override
     public ProductCompatibility findById(String coID) {
-        String sql = "SELECT * FROM address WHERE PCID = ?";
+        String sql = "SELECT * FROM address WHERE CoID = ?";
         try (Connection conn = JdbcConnector.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -68,12 +68,12 @@ public class productcompatibilityDAOimpl implements productcompatibilityDAO {
 
     @Override
     public boolean insert(ProductCompatibility pc) {
-        String sql = "INSERT INTO ProductCompatibility (PCID, PID, MoID, CDID, yearStart, specifications, yearEnd) " +
+        String sql = "INSERT INTO ProductCompatibility (CoID, PID, MoID, CDID, yearStart, specifications, yearEnd) " +
                 "VALUES (?,?,?,?,?,?,?)";
         try (Connection conn = JdbcConnector.connect();
         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, pc.getPCID());
+            ps.setString(1, pc.getCoID());
             ps.setString(2, pc.getPID());
             ps.setString(3, pc.getMoID());
             ps.setString(4, pc.getCDID());
@@ -93,19 +93,20 @@ public class productcompatibilityDAOimpl implements productcompatibilityDAO {
 
     @Override
     public boolean update(ProductCompatibility pc) {
-        String sql = "UPDATE ProductCompatibility SET PCID = ?, PID = ?, MoID = ?, CDID = ?, yearStart = ?, specifications = ?, yearEnd = ? " +
+        String sql = "UPDATE ProductCompatibility SET CoID = ?, PID = ?, MoID = ?, " +
+                "CDID = ?, yearStart = ?, specifications = ?, yearEnd = ? " +
                 "WHERE PCID = ?";
         try (Connection conn = JdbcConnector.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, pc.getPCID());
+            ps.setString(1, pc.getCoID());
             ps.setString(2, pc.getPID());
             ps.setString(3, pc.getMoID());
             ps.setString(4, pc.getCDID());
             ps.setInt(5, pc.getYearStart());
             ps.setString(6, pc.getSpecifications());
             ps.setInt(7, pc.getYearEnd());
-            ps.setString(8, pc.getPCID());
+            ps.setString(8, pc.getCoID());
 
             int affected = ps.executeUpdate();
             return affected > 0;
