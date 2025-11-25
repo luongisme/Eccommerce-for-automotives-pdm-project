@@ -1,34 +1,13 @@
 package com.UI.productdetails;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import com.Main.AppFrame;
@@ -60,7 +39,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
 
     // Modern color palette
     private final Color BG_COLOR = new Color(248, 249, 250);
-    private final Color CARD_BG = Color.WHITE;
+    private final Color CARD_BG =Color.WHITE;
     private final Color PRIMARY_COLOR = new Color(59, 130, 246);
     private final Color SUCCESS_COLOR = new Color(34, 197, 94);
     private final Color ERROR_COLOR = new Color(239, 68, 68);
@@ -72,17 +51,6 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private final Color TEXT_SECONDARY = new Color(107, 114, 128);
     private final Color BORDER_COLOR = new Color(229, 231, 235);
 
-    public ProductDetailsScreenEnhanced(AppFrame appFrame) {
-        this(appFrame, null, "new", 1);
-    }
-
-    public ProductDetailsScreenEnhanced(AppFrame appFrame, Product product) {
-        this(appFrame, product, "new", 1);
-    }
-
-    public ProductDetailsScreenEnhanced(AppFrame appFrame, Product product, String sortType) {
-        this(appFrame, product, sortType, 1);
-    }
 
     public ProductDetailsScreenEnhanced(AppFrame appFrame, Product product, String sortType, int page) {
         super(appFrame);
@@ -197,7 +165,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         imagePanel.setLayout(new BorderLayout());
         imagePanel.setBounds(xPos, yPos, 400, 372);
         imagePanel.setBackground(new Color(248, 250, 252));
-        imagePanel.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 1));
+        imagePanel.setBorder(BorderFactory.createLineBorder(BORDER_COLOR, 2));
 
         // Gradient background for image area
         JPanel imageContent = new JPanel(new BorderLayout()) {
@@ -218,19 +186,43 @@ public class ProductDetailsScreenEnhanced extends Screen {
         };
         imageContent.setOpaque(false);
 
-        JLabel imageLabel = new JLabel("Product Image", SwingConstants.CENTER);
-        imageLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        imageLabel.setForeground(new Color(148, 163, 184));
-        imageContent.add(imageLabel, BorderLayout.CENTER);
+        String imageUrl = product.getImageUrl();
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            String imagePath = "/images/Product/" + imageUrl.trim();
+            java.net.URL imgUrl = getClass().getResource(imagePath);
+            System.out.println("Loading product image from: " + imagePath + " | URL: " + imgUrl);
 
-        JLabel imageNote = new JLabel("Product Image", SwingConstants.CENTER);
-        imageNote.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        imageNote.setForeground(TEXT_SECONDARY);
-        imageNote.setBorder(new EmptyBorder(0, 0, 16, 0));
-        imageContent.add(imageNote, BorderLayout.SOUTH);
+            if (imgUrl != null) {
+                try {
+                    BufferedImage bufferedImage = ImageIO.read(imgUrl);
+                    if (bufferedImage != null) {
+                        // Kích thước ảnh bên trong panel
+                        int targetW = 360;
+                        int targetH = 332;
+                        Image scaled = bufferedImage.getScaledInstance(targetW, targetH, Image.SCALE_SMOOTH);
 
-        imagePanel.add(imageContent);
+                        JLabel imgLabel = new JLabel(new ImageIcon(scaled));
+                        imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                        imageContent.add(imgLabel, BorderLayout.CENTER);
+                    } else {
+                        addImagePlaceholder(imageContent, "Invalid Image", Color.RED);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    addImagePlaceholder(imageContent, "Error Loading", Color.RED);
+                }
+            } else {
+                // Không tìm thấy file trong resources
+                addImagePlaceholder(imageContent, "No Image", Color.GRAY);
+            }
+        } else {
+            // Không có URL ảnh
+            addImagePlaceholder(imageContent, "No Image", Color.GRAY);
+        }
+
+        imagePanel.add(imageContent, BorderLayout.CENTER);
         container.add(imagePanel);
+
     }
 
     private void createEnhancedProductInfoSection(JPanel container, int xPos, int yPos) {
@@ -758,5 +750,12 @@ public class ProductDetailsScreenEnhanced extends Screen {
         SwingUtilities.invokeLater(() -> {
             scrollPane.getVerticalScrollBar().setValue(0);
         });
+    }
+
+    private void addImagePlaceholder(JPanel panel, String text, Color color) {
+        JLabel placeholder = new JLabel(text, SwingConstants.CENTER);
+        placeholder.setForeground(color);
+        placeholder.setFont(new Font("Arial", Font.PLAIN, 10));
+        panel.add(placeholder, BorderLayout.CENTER);
     }
 }
