@@ -323,46 +323,65 @@ public class ProductDetailsScreenEnhanced extends Screen {
 
     private void createEnhancedSpecificationsBox(int yPos) {
         RoundedPanel specPanel = new RoundedPanel(16, true);
-        specPanel.setLayout(null);
+        specPanel.setLayout(new java.awt.GridBagLayout());
         specPanel.setBounds(32, yPos, 472, 265);
         specPanel.setBackground(CARD_BG);
         specPanel.setBorder(new EmptyBorder(24, 24, 24, 24));
+
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        gbc.insets = new java.awt.Insets(0, 0, 12, 0);
 
         // Title
         JLabel specTitle = new JLabel("Specifications");
         specTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         specTitle.setForeground(TEXT_PRIMARY);
         specTitle.setBounds(15, 15, 250, 28);
-        specPanel.add(specTitle);
+        specPanel.add(specTitle, gbc);
 
         int currentY = 68;
         Map<String, String> specs = product.getSpecifications();
 
-        System.out.println("Specs map size: " + specs.size());
-        System.out.println("Specs: " + specs);
-
-        // Add specifications to panel
-        int index = 0;
+        int row = 1;
         for (Map.Entry<String, String> entry : specs.entrySet()) {
-            if (index >= 5) break;
+            if (row > 5) break;
 
-            // Spec key
+            // cột key
             JLabel keyLabel = new JLabel(entry.getKey());
             keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             keyLabel.setForeground(TEXT_SECONDARY);
-            keyLabel.setBounds(15, currentY, 180, 22);
-            specPanel.add(keyLabel);
 
-            // Spec value
-            JLabel valueLabel = new JLabel(entry.getValue());
+            String rawValue = entry.getValue();
+
+            String htmlValue = rawValue.replace(" | ", "<br>");
+
+
+            JLabel valueLabel = new JLabel(
+                    "<html><body style='width:260px;'>" + htmlValue + "</body></html>"
+            );
             valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
             valueLabel.setForeground(TEXT_PRIMARY);
-            valueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-            valueLabel.setBounds(195, currentY, 244, 22);
-            specPanel.add(valueLabel);
 
-            currentY += 38;
-            index++;
+            // add key
+            gbc.gridwidth = 1;
+            gbc.gridy = row;
+            gbc.insets = new java.awt.Insets(4, 0, 4, 16);
+            gbc.gridx = 0;
+            gbc.weightx = 0;
+            gbc.fill = java.awt.GridBagConstraints.NONE;
+            gbc.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            specPanel.add(keyLabel, gbc);
+
+            // add value
+            gbc.gridx = 1;
+            gbc.weightx = 1.0;
+            gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            specPanel.add(valueLabel, gbc);
+
+            row++;
         }
 
         mainContentPanel.add(specPanel);
