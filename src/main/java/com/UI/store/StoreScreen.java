@@ -85,7 +85,7 @@ public class StoreScreen extends Screen {
         sortPanel.setBounds(240, 120, 760, 40);
         sortPanel.setBackground(Color.WHITE);
 
-        JToggleButton newBtn = createSortButton("New", "new", true);
+        JToggleButton newBtn = createSortButton("Featured", "new", true);
         JToggleButton priceAscBtn = createSortButton("Price ascending", "price_asc", false);
         JToggleButton priceDescBtn = createSortButton("Price descending", "price_desc", false);
         JToggleButton ratingBtn = createSortButton("Rating", "rating", false);

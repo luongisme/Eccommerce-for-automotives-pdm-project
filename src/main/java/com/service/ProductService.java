@@ -1,9 +1,6 @@
 package com.service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.DAO.productDAOimpl;
@@ -52,6 +49,30 @@ public class ProductService {
         return productDAO.delete(pid);
     }
 
+    private final Map<String, Boolean> imageExistCache = new HashMap<>();
+
+    private int imagePriority(Product p) {
+        String img = p.getImageUrl();
+        if (img == null) return 1;
+
+        String fileName = img.trim();
+        if (fileName.isEmpty()) return 1;
+
+        Boolean cached = imageExistCache.get(fileName);
+        if (cached != null) {
+            return cached ? 0 : 1;
+        }
+
+        String imagePath = "/images/Product/" + fileName;
+        java.net.URL url = ProductService.class.getResource(imagePath);
+
+        boolean hasRealImage = (url != null);
+        imageExistCache.put(fileName, hasRealImage);
+
+        return hasRealImage ? 0 : 1;
+    }
+
+
     public List<Product> filterProducts(Set<String> categories, Set<String> brands, 
                                        double minPrice, double maxPrice) {
         List<Product> allProducts = getAllProducts();
@@ -62,29 +83,74 @@ public class ProductService {
             .collect(Collectors.toList());
     }
 
+
     public List<Product> sortProducts(List<Product> products, String sortBy) {
         List<Product> sorted = new ArrayList<>(products);
-        
+        System.out.println(">>> sortBy = " + sortBy + ", size = " + products.size());
+
         switch (sortBy) {
             case "available":
-                sorted.sort((p1, p2) -> Boolean.compare(p2.isAvailable(), p1.isAvailable()));
+                System.out.println(">>> Using sort: AVAILABLE");
+                sorted.sort(
+                        Comparator
+                                .comparing(Product::isAvailable).reversed()
+                                .thenComparing(Product::getName, String.CASE_INSENSITIVE_ORDER)
+                );
                 break;
+
             case "price_asc":
-                sorted.sort(Comparator.comparingDouble(Product::getPrice));
+                System.out.println(">>> Using sort: PRICE_ASC");
+                sorted.sort(
+                        Comparator
+                                .comparingDouble(Product::getPrice)
+                                .thenComparing(Product::getName, String.CASE_INSENSITIVE_ORDER)
+                );
                 break;
+
             case "price_desc":
-                sorted.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()));
+                System.out.println(">>> Using sort: PRICE_DESC");
+                sorted.sort(
+                        Comparator
+                                .comparingDouble(Product::getPrice).reversed()
+                                .thenComparing(Product::getName, String.CASE_INSENSITIVE_ORDER)
+                );
                 break;
+
             case "rating":
-                sorted.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice())); // Assuming price as a proxy for rating
+                System.out.println(">>> Using sort: RATING");
+                // tạm dùng price làm rating
+                sorted.sort(
+                        Comparator
+                                .comparingDouble(Product::getPrice).reversed()
+                                .thenComparing(Product::getName, String.CASE_INSENSITIVE_ORDER)
+                );
                 break;
-            default:
-                // No sorting
+            case "new":
+                System.out.println(">>> Using sort: DEFAULT (imagePriority)");
+                sorted.sort(
+                        Comparator
+                                .comparingInt(this::imagePriority)
+                                .thenComparing(Product::getName, String.CASE_INSENSITIVE_ORDER)
+                );
                 break;
+
         }
-        
+        for (int i = 0; i < Math.min(5, sorted.size()); i++) {
+            Product p = sorted.get(i);
+            System.out.println(
+                    "   #" + i +
+                            " | name=" + p.getName() +
+                            " | price=" + p.getPrice() +
+                            " | hasImage=" + (p.getImageUrl() != null && !p.getImageUrl().trim().isEmpty())
+            );
+        }
+
+
         return sorted;
     }
+
+
+
 
     public List<String> getAllCategories() {
         List<Product> allProducts = getAllProducts();

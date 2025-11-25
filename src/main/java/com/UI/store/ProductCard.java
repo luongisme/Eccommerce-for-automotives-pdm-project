@@ -31,15 +31,43 @@ public class ProductCard extends JPanel {
     }
 
     private void initUI() {
-        // Image placeholder
-        JPanel imagePanel = new JPanel();
-        imagePanel.setBackground(new Color(220, 220, 220));
+        // Image panel
+        JPanel imagePanel = new JPanel(new BorderLayout());
         imagePanel.setPreferredSize(new Dimension(180, 140));
-        imagePanel.setLayout(new BorderLayout());
-        
-        JLabel imagePlaceholder = new JLabel("No Image", SwingConstants.CENTER);
-        imagePlaceholder.setForeground(new Color(150, 150, 150));
-        imagePanel.add(imagePlaceholder, BorderLayout.CENTER);
+        imagePanel.setBackground(Color.WHITE);
+
+        // Try to load image using ImageIO for better error handling
+        String imageUrl = product.getImageUrl();
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            String imagePath = "/images/Product/" + imageUrl.trim();
+            java.net.URL imgUrl = getClass().getResource(imagePath);
+            //System.out.println("Loading image from path: " + imagePath + " | URL: " + imgUrl); debug line
+
+            if (imgUrl != null) {
+                try {
+                    java.awt.image.BufferedImage bufferedImage = javax.imageio.ImageIO.read(imgUrl);
+                    if (bufferedImage != null) {
+                        Image scaled = bufferedImage.getScaledInstance(180, 140, Image.SCALE_SMOOTH);
+                        JLabel imageLabel = new JLabel(new ImageIcon(scaled));
+                        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                        imagePanel.add(imageLabel, BorderLayout.CENTER);
+                    } else {
+                        // File exists but is not a valid image
+                        addPlaceholder(imagePanel, "Invalid Image", Color.RED);
+                    }
+                } catch (Exception e) {
+                    // Error reading image file
+                    addPlaceholder(imagePanel, "Error Loading", Color.RED);
+                }
+            } else {
+                // Image file not found in resources
+                addPlaceholder(imagePanel, "No Image", Color.GRAY);
+            }
+        } else {
+            // No image URL provided
+            addPlaceholder(imagePanel, "No Image", Color.GRAY);
+        }
+
 
         // Info panel
         JPanel infoPanel = new JPanel();
@@ -72,6 +100,13 @@ public class ProductCard extends JPanel {
 
         add(imagePanel, BorderLayout.NORTH);
         add(infoPanel, BorderLayout.CENTER);
+    }
+
+    private void addPlaceholder(JPanel panel, String text, Color color) {
+        JLabel placeholder = new JLabel(text, SwingConstants.CENTER);
+        placeholder.setForeground(color);
+        placeholder.setFont(new Font("Arial", Font.PLAIN, 10));
+        panel.add(placeholder, BorderLayout.CENTER);
     }
 
     private void addClickListener() {
