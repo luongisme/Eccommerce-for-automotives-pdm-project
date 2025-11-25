@@ -55,7 +55,9 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private ReviewService reviewService;
     private JPanel mainContentPanel;
     private JScrollPane scrollPane;
-    
+    private String previousSortType; // Store the previous sort type from StoreScreen
+    private int previousPage;
+
     // Modern color palette
     private final Color BG_COLOR = new Color(248, 249, 250);
     private final Color CARD_BG = Color.WHITE;
@@ -71,12 +73,22 @@ public class ProductDetailsScreenEnhanced extends Screen {
     private final Color BORDER_COLOR = new Color(229, 231, 235);
 
     public ProductDetailsScreenEnhanced(AppFrame appFrame) {
-        this(appFrame, null);
+        this(appFrame, null, "new", 1);
     }
 
     public ProductDetailsScreenEnhanced(AppFrame appFrame, Product product) {
+        this(appFrame, product, "new", 1);
+    }
+
+    public ProductDetailsScreenEnhanced(AppFrame appFrame, Product product, String sortType) {
+        this(appFrame, product, sortType, 1);
+    }
+
+    public ProductDetailsScreenEnhanced(AppFrame appFrame, Product product, String sortType, int page) {
         super(appFrame);
         this.product = product;
+        this.previousSortType = sortType != null ? sortType : "new";
+        this.previousPage = page > 0 ? page : 1;
         this.reviewService = ReviewService.getInstance();
         panel.setLayout(new BorderLayout());
         panel.setBackground(BG_COLOR);
@@ -152,7 +164,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         backBtn.setBackground(CARD_BG);
         backBtn.setDefaultColor(CARD_BG);
         backBtn.setBounds(32, yPos, 100, 38);
-        backBtn.addActionListener(e -> appFrame.setScreen(new StoreScreen(appFrame)));
+        backBtn.addActionListener(e -> appFrame.setScreen(new StoreScreen(appFrame, previousSortType, previousPage)));
         mainContentPanel.add(backBtn);
         
         yPos += 60;
@@ -709,7 +721,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
                 "Success",
                 JOptionPane.INFORMATION_MESSAGE);
             
-            appFrame.setScreen(new ProductDetailsScreenEnhanced(appFrame, product));
+            appFrame.setScreen(new ProductDetailsScreenEnhanced(appFrame, product, previousSortType, previousPage));
         } else {
             JOptionPane.showMessageDialog(panel,
                 "Failed to submit review. Please try again.",

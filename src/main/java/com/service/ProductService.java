@@ -9,9 +9,11 @@ import com.model.Product;
 public class ProductService {
     private static ProductService instance;
     private final productDAOimpl productDAO;
+    private final ReviewService reviewService;
 
     private ProductService() {
         this.productDAO = new productDAOimpl();
+        this.reviewService = ReviewService.getInstance();
     }
 
     public static ProductService getInstance() {
@@ -118,12 +120,20 @@ public class ProductService {
 
             case "rating":
                 System.out.println(">>> Using sort: RATING");
-                // tạm dùng price làm rating
+
+                List<String> pids = products.stream()
+                        .map(Product::getPid)
+                        .toList();
+
+                Map<String, Double> ratingMap = reviewService.getAverageRatingsForProducts(pids);
+
                 sorted.sort(
                         Comparator
-                                .comparingDouble(Product::getPrice).reversed()
+                                .comparingDouble((Product p) -> ratingMap.getOrDefault(p.getPid(), 0.0))
+                                .reversed()
                                 .thenComparing(Product::getName, String.CASE_INSENSITIVE_ORDER)
                 );
+
                 break;
             case "new":
                 System.out.println(">>> Using sort: DEFAULT (imagePriority)");
@@ -135,7 +145,7 @@ public class ProductService {
                 break;
 
         }
-        for (int i = 0; i < Math.min(5, sorted.size()); i++) {
+        for (int i = 0; i < Math.min(5, sorted.size()); i++) {//debug cases for product sorting
             Product p = sorted.get(i);
             System.out.println(
                     "   #" + i +
@@ -148,8 +158,6 @@ public class ProductService {
 
         return sorted;
     }
-
-
 
 
     public List<String> getAllCategories() {

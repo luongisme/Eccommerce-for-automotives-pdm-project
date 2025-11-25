@@ -25,7 +25,13 @@ public class StoreScreen extends Screen {
     private String currentSort = "new";
 
     public StoreScreen(AppFrame appFrame) {
+        this(appFrame, "new", 1);
+    }
+
+    public StoreScreen(AppFrame appFrame, String sortType, int page) {
         super(appFrame);
+        this.currentSort = sortType != null ? sortType : "new";
+        this.currentPage = page > 0 ? page : 1;
         productService = ProductService.getInstance();
         panel = new JPanel(null);
         panel.setBackground(Color.WHITE);
@@ -46,8 +52,8 @@ public class StoreScreen extends Screen {
             productService.getAllBrands()
         );
         sidebar.setBounds(20, 100, 200, 700);
-        sidebar.addFilterChangeListener(this::applyFiltersAndSort);
-        sidebar.addClearAllListener(this::applyFiltersAndSort);
+        sidebar.addFilterChangeListener(this::applyFiltersAndSortWithReset);
+        sidebar.addClearAllListener(this::applyFiltersAndSortWithReset);
         panel.add(sidebar);
 
         // Sort panel
@@ -85,10 +91,10 @@ public class StoreScreen extends Screen {
         sortPanel.setBounds(240, 120, 760, 40);
         sortPanel.setBackground(Color.WHITE);
 
-        JToggleButton newBtn = createSortButton("Featured", "new", true);
-        JToggleButton priceAscBtn = createSortButton("Price ascending", "price_asc", false);
-        JToggleButton priceDescBtn = createSortButton("Price descending", "price_desc", false);
-        JToggleButton ratingBtn = createSortButton("Rating", "rating", false);
+        JToggleButton newBtn = createSortButton("Featured", "new", currentSort.equals("new"));
+        JToggleButton priceAscBtn = createSortButton("Price ascending", "price_asc", currentSort.equals("price_asc"));
+        JToggleButton priceDescBtn = createSortButton("Price descending", "price_desc", currentSort.equals("price_desc"));
+        JToggleButton ratingBtn = createSortButton("Rating", "rating", currentSort.equals("rating"));
 
         ButtonGroup sortGroup = new ButtonGroup();
         sortGroup.add(newBtn);
@@ -174,6 +180,11 @@ public class StoreScreen extends Screen {
         applyFiltersAndSort();
     }
 
+    private void applyFiltersAndSortWithReset() {
+        currentPage = 1; // Reset to first page when user changes filter
+        applyFiltersAndSort();
+    }
+
     private void applyFiltersAndSort() {
         // Get filter values
         Set<String> selectedCategories = sidebar.getSelectedCategories();
@@ -199,9 +210,6 @@ public class StoreScreen extends Screen {
         // Sort products
         currentProducts = productService.sortProducts(filtered, currentSort);
 
-        // Reset to first page
-        currentPage = 1;
-
         // Update display
         displayProducts();
         updatePagination();
@@ -220,7 +228,7 @@ public class StoreScreen extends Screen {
             int endIndex = Math.min(startIndex + productsPerPage, currentProducts.size());
 
             for (int i = startIndex; i < endIndex; i++) {
-                ProductCard card = new ProductCard(currentProducts.get(i), appFrame);
+                ProductCard card = new ProductCard(currentProducts.get(i), appFrame, currentSort, currentPage);
                 productGridPanel.add(card);
             }
         }

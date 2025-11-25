@@ -2,6 +2,7 @@ package com.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.DAO.reviewDAOimpl;
@@ -77,4 +78,7 @@ public class ReviewService {
             .anyMatch(r -> r.getUserId().equals(userId));
     }
 
+    public Map<String, Double> getAverageRatingsForProducts(List<String> pids) {
+        return reviewDAO.getAverageRatingsForProducts(pids);
+    }
 }
