@@ -23,7 +23,7 @@ public class ProductCard extends JPanel {
         this.currentPage = page > 0 ? page : 1;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
-        setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
+        setBorder(BorderFactory.createLineBorder(new Color(106, 106, 106), 1));
         setPreferredSize(size);
         setMaximumSize(size);
         setMinimumSize(size);
@@ -123,12 +123,12 @@ public class ProductCard extends JPanel {
                 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 2));
+                    setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2));
                 }
                 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
+                    setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 1));
                 }
             };
             

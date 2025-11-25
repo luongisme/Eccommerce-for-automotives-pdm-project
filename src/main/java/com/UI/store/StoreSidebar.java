@@ -5,6 +5,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import com.UI.components.RoundedPanel;
+
 public class StoreSidebar extends JPanel {
     private Map<String, JCheckBox> categoryCheckBoxes;
     private Map<String, JCheckBox> brandCheckBoxes;
@@ -14,7 +16,7 @@ public class StoreSidebar extends JPanel {
 
     public StoreSidebar(List<String> categories, List<String> brands) {
         setLayout(null);
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 246, 248));
         setPreferredSize(new Dimension(200, 600));
         categoryCheckBoxes = new HashMap<>();
         brandCheckBoxes = new HashMap<>();
@@ -22,13 +24,19 @@ public class StoreSidebar extends JPanel {
     }
 
     private void initUI(List<String> categories, List<String> brands) {
+        RoundedPanel card = new RoundedPanel(16, true);
+        card.setLayout(null);
+        card.setBackground(Color.WHITE);
+        card.setBounds(0, 0, 200, 700);
+        add(card);
+
         int yPos = 20;
 
         // Categories section
         JLabel categoriesTitle = new JLabel("Categories");
         categoriesTitle.setFont(new Font("Arial", Font.BOLD, 15));
         categoriesTitle.setBounds(20, yPos, 160, 25);
-        add(categoriesTitle);
+        card.add(categoriesTitle);
         yPos += 30;
 
         // Clear All button
@@ -39,8 +47,8 @@ public class StoreSidebar extends JPanel {
         clearAllBtn.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
         clearAllBtn.setFocusPainted(false);
         clearAllBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        clearAllBtn.setBounds(100, yPos - 55, 80, 22);
-        add(clearAllBtn);
+        clearAllBtn.setBounds(108, yPos - 38, 80, 22);
+        card.add(clearAllBtn);
 
         // Category checkboxes
         for (String category : categories) {
@@ -51,7 +59,7 @@ public class StoreSidebar extends JPanel {
             checkBox.setBounds(20, yPos, 160, 25);
             checkBox.setSelected(true); // All selected by default
             categoryCheckBoxes.put(category, checkBox);
-            add(checkBox);
+            card.add(checkBox);
             yPos += 28;
         }
 
@@ -61,14 +69,14 @@ public class StoreSidebar extends JPanel {
         JLabel priceTitle = new JLabel("Price Range");
         priceTitle.setFont(new Font("Arial", Font.BOLD, 15));
         priceTitle.setBounds(20, yPos, 160, 25);
-        add(priceTitle);
+        card.add(priceTitle);
         yPos += 30;
 
         priceRangeLabel = new JLabel("$0-10000");
         priceRangeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         priceRangeLabel.setForeground(new Color(100, 100, 100));
         priceRangeLabel.setBounds(20, yPos, 160, 20);
-        add(priceRangeLabel);
+        card.add(priceRangeLabel);
         yPos += 25;
 
         // Price slider
@@ -79,14 +87,14 @@ public class StoreSidebar extends JPanel {
             int value = priceSlider.getValue();
             priceRangeLabel.setText("$0-" + value);
         });
-        add(priceSlider);
+        card.add(priceSlider);
         yPos += 50;
 
         // Brands section
         JLabel brandsTitle = new JLabel("Brands");
         brandsTitle.setFont(new Font("Arial", Font.BOLD, 15));
         brandsTitle.setBounds(20, yPos, 160, 25);
-        add(brandsTitle);
+        card.add(brandsTitle);
         yPos += 30;
 
         // Brand checkboxes (limit to first 10 for space)
@@ -100,7 +108,7 @@ public class StoreSidebar extends JPanel {
             checkBox.setBounds(20, yPos, 160, 25);
             checkBox.setSelected(true); // All selected by default
             brandCheckBoxes.put(brand, checkBox);
-            add(checkBox);
+            card.add(checkBox);
             yPos += 28;
             brandCount++;
         }

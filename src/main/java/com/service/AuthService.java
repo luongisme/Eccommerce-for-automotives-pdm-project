@@ -30,6 +30,21 @@ public class AuthService {
 
     // lấy user theo email từ DB, rồi check password
     public User authenticate(String email, String password) {
+        // Mock admin account for testing (does not require DB record)
+        if ("admin@example.com".equalsIgnoreCase(email) && "Admin123@".equals(password)) {
+            return new User(
+                    "ADMIN_TEST",        // userID
+                    "admin",            // username
+                    email,
+                    "",                 // lastName
+                    "",                 // midName
+                    "Admin",            // firstName
+                    java.time.LocalDateTime.now(),
+                    password,
+                    UserRole.ADMIN
+            );
+        }
+
         User user = userDAO.findByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
             return user;

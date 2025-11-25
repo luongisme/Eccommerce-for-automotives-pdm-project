@@ -92,7 +92,7 @@ public class LoginScreen extends Screen {
         formPanel.add(emailLabel);
 
         // Email field
-        emailField = new JTextField("user123@gmail.com");
+        emailField = new JTextField("admin@example.com");
         emailField.setFont(new Font("Arial", Font.PLAIN, 14));
         emailField.setBounds(0, 30, 380, 36);
         emailField.setBackground(Color.WHITE);
@@ -110,7 +110,7 @@ public class LoginScreen extends Screen {
         formPanel.add(passLabel);
 
         // Password field
-        passField = new JPasswordField("Password123@");
+        passField = new JPasswordField("Admin123@");
         passField.setFont(new Font("Arial", Font.PLAIN, 14));
         passField.setBounds(0, 110, 380, 36);
         passField.setBackground(Color.WHITE);
