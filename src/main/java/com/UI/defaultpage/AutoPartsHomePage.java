@@ -360,8 +360,9 @@ public class AutoPartsHomePage extends JFrame {
     }
 
     private void navigateToAdminDashboard() {
-        AdminDashboard adminDashboard = new AdminDashboard();
-        adminDashboard.setScreen();
+        AppFrame frame = new AppFrame();
+        frame.setScreen(new AdminDashboard(frame));
+        frame.setVisible(true);
         this.dispose();
     }
 

@@ -4,6 +4,7 @@ import com.Main.AppFrame;
 import com.model.User;
 import com.service.UserSession;
 import com.UI.defaultpage.AutoPartsHomePage;
+import com.UI.admin.AdminDashboard;
 import com.UI.login.LoginScreen;
 import com.UI.register.RegisterScreen;
 import com.UI.Payment.PaymentScreen;
@@ -130,7 +131,7 @@ public class StoreHeader extends JPanel {
                 adminBtn.setFocusPainted(false);
                 adminBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 adminBtn.setBounds(rightX, 23, 50, 24);
-                // adminBtn.addActionListener(e -> navigateToAdminDashboard());
+                adminBtn.addActionListener(e -> navigateToAdminDashboard());
                 add(adminBtn);
 
                 rightX += 60;
@@ -250,10 +251,10 @@ public class StoreHeader extends JPanel {
         appFrame.setScreen(new com.UI.Profile.ProfilePage(appFrame));
     }
 
-    // // Navigate to admin dashboard
-    // private void navigateToAdminDashboard() {
-    // appFrame.setScreen(new com.UI.admin.AdminDashboard());
-    // }
+    // Navigate to admin dashboard (same AppFrame)
+    private void navigateToAdminDashboard() {
+        appFrame.setScreen(new AdminDashboard(appFrame));
+    }
 
     private void navigateToHome() {
         User currentUser = UserSession.getInstance().getCurrentUser();
