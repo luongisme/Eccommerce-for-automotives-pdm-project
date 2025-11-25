@@ -2,7 +2,8 @@ package com.UI.login;
 
 import com.Main.AppFrame;
 import com.Main.Screen;
-
+import com.model.User;
+import com.service.UserSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,7 +46,12 @@ public class LoginScreen extends Screen {
         panel = new BackgroundPanel("/images/login_bg.jpg");
         panel.setLayout(null);
         initUI();
-        Runnable onSuccess = () -> appFrame.setScreen(new com.UI.store.StoreScreen(appFrame));
+        Runnable onSuccess = () -> {
+            User currentUser = UserSession.getInstance().getCurrentUser();
+            com.UI.defaultpage.AutoPartsHomePage home = new com.UI.defaultpage.AutoPartsHomePage(currentUser);
+            home.setVisible(true);
+            appFrame.dispose();
+        };
         new LoginController(this, onSuccess);
     }
 
@@ -104,7 +110,7 @@ public class LoginScreen extends Screen {
         formPanel.add(passLabel);
 
         // Password field
-        passField = new JPasswordField("Password123");
+        passField = new JPasswordField("Password123@");
         passField.setFont(new Font("Arial", Font.PLAIN, 14));
         passField.setBounds(0, 110, 380, 36);
         passField.setBackground(Color.WHITE);
