@@ -11,15 +11,16 @@ import java.awt.event.MouseEvent;
 public class ProductCard extends JPanel {
     private Product product;
     private AppFrame appFrame;
+    private String currentSort; // Store current sort type to pass to details page
+    private int currentPage; // Store current page to pass to details page
     private final Dimension size = new Dimension(170, 240);
 
-    public ProductCard(Product product) {
-        this(product, null);
-    }
 
-    public ProductCard(Product product, AppFrame appFrame) {
+    public ProductCard(Product product, AppFrame appFrame, String sortType, int page) {
         this.product = product;
         this.appFrame = appFrame;
+        this.currentSort = sortType != null ? sortType : "new";
+        this.currentPage = page > 0 ? page : 1;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
@@ -116,8 +117,8 @@ public class ProductCard extends JPanel {
             MouseAdapter clickAdapter = new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    // Navigate to enhanced product details page
-                    appFrame.setScreen(new ProductDetailsScreenEnhanced(appFrame, product));
+                    // Navigate to enhanced product details page with current sort type and page
+                    appFrame.setScreen(new ProductDetailsScreenEnhanced(appFrame, product, currentSort, currentPage));
                 }
                 
                 @Override

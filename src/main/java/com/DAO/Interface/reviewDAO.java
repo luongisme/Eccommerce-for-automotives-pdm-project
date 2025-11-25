@@ -3,6 +3,7 @@ package com.DAO.Interface;
 import com.model.Review;
 
 import java.util.List;
+import java.util.Map;
 
 public interface reviewDAO {
     Review findById(String rid);
@@ -11,4 +12,5 @@ public interface reviewDAO {
     boolean insert(Review review);
     boolean update(Review review);
     boolean delete(String rid);
+    Map<String, Double> getAverageRatingsForProducts(List<String> pids);
 }

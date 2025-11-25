@@ -10,8 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class reviewDAOimpl implements reviewDAO {
 
@@ -160,4 +159,41 @@ public class reviewDAOimpl implements reviewDAO {
         }
         return false;
     }
+
+    @Override
+    public Map<String, Double> getAverageRatingsForProducts(List<String> pids) {
+        Map<String,Double> result=new HashMap<>();
+
+        if (pids == null || pids.isEmpty()) {
+            return result;
+        }
+
+        String placeholders = String.join(",", Collections.nCopies(pids.size(), "?"));//create the corresponding number of pid placeholders
+
+        String sql="SELECT PID, AVG(Rating) as AvgRating "+
+                "FROM review "+
+                "WHERE PID IN (" + placeholders + ") " +
+                "GROUP BY PID";
+        try(Connection conn=JdbcConnector.connect();
+        PreparedStatement ps= conn.prepareStatement(sql)) {
+            for(int i=0;i<pids.size();i++){
+                ps.setString(i+1,pids.get(i));
+            }
+            try(ResultSet rs= ps.executeQuery()){
+                while(rs.next()){
+                    String pid=rs.getString("PID");
+                    double avgRating=rs.getDouble("AvgRating");
+                    result.put(pid,avgRating);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
 }
