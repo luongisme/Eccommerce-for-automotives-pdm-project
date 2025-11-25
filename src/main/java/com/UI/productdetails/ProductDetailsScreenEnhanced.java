@@ -323,65 +323,67 @@ public class ProductDetailsScreenEnhanced extends Screen {
 
     private void createEnhancedSpecificationsBox(int yPos) {
         RoundedPanel specPanel = new RoundedPanel(16, true);
-        specPanel.setLayout(new java.awt.GridBagLayout());
+        specPanel.setLayout(null);
         specPanel.setBounds(32, yPos, 472, 265);
         specPanel.setBackground(CARD_BG);
         specPanel.setBorder(new EmptyBorder(24, 24, 24, 24));
 
-        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.anchor = java.awt.GridBagConstraints.WEST;
-        gbc.insets = new java.awt.Insets(0, 0, 12, 0);
-
-        // Title
+        // Title (match Product Information title)
         JLabel specTitle = new JLabel("Specifications");
         specTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         specTitle.setForeground(TEXT_PRIMARY);
-        specTitle.setBounds(15, 15, 250, 28);
-        specPanel.add(specTitle, gbc);
+        specTitle.setBounds(15, 15, 300, 28);
+        specPanel.add(specTitle);
 
         int currentY = 68;
         Map<String, String> specs = product.getSpecifications();
 
-        int row = 1;
+        int rowCount = 0;
+        outer:
         for (Map.Entry<String, String> entry : specs.entrySet()) {
-            if (row > 5) break;
-
-            // cột key
-            JLabel keyLabel = new JLabel(entry.getKey());
-            keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            keyLabel.setForeground(TEXT_SECONDARY);
-
             String rawValue = entry.getValue();
+            if (rawValue == null || rawValue.trim().isEmpty()) {
+                continue;
+            }
 
-            String htmlValue = rawValue.replace(" | ", "<br>");
+            String[] parts = rawValue.split("\\|");
+            for (String part : parts) {
+                if (part == null) continue;
+                String trimmed = part.trim();
+                if (trimmed.isEmpty()) continue;
 
+                String leftText;
+                String rightText;
 
-            JLabel valueLabel = new JLabel(
-                    "<html><body style='width:260px;'>" + htmlValue + "</body></html>"
-            );
-            valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            valueLabel.setForeground(TEXT_PRIMARY);
+                String[] kv = trimmed.split(":\\s*", 2);
+                if (kv.length == 2) {
+                    leftText = kv[0].trim();
+                    rightText = kv[1].trim();
+                } else {
+                    leftText = entry.getKey();
+                    rightText = trimmed;
+                }
 
-            // add key
-            gbc.gridwidth = 1;
-            gbc.gridy = row;
-            gbc.insets = new java.awt.Insets(4, 0, 4, 16);
-            gbc.gridx = 0;
-            gbc.weightx = 0;
-            gbc.fill = java.awt.GridBagConstraints.NONE;
-            gbc.anchor = java.awt.GridBagConstraints.NORTHWEST;
-            specPanel.add(keyLabel, gbc);
+                JLabel keyLabel = new JLabel(leftText);
+                keyLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                keyLabel.setForeground(TEXT_SECONDARY);
+                keyLabel.setBounds(15, currentY, 180, 22);
+                specPanel.add(keyLabel);
 
-            // add value
-            gbc.gridx = 1;
-            gbc.weightx = 1.0;
-            gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            specPanel.add(valueLabel, gbc);
+                JLabel valueLabel = new JLabel(rightText);
+                valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+                valueLabel.setForeground(TEXT_PRIMARY);
+                valueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+                valueLabel.setBounds(180, currentY, 260, 22);
+                specPanel.add(valueLabel);
 
-            row++;
+                currentY += 42;
+                rowCount++;
+
+                if (rowCount >= 8) {
+                    break outer;
+                }
+            }
         }
 
         mainContentPanel.add(specPanel);
@@ -424,7 +426,8 @@ public class ProductDetailsScreenEnhanced extends Screen {
         stockBadge.setHorizontalAlignment(SwingConstants.RIGHT);
         stockBadge.setBounds(190, currentY, 236, 22);
         infoPanel.add(stockBadge);
-        currentY += 52;
+
+        currentY += 42;
 
         // Availability
         addEnhancedInfoRow(infoPanel, "Availability", 

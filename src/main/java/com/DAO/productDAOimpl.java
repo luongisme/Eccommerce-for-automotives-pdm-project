@@ -144,7 +144,27 @@ public class productDAOimpl implements productDAO {
 
     @Override
     public List<Product> findByVehicleMake(String make) {
-        return List.of();
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM Product WHERE CoID = ? ORDER BY PName";
+
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, make);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    products.add(mapRow(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return products;
     }
 
     @Override
