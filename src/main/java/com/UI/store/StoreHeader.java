@@ -1,7 +1,9 @@
 package com.UI.store;
 
 import com.Main.AppFrame;
+import com.model.User;
 import com.service.UserSession;
+import com.UI.defaultpage.AutoPartsHomePage;
 import com.UI.login.LoginScreen;
 import com.UI.register.RegisterScreen;
 import com.UI.Payment.PaymentScreen;
@@ -34,6 +36,13 @@ public class StoreHeader extends JPanel {
         brandLabel.setFont(new Font("Arial", Font.BOLD, 24));
         brandLabel.setForeground(Color.BLACK);
         brandLabel.setBounds(30, 20, 200, 30);
+        brandLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        brandLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                navigateToHome();
+            }
+        });
         add(brandLabel);
 
         // Search bar
@@ -245,6 +254,13 @@ public class StoreHeader extends JPanel {
     // private void navigateToAdminDashboard() {
     // appFrame.setScreen(new com.UI.admin.AdminDashboard());
     // }
+
+    private void navigateToHome() {
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        AutoPartsHomePage home = new AutoPartsHomePage(currentUser);
+        home.setVisible(true);
+        appFrame.dispose();
+    }
 
     private void handleCartClick() {
         if (!UserSession.getInstance().isLoggedIn()) {

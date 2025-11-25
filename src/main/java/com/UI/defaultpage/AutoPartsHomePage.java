@@ -5,10 +5,28 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
 import javax.imageio.ImageIO;
+import com.Main.AppFrame;
+import com.model.User;
+import com.model.User.UserRole;
+import com.UI.admin.AdminDashboard;
+import com.UI.store.StoreScreen;
+import com.UI.Payment.PaymentScreen;
+
+import com.service.UserSession;
 
 public class AutoPartsHomePage extends JFrame {
     
+    private final User currentUser;
+    private final UserRole role;
+
     public AutoPartsHomePage() {
+        this(null);
+    }
+
+    public AutoPartsHomePage(User user) {
+        this.currentUser = user;
+        this.role = (user != null && user.getRole() != null) ? user.getRole() : UserRole.CUSTOMER;
+
         setTitle("AutoParts Pro");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(688, 840);
@@ -51,7 +69,10 @@ public class AutoPartsHomePage extends JFrame {
 
             topBar.add(Box.createHorizontalGlue());
 
-            // Products button
+            boolean isGuest = (currentUser == null);
+            boolean isAdmin = (!isGuest && role == UserRole.ADMIN);
+
+            // Products button (common)
             JButton productsBtn = new JButton("Products");
             productsBtn.setFont(new Font("Arial", Font.PLAIN, 12));
             productsBtn.setForeground(Color.BLACK);
@@ -59,35 +80,85 @@ public class AutoPartsHomePage extends JFrame {
             productsBtn.setBorderPainted(false);
             productsBtn.setFocusPainted(false);
             productsBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            productsBtn.addActionListener(e -> navigateToLogin());
+            productsBtn.addActionListener(e -> {
+                if (isGuest) {
+                    navigateToLogin();
+                } else {
+                    navigateToStore();
+                }
+            });
             topBar.add(Box.createRigidArea(new Dimension(16, 0)));
             topBar.add(productsBtn);
 
-            // Login button
-            JButton loginBtn = new JButton("Login");
-            loginBtn.setFont(new Font("Arial", Font.PLAIN, 12));
-            loginBtn.setForeground(Color.BLACK);
-            loginBtn.setContentAreaFilled(false);
-            loginBtn.setBorderPainted(false);
-            loginBtn.setFocusPainted(false);
-            loginBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            loginBtn.addActionListener(e -> navigateToLogin());
-            topBar.add(Box.createRigidArea(new Dimension(12, 0)));
-            topBar.add(loginBtn);
+            if (isGuest) {
+                // Login button
+                JButton loginBtn = new JButton("Login");
+                loginBtn.setFont(new Font("Arial", Font.PLAIN, 12));
+                loginBtn.setForeground(Color.BLACK);
+                loginBtn.setContentAreaFilled(false);
+                loginBtn.setBorderPainted(false);
+                loginBtn.setFocusPainted(false);
+                loginBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                loginBtn.addActionListener(e -> navigateToLogin());
+                topBar.add(Box.createRigidArea(new Dimension(12, 0)));
+                topBar.add(loginBtn);
 
-            // Register button
-            JButton registerBtn = new JButton("Register");
-            registerBtn.setFont(new Font("Arial", Font.BOLD, 12));
-            registerBtn.setForeground(Color.WHITE);
-            registerBtn.setBackground(Color.BLACK);
-            registerBtn.setFocusPainted(false);
-            registerBtn.setBorderPainted(false);
-            registerBtn.setOpaque(true);
-            registerBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            registerBtn.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
-            registerBtn.addActionListener(e -> navigateToRegister());
-            topBar.add(Box.createRigidArea(new Dimension(8, 0)));
-            topBar.add(registerBtn);
+                // Register button
+                JButton registerBtn = new JButton("Register");
+                registerBtn.setFont(new Font("Arial", Font.BOLD, 12));
+                registerBtn.setForeground(Color.WHITE);
+                registerBtn.setBackground(Color.BLACK);
+                registerBtn.setFocusPainted(false);
+                registerBtn.setBorderPainted(false);
+                registerBtn.setOpaque(true);
+                registerBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                registerBtn.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
+                registerBtn.addActionListener(e -> navigateToRegister());
+                topBar.add(Box.createRigidArea(new Dimension(8, 0)));
+                topBar.add(registerBtn);
+            } else {
+                if (isAdmin) {
+                    JButton adminBtn = new JButton("Admin");
+                    adminBtn.setFont(new Font("Arial", Font.PLAIN, 12));
+                    adminBtn.setForeground(Color.BLACK);
+                    adminBtn.setContentAreaFilled(false);
+                    adminBtn.setBorderPainted(false);
+                    adminBtn.setFocusPainted(false);
+                    adminBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    adminBtn.addActionListener(e -> navigateToAdminDashboard());
+                    topBar.add(Box.createRigidArea(new Dimension(16, 0)));
+                    topBar.add(adminBtn);
+                }
+
+                // Username/Admin button with icon
+                JButton userBtn;
+                try {
+                    java.net.URL userUrl = getClass().getResource("/images/user_icon.png");
+                    if (userUrl != null) {
+                        ImageIcon userIconImg = new ImageIcon(userUrl);
+                        Image scaledUser = userIconImg.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+                        String label = isAdmin ? "Admin" : currentUser.getUsername();
+                        userBtn = new JButton(label, new ImageIcon(scaledUser));
+                        userBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
+                        userBtn.setIconTextGap(6);
+                    } else {
+                        String label = isAdmin ? "Admin" : currentUser.getUsername();
+                        userBtn = new JButton("\uD83D\uDC64  " + label);
+                    }
+                } catch (Exception ex) {
+                    String label = isAdmin ? "Admin" : (currentUser != null ? currentUser.getUsername() : "User");
+                    userBtn = new JButton("\uD83D\uDC64  " + label);
+                }
+                userBtn.setFont(new Font("Arial", Font.PLAIN, 12));
+                userBtn.setForeground(Color.BLACK);
+                userBtn.setContentAreaFilled(false);
+                userBtn.setBorderPainted(false);
+                userBtn.setFocusPainted(false);
+                userBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                userBtn.addActionListener(e -> navigateToProfile());
+                topBar.add(Box.createRigidArea(new Dimension(12, 0)));
+                topBar.add(userBtn);
+            }
 
             // Cart button with icon
             JButton cartBtn = null;
@@ -109,7 +180,13 @@ public class AutoPartsHomePage extends JFrame {
             cartBtn.setBorderPainted(false);
             cartBtn.setFocusPainted(false);
             cartBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            cartBtn.addActionListener(e -> navigateToLogin());
+            cartBtn.addActionListener(e -> {
+                if (isGuest) {
+                    navigateToLogin();
+                } else {
+                    navigateToCart();
+                }
+            });
             topBar.add(Box.createRigidArea(new Dimension(4, 0)));
             topBar.add(cartBtn);
             topBar.add(Box.createRigidArea(new Dimension(16, 0)));
@@ -139,7 +216,13 @@ public class AutoPartsHomePage extends JFrame {
             shopNowBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
             shopNowBtn.setVerticalAlignment(SwingConstants.CENTER);
             shopNowBtn.setHorizontalAlignment(SwingConstants.CENTER);
-            shopNowBtn.addActionListener(e -> navigateToLogin());
+            shopNowBtn.addActionListener(e -> {
+                if (isGuest) {
+                    navigateToLogin();
+                } else {
+                    navigateToStore();
+                }
+            });
             bgPanel.add(shopNowBtn);
 
             JButton browseCatBtn = new JButton("Browse Categories");
@@ -156,7 +239,13 @@ public class AutoPartsHomePage extends JFrame {
             browseCatBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
             browseCatBtn.setVerticalAlignment(SwingConstants.CENTER);
             browseCatBtn.setHorizontalAlignment(SwingConstants.CENTER);
-            browseCatBtn.addActionListener(e -> navigateToLogin());
+            browseCatBtn.addActionListener(e -> {
+                if (isGuest) {
+                    navigateToLogin();
+                } else {
+                    navigateToStore();
+                }
+            });
             bgPanel.add(browseCatBtn);
 
             // ===== FEATURED PRODUCTS SECTION =====
@@ -181,7 +270,13 @@ public class AutoPartsHomePage extends JFrame {
             viewAllBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
             viewAllBtn.setHorizontalAlignment(SwingConstants.RIGHT);
             viewAllBtn.setBounds(510, 238, 160, 28);
-            viewAllBtn.addActionListener(e -> navigateToLogin());
+            viewAllBtn.addActionListener(e -> {
+                if (isGuest) {
+                    navigateToLogin();
+                } else {
+                    navigateToStore();
+                }
+            });
             bgPanel.add(viewAllBtn);
 
             // Product grid 3x2
@@ -251,15 +346,42 @@ public class AutoPartsHomePage extends JFrame {
     }
 
     private void navigateToLogin() {
-        com.Main.AppFrame frame = new com.Main.AppFrame();
+        AppFrame frame = new AppFrame();
         frame.setScreen(new com.UI.login.LoginScreen(frame));
         frame.setVisible(true);
         this.dispose();
     }
 
     private void navigateToRegister() {
-        com.Main.AppFrame frame = new com.Main.AppFrame();
+        AppFrame frame = new AppFrame();
         frame.setScreen(new com.UI.register.RegisterScreen(frame));
+        frame.setVisible(true);
+        this.dispose();
+    }
+
+    private void navigateToAdminDashboard() {
+        AdminDashboard adminDashboard = new AdminDashboard();
+        adminDashboard.setScreen();
+        this.dispose();
+    }
+
+    private void navigateToStore() {
+        AppFrame frame = new AppFrame();
+        frame.setScreen(new StoreScreen(frame));
+        frame.setVisible(true);
+        this.dispose();
+    }
+
+    private void navigateToCart() {
+        AppFrame frame = new AppFrame();
+        frame.setScreen(new PaymentScreen(frame));
+        frame.setVisible(true);
+        this.dispose();
+    }
+
+    private void navigateToProfile() {
+        AppFrame frame = new AppFrame();
+        frame.setScreen(new com.UI.Profile.ProfilePage(frame));
         frame.setVisible(true);
         this.dispose();
     }
@@ -301,7 +423,11 @@ public class AutoPartsHomePage extends JFrame {
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                navigateToLogin();
+                if (currentUser == null) {
+                    navigateToLogin();
+                } else {
+                    navigateToStore();
+                }
             }
         });
 
