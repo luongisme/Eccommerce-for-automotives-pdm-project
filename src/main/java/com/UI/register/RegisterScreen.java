@@ -46,7 +46,7 @@ public class RegisterScreen extends Screen {
 
     public RegisterScreen(AppFrame appFrame) {
         super(appFrame);
-        panel = new RegisterBackgroundPanel("/images/login_bg.jpg");
+        panel = new RegisterBackgroundPanel("");
         panel.setLayout(null);
         initUI();
     }
