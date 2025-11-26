@@ -4,12 +4,10 @@ import com.DAO.Interface.orderitemDAO;
 import com.model.OrderItem;
 import com.Util.JdbcConnector;
 import com.model.Order;
+import com.model.Product;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +67,36 @@ public class orderitemDAOimpl implements orderitemDAO {
         }
         return orderItem;
     }
+
+    @Override
+    public List<OrderItem> findMostSaleProduct() {
+        List<OrderItem> orderItems = new ArrayList<>();
+        String sql = "SELECT PID, SUM(Quantity) AS TotalSold " +
+                "FROM OrderItem " +
+                "GROUP BY PID " +
+                "ORDER BY TotalSold DESC " +
+                "LIMIT 5";
+
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                OrderItem oi = new OrderItem();
+                oi.setPid(rs.getString("PID"));
+                oi.setQuantity(rs.getInt("TotalSold"));  // số lượng bán
+                orderItems.add(oi);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return orderItems;
+    }
+
 
     @Override
     public boolean insert(OrderItem item) {

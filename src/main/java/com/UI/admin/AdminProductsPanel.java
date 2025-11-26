@@ -98,6 +98,7 @@ public class AdminProductsPanel extends JPanel {
                 label.setHorizontalAlignment(SwingConstants.CENTER);
                 label.setOpaque(true);
                 label.setBorder(new EmptyBorder(4, 10, 4, 10));
+                label.setForeground(Color.WHITE);
 
                 String statusText = value != null ? value.toString() : "";
                 if ("Active".equalsIgnoreCase(statusText)) {
@@ -111,6 +112,7 @@ public class AdminProductsPanel extends JPanel {
             }
         };
         table.getColumnModel().getColumn(4).setCellRenderer(statusRenderer);
+        table.getColumnModel().getColumn(4).setPreferredWidth(100);
 
         // Actions column: custom renderer & editor with three buttons
         table.getColumnModel().getColumn(5).setCellRenderer(new ActionsRenderer());

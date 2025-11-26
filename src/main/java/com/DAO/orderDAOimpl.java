@@ -110,17 +110,17 @@ public class orderDAOimpl implements orderDAO {
 
     @Override
     public boolean update(Order order) {
-        String sql = "UPDATE Order SET OrderID = ?, OrderDate = ?, OrderStatus = ?, UserID = ?, PaymentID = ? " +
-                "WHERE OrderID = ?";
+        String sql = "UPDATE orders SET OrderDate = ?, TotalAmount = ?, OrderStatus = ?, " +
+                "UserID = ?, PaymentID = ? WHERE OrderID = ?";
         try (Connection conn = JdbcConnector.connect();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, order.getOrderID());
-            ps.setTimestamp(2, java.sql.Timestamp.valueOf(order.getOrderDate()));
-            ps.setBigDecimal(3, order.getTotalAmount());
-            ps.setString(4, order.getOrderStatus());
-            ps.setString(5, order.getUserID());
-            ps.setString(6, order.getPaymentID());
-            ps.setString(7, order.getOrderID());
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setTimestamp(1, java.sql.Timestamp.valueOf(order.getOrderDate()));
+            ps.setBigDecimal(2, order.getTotalAmount());
+            ps.setString(3, order.getOrderStatus());
+            ps.setString(4, order.getUserID());
+            ps.setString(5, order.getPaymentID());
+            ps.setString(6, order.getOrderID());
 
             int affected = ps.executeUpdate();
             return affected > 0;
@@ -131,6 +131,7 @@ public class orderDAOimpl implements orderDAO {
         }
         return false;
     }
+
 
     @Override
     public boolean delete(String orderID) {

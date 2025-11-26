@@ -36,12 +36,20 @@ public class AdminOverviewPanel extends JPanel {
         customersCard.setBounds(startX + 3 * (cardW + gap), 0, cardW, cardH);
         add(customersCard);
 
+        JPanel recentOrders = createSimpleCard("Recent Orders");
+        recentOrders.setBounds(0, cardH + 24, 472, 170);
+        add(recentOrders);
+
         JPanel lowStock = createSimpleCard("Low Stock Alert");
-        lowStock.setBounds(0, cardH + 24, 472, 170);
+        lowStock.setBounds(488, cardH + 24, 472, 170);
         add(lowStock);
 
+        JPanel analytics = createSimpleCard("Sales Analytics");
+        analytics.setBounds(0, cardH + 24 + 170 + 24, 472, 170);
+        add(analytics);
+
         JPanel topCategories = createSimpleCard("Top Selling Categories");
-        topCategories.setBounds(488, cardH + 24, 472, 170);
+        topCategories.setBounds(488, cardH + 24 + 170 + 24, 472, 170);
         add(topCategories);
     }
 

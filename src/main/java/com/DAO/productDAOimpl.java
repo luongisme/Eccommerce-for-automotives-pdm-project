@@ -92,6 +92,8 @@ public class productDAOimpl implements productDAO {
         return products;
     }
 
+
+
     @Override
     public List<Product> findByCategory(String category) {
         List<Product> products = new ArrayList<>();
@@ -166,6 +168,9 @@ public class productDAOimpl implements productDAO {
 
         return products;
     }
+
+
+
 
     @Override
     public boolean insert(Product product) {
