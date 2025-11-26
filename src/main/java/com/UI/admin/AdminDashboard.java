@@ -254,7 +254,7 @@ public class AdminDashboard extends Screen {
         if (!session.isLoggedIn()) {
             appFrame.setScreen(new LoginScreen(appFrame));
         } else {
-            appFrame.setScreen(new PaymentScreen(appFrame));
+            appFrame.setScreen(new PaymentScreen(appFrame,"ORDER001", "P001"));
         }
     }
 

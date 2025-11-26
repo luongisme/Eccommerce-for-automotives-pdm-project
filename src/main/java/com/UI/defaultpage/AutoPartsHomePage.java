@@ -7,7 +7,6 @@ import com.Main.Screen;
 import com.service.UserSession;
 import com.UI.admin.AdminDashboard;
 import com.UI.store.StoreScreen;
-import com.UI.Payment.PaymentScreen;
 
 public class AutoPartsHomePage extends Screen {
 
@@ -312,9 +311,6 @@ public class AutoPartsHomePage extends Screen {
         appFrame.setScreen(new StoreScreen(appFrame));
     }
 
-    private void navigateToCart() {
-        appFrame.setScreen(new PaymentScreen(appFrame));
-    }
 
     private void navigateToProfile() {
         appFrame.setScreen(new com.UI.Profile.ProfilePage(appFrame));

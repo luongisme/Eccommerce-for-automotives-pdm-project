@@ -2,11 +2,17 @@ package com.UI.store;
 
 import com.Main.AppFrame;
 import com.model.Product;
+import com.model.User;
+import com.service.CartService;
+import com.service.UserSession;
 import com.UI.productdetails.ProductDetailsScreenEnhanced;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class ProductCard extends JPanel {
     private Product product;
@@ -33,41 +39,10 @@ public class ProductCard extends JPanel {
 
     private void initUI() {
         // Image panel
-        JPanel imagePanel = new JPanel(new BorderLayout());
+        JPanel imagePanel = new JPanel();
         imagePanel.setPreferredSize(new Dimension(180, 140));
-        imagePanel.setBackground(Color.WHITE);
-
-        // Try to load image using ImageIO for better error handling
-        String imageUrl = product.getImageUrl();
-        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
-            String imagePath = "/images/Product/" + imageUrl.trim();
-            java.net.URL imgUrl = getClass().getResource(imagePath);
-            //System.out.println("Loading image from path: " + imagePath + " | URL: " + imgUrl); debug line
-
-            if (imgUrl != null) {
-                try {
-                    java.awt.image.BufferedImage bufferedImage = javax.imageio.ImageIO.read(imgUrl);
-                    if (bufferedImage != null) {
-                        Image scaled = bufferedImage.getScaledInstance(180, 140, Image.SCALE_SMOOTH);
-                        JLabel imageLabel = new JLabel(new ImageIcon(scaled));
-                        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                        imagePanel.add(imageLabel, BorderLayout.CENTER);
-                    } else {
-                        // File exists but is not a valid image
-                        addPlaceholder(imagePanel, "Invalid Image", Color.RED);
-                    }
-                } catch (Exception e) {
-                    // Error reading image file
-                    addPlaceholder(imagePanel, "Error Loading", Color.RED);
-                }
-            } else {
-                // Image file not found in resources
-                addPlaceholder(imagePanel, "No Image", Color.GRAY);
-            }
-        } else {
-            // No image URL provided
-            addPlaceholder(imagePanel, "No Image", Color.GRAY);
-        }
+        imagePanel.setBackground(Color.LIGHT_GRAY);
+        loadProductImage(imagePanel, product.getImageUrl(), 180, 140);
 
 
         // Info panel
@@ -95,6 +70,35 @@ public class ProductCard extends JPanel {
         addToCartBtn.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
         addToCartBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        // Add click listener for add to cart
+        addToCartBtn.addActionListener(e -> {
+            UserSession session = UserSession.getInstance();
+            if (!session.isLoggedIn()) {
+                JOptionPane.showMessageDialog(this,
+                    "Please login to add items to cart.",
+                    "Login Required",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            User currentUser = session.getCurrentUser();
+            CartService cartService = CartService.getInstance();
+
+            boolean success = cartService.addToCart(currentUser, product.getPid(), 1);
+
+            if (success) {
+                JOptionPane.showMessageDialog(this,
+                    "Added to cart successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Failed to add to cart. Please try again.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         infoPanel.add(nameLabel, BorderLayout.NORTH);
         infoPanel.add(priceLabel, BorderLayout.CENTER);
         infoPanel.add(addToCartBtn, BorderLayout.SOUTH);
@@ -103,11 +107,47 @@ public class ProductCard extends JPanel {
         add(infoPanel, BorderLayout.CENTER);
     }
 
-    private void addPlaceholder(JPanel panel, String text, Color color) {
+    public static void addPlaceholder(JPanel panel, String text, Color color) {
         JLabel placeholder = new JLabel(text, SwingConstants.CENTER);
         placeholder.setForeground(color);
-        placeholder.setFont(new Font("Arial", Font.PLAIN, 10));
+        placeholder.setFont(new Font("Arial", Font.PLAIN, 15));
         panel.add(placeholder, BorderLayout.CENTER);
+    }
+
+
+    public static void loadProductImage(JPanel panel, String imageUrl, int width, int height) {
+        panel.removeAll();
+        panel.setLayout(new BorderLayout());
+
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            String path = "/images/Product/" + imageUrl.trim();
+            java.net.URL imgUrl = ProductCard.class.getResource(path);
+
+            if (imgUrl != null) {
+                try {
+                    BufferedImage img = ImageIO.read(imgUrl);
+                    if (img != null) {
+                        Image scaled = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                        JLabel label = new JLabel(new ImageIcon(scaled));
+                        label.setHorizontalAlignment(SwingConstants.CENTER);
+                        panel.add(label, BorderLayout.CENTER);
+                        return;
+                    } else {
+                        addPlaceholder(panel, "Invalid Image", Color.RED);
+                        return;
+                    }
+                } catch (Exception e) {
+                    addPlaceholder(panel, "Error Loading", Color.RED);
+                    return;
+                }
+            } else {
+                addPlaceholder(panel, "No Image", Color.GRAY);
+                return;
+            }
+        }
+
+        // No URL
+        addPlaceholder(panel, "No Image", Color.GRAY);
     }
 
     private void addClickListener() {

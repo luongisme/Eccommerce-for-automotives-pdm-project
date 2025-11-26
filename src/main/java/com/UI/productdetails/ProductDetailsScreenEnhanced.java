@@ -1,12 +1,10 @@
 package com.UI.productdetails;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -19,6 +17,7 @@ import com.UI.components.StarRatingPanel;
 
 import com.UI.store.StoreHeader;
 import com.UI.store.StoreScreen;
+import com.UI.store.ProductCard;
 import com.model.Product;
 import com.model.Review;
 import com.model.User;
@@ -186,39 +185,7 @@ public class ProductDetailsScreenEnhanced extends Screen {
         };
         imageContent.setOpaque(false);
 
-        String imageUrl = product.getImageUrl();
-        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
-            String imagePath = "/images/Product/" + imageUrl.trim();
-            java.net.URL imgUrl = getClass().getResource(imagePath);
-            System.out.println("Loading product image from: " + imagePath + " | URL: " + imgUrl);
-
-            if (imgUrl != null) {
-                try {
-                    BufferedImage bufferedImage = ImageIO.read(imgUrl);
-                    if (bufferedImage != null) {
-                        // Kích thước ảnh bên trong panel
-                        int targetW = 360;
-                        int targetH = 332;
-                        Image scaled = bufferedImage.getScaledInstance(targetW, targetH, Image.SCALE_SMOOTH);
-
-                        JLabel imgLabel = new JLabel(new ImageIcon(scaled));
-                        imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                        imageContent.add(imgLabel, BorderLayout.CENTER);
-                    } else {
-                        addImagePlaceholder(imageContent, "Invalid Image", Color.RED);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    addImagePlaceholder(imageContent, "Error Loading", Color.RED);
-                }
-            } else {
-                // Không tìm thấy file trong resources
-                addImagePlaceholder(imageContent, "No Image", Color.GRAY);
-            }
-        } else {
-            // Không có URL ảnh
-            addImagePlaceholder(imageContent, "No Image", Color.GRAY);
-        }
+        ProductCard.loadProductImage(imageContent, product.getImageUrl(), 400, 372);
 
         imagePanel.add(imageContent, BorderLayout.CENTER);
         container.add(imagePanel);
@@ -677,11 +644,23 @@ public class ProductDetailsScreenEnhanced extends Screen {
             return;
         }
 
-        JOptionPane.showMessageDialog(panel,
-            String.format("Added %d x %s to cart!\nTotal: $%.2f", 
-                quantity, product.getName(), product.getPrice() * quantity),
-            "Success",
-            JOptionPane.INFORMATION_MESSAGE);
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        com.service.CartService cartService = com.service.CartService.getInstance();
+
+        boolean success = cartService.addToCart(currentUser, product.getPid(), quantity);
+
+        if (success) {
+            JOptionPane.showMessageDialog(panel,
+                String.format("Added %d x %s to cart!\nTotal: $%.2f",
+                    quantity, product.getName(), product.getPrice() * quantity),
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(panel,
+                "Failed to add to cart. Please try again.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void handleSubmitReview(int rating, String title, String body) {
@@ -694,8 +673,12 @@ public class ProductDetailsScreenEnhanced extends Screen {
         }
 
         User currentUser = UserSession.getInstance().getCurrentUser();
+
+        // Generate random review ID
+        java.util.Random rand = new java.util.Random();
+
         Review newReview = new Review(
-            "2",
+            String.valueOf(rand.nextInt(10000000)),
             product.getPid(),
             currentUser.getUserID(),
             currentUser.getFullName(),
@@ -750,12 +733,5 @@ public class ProductDetailsScreenEnhanced extends Screen {
         SwingUtilities.invokeLater(() -> {
             scrollPane.getVerticalScrollBar().setValue(0);
         });
-    }
-
-    private void addImagePlaceholder(JPanel panel, String text, Color color) {
-        JLabel placeholder = new JLabel(text, SwingConstants.CENTER);
-        placeholder.setForeground(color);
-        placeholder.setFont(new Font("Arial", Font.PLAIN, 10));
-        panel.add(placeholder, BorderLayout.CENTER);
     }
 }

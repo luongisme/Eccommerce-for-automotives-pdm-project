@@ -264,8 +264,16 @@ public class StoreHeader extends JPanel {
         if (!UserSession.getInstance().isLoggedIn()) {
             navigateToLogin();
         } else {
-            // Navigate to in-app payment screen (Swing only)
-            appFrame.setScreen(new PaymentScreen(appFrame));
+            // Get current user
+            User currentUser = UserSession.getInstance().getCurrentUser();
+            String userID = currentUser.getUserID();
+
+            // Create temporary order ID
+            String orderID = "TEMP_ORDER_" + System.currentTimeMillis();
+
+            System.out.println("Opening PaymentScreen for user: " + userID + " with orderID: " + orderID);
+            // Navigate to payment screen with user's cart (allow empty cart)
+            appFrame.setScreen(new PaymentScreen(appFrame, userID, orderID, true));
         }
     }
 }
