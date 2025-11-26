@@ -28,8 +28,11 @@ public class AdminDashboard extends Screen {
     private CardLayout cardLayout;
     private JPanel contentCards;
 
+    private final AdminDashboardController controller;
+
     public AdminDashboard(AppFrame appFrame) {
         super(appFrame);
+        this.controller = new AdminDashboardController();
         panel = new JPanel(null);
         panel.setBackground(BG_COLOR);
         initUI();
@@ -159,7 +162,7 @@ public class AdminDashboard extends Screen {
         contentCards.setBounds(24, 184, 976, 920);
 
         JPanel overviewPanel = new AdminOverviewPanel();
-        JPanel productsPanel = new AdminProductsPanel();
+        JPanel productsPanel = new AdminProductsPanel(controller);
         JPanel ordersPanel = new AdminOrdersPanel();
 
         contentCards.add(overviewPanel, "overview");
