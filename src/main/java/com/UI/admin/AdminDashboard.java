@@ -46,7 +46,7 @@ public class AdminDashboard extends Screen {
         topBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER_COLOR));
 
         JLabel brand = new JLabel("AutoParts Pro");
-        brand.setFont(new Font("Arial", Font.BOLD, 18));
+        brand.setFont(new Font("Arial", Font.BOLD, 24));
         brand.setForeground(TEXT_PRIMARY);
         brand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         brand.addMouseListener(new MouseAdapter() {
@@ -259,10 +259,7 @@ public class AdminDashboard extends Screen {
     }
 
     private void navigateToHome() {
-        User currentUser = UserSession.getInstance().getCurrentUser();
-        AutoPartsHomePage home = new AutoPartsHomePage(currentUser);
-        home.setVisible(true);
-        appFrame.dispose();
+        appFrame.setScreen(new AutoPartsHomePage(appFrame));
     }
 
     private void navigateToStore() {

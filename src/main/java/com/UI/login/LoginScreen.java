@@ -47,10 +47,7 @@ public class LoginScreen extends Screen {
         panel.setLayout(null);
         initUI();
         Runnable onSuccess = () -> {
-            User currentUser = UserSession.getInstance().getCurrentUser();
-            com.UI.defaultpage.AutoPartsHomePage home = new com.UI.defaultpage.AutoPartsHomePage(currentUser);
-            home.setVisible(true);
-            appFrame.dispose();
+            appFrame.setScreen(new com.UI.defaultpage.AutoPartsHomePage(appFrame));
         };
         new LoginController(this, onSuccess);
     }

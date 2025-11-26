@@ -39,7 +39,7 @@ public class JdbcConnector {
         // MYSQL jdbc url: jdbc:mysql://<HOST>:<PORT>/<DATABASE>
         String host = "localhost";
         String port = "3306";
-        String database = "e_commerce";
+        String database = "e_commercedb";
         String jdbcUrl = "jdbc:mysql://" + host + ":" + port + "/" + database;
 
         // AUTHENTICATION

@@ -257,10 +257,7 @@ public class StoreHeader extends JPanel {
     }
 
     private void navigateToHome() {
-        User currentUser = UserSession.getInstance().getCurrentUser();
-        AutoPartsHomePage home = new AutoPartsHomePage(currentUser);
-        home.setVisible(true);
-        appFrame.dispose();
+        appFrame.setScreen(new AutoPartsHomePage(appFrame));
     }
 
     private void handleCartClick() {
