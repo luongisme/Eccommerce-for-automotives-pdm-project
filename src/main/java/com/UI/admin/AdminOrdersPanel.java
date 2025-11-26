@@ -6,6 +6,7 @@ import java.awt.*;
 
 import com.UI.components.RoundedPanel;
 
+
 public class AdminOrdersPanel extends JPanel {
 
     public AdminOrdersPanel() {
@@ -38,11 +39,11 @@ public class AdminOrdersPanel extends JPanel {
         statusFilter.setBounds(276, 36, 180, 30);
         add(statusFilter);
 
-        JPanel order1 = createOrderCard("Order #1", "10/1/2024 2 2 items", "User #2", "delivered", "$139.97");
+        JPanel order1 = createOrderCard("Order #1", "10/1/2024  2 items", "User #2", "delivered", "$139.97");
         order1.setBounds(0, 84, 976, 90);
         add(order1);
 
-        JPanel order2 = createOrderCard("Order #2", "20/1/2024 2 1 items", "User #2", "shipped", "$519.96");
+        JPanel order2 = createOrderCard("Order #2", "20/1/2024  1 item", "User #2", "shipped", "$519.96");
         order2.setBounds(0, 186, 976, 90);
         add(order2);
     }
@@ -99,6 +100,75 @@ public class AdminOrdersPanel extends JPanel {
         updateBtn.setBounds(856, 48, 110, 24);
         card.add(updateBtn);
 
+        // Wire buttons: one dialog for viewing details, one dialog for updating status
+        detailsBtn.addActionListener(e -> openOrderDetails(card, title, meta, customer, status, amount, statusBadge));
+        updateBtn.addActionListener(e -> openUpdateStatus(card, title, status, statusBadge));
+
         return card;
+    }
+
+    private void openOrderDetails(Component parent,
+                                  String title,
+                                  String meta,
+                                  String customer,
+                                  String status,
+                                  String amount,
+                                  JLabel statusBadge) {
+
+        // For now these are mock values matching your screenshot
+        String orderNumberLabel = title;
+        String orderDateLabel = meta.split(" ")[0]; // crude extraction
+        String customerLabel = customer;
+        String paymentMethod = "Credit Card";
+        String paymentStatus = "Completed";
+        String initialStatus = status;
+        String totalAmount = amount;
+
+        String productName = "All-Season Tire 225/60R16";
+        String productBrand = "TireMax";
+        String productPrice = "$129.99";
+        String productQty = "4";
+        String productSubtotal = "$519.96";
+
+        String shippingAddress = "123 Main St\nNew York, NY 10001";
+
+        OrderDetailsDialog.showDialog(
+                parent,
+                orderNumberLabel,
+                orderDateLabel,
+                customerLabel,
+                paymentMethod,
+                paymentStatus,
+                initialStatus,
+                totalAmount,
+                productName,
+                productBrand,
+                productPrice,
+                productQty,
+                productSubtotal,
+                shippingAddress
+        );
+    }
+
+    private void openUpdateStatus(Component parent,
+                                  String title,
+                                  String status,
+                                  JLabel statusBadge) {
+
+        String orderId = title; // e.g. "Order #2"
+
+        Window w = parent != null ? SwingUtilities.getWindowAncestor(parent) : null;
+        UpdateOrderStatusDialog dialog = new UpdateOrderStatusDialog(
+                w,
+                orderId,
+                status,
+                newStatus -> {
+                    statusBadge.setText(newStatus.toLowerCase());
+                    statusBadge.setBackground("delivered".equalsIgnoreCase(newStatus)
+                            ? new Color(34, 197, 94)
+                            : new Color(59, 130, 246));
+                }
+        );
+        dialog.setVisible(true);
     }
 }
