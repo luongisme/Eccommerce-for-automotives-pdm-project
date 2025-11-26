@@ -9,13 +9,13 @@ import java.util.List;
 /** Profile page UI (header title + tabs + card form). */
 public class ProfileScreen extends JPanel {
 
-    // Tabs + content
+    // Tabs + content (only profile tab now)
     protected final JToggleButton tabProfile = new JToggleButton("Profile Information");
-    protected final JToggleButton tabOrders  = new JToggleButton("Order History");
     private final CardLayout contentCards = new CardLayout();
     private final JPanel content = new JPanel(contentCards);
 
     // Buttons
+    final JButton btnBack   = new JButton("Back");
     final JButton btnEdit   = new JButton("Edit profile");
     final JButton btnSave   = new JButton("Save");
     final JButton btnCancel = new JButton("Cancel");
@@ -41,13 +41,12 @@ public class ProfileScreen extends JPanel {
 
         // default states
         ButtonGroup g = new ButtonGroup();
-        g.add(tabProfile); g.add(tabOrders);
+        g.add(tabProfile);
         tabProfile.setSelected(true);
         styleTabs();
         setEditing(false);
 
-        tabProfile.addActionListener(e -> { styleTabs(); contentCards.show(content, "profile");});
-        tabOrders.addActionListener(e ->  { styleTabs(); contentCards.show(content, "orders"); });
+        tabProfile.addActionListener(e -> { styleTabs(); contentCards.show(content, "profile"); });
     }
 
     //header title + tabs
@@ -55,31 +54,26 @@ public class ProfileScreen extends JPanel {
         JPanel wrap = new JPanel();
         wrap.setOpaque(false);
         wrap.setLayout(new BoxLayout(wrap, BoxLayout.Y_AXIS));
-        wrap.setBorder(new EmptyBorder(16, 24, 8, 24));
+        wrap.setBorder(new EmptyBorder(16, 24, 12, 24));
 
         JLabel title = new JLabel("My Account");
         title.setFont(title.getFont().deriveFont(Font.BOLD, 24f));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JPanel tabs = new JPanel(new GridLayout(1, 2, 8, 0));
-        tabs.setBorder(new EmptyBorder(12, 0, 12, 0));
-        tabs.setOpaque(false);
-        tabs.add(tabProfile);
-        tabs.add(tabOrders);
-        tabs.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnBack.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnBack.setMaximumSize(new Dimension(80, 28));
 
+        wrap.add(btnBack);
+        wrap.add(Box.createVerticalStrut(4));
         wrap.add(title);
-        wrap.add(tabs);
         return wrap;
     }
 
     /* --------- main content --------- */
     private JComponent buildContent() {
         JPanel profile = buildProfileCard();
-        JPanel orders  = buildOrdersPlaceholder();
 
         content.add(profile, "profile");
-        content.add(orders,  "orders");
 
         JPanel outer = new JPanel(new BorderLayout());
         outer.setOpaque(false);
@@ -159,23 +153,6 @@ public class ProfileScreen extends JPanel {
         card.add(sectionContact);
         card.add(sectionAddress);
         return card;
-    }
-
-    private JPanel buildOrdersPlaceholder() {
-        RoundedPanel card = new RoundedPanel(12, Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(new Color(0xDD,0xDD,0xDD)),
-        new EmptyBorder(24,24,24,24)
-        ));
-        card.setLayout(new BorderLayout());
-        JLabel placeholder = new JLabel("Order History (UI only) — no data yet", SwingConstants.CENTER);
-        placeholder.setForeground(new Color(0x6B,0x72,0x80));
-        placeholder.setFont(placeholder.getFont().deriveFont(Font.PLAIN, 14f));
-        card.add(placeholder, BorderLayout.CENTER);
-        JPanel outer = new JPanel(new BorderLayout());
-        outer.setOpaque(false);
-        outer.add(card, BorderLayout.CENTER);
-        return outer;
     }
 
     /* ---------- small builders ---------- */
@@ -280,7 +257,6 @@ public class ProfileScreen extends JPanel {
 
     private void styleTabs() {
         styleOneTab(tabProfile, tabProfile.isSelected());
-        styleOneTab(tabOrders, tabOrders.isSelected());
     }
 
     private void styleOneTab(JToggleButton b, boolean active) {

@@ -107,28 +107,7 @@ public class StoreScreen extends Screen {
         sortPanel.add(priceDescBtn);
         sortPanel.add(ratingBtn);
         
-        // Add car's brand dropdown
-        JLabel vehicleTypeLabel = new JLabel("  Vehicle Type:");
-        vehicleTypeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        sortPanel.add(vehicleTypeLabel);
-        
-        String[] vehicleTypes = 
-        {
-            "All Vehicles", "Toyota", "Honda", "Ford", "Chevrolet", 
-            "Huyndai", "Kia", "Nissan", "Mazda", "Mitsubishi", "Suzuki", 
-            "Mercedes-Benz", "BMW", "Audi", "Volkswagen", "Porsche", 
-            "Lexus", "Peugeot", "Renault", "Volvo", "VinFast"
-        };
-        vehicleTypeCombo = new JComboBox<>(vehicleTypes);
-        vehicleTypeCombo.setFont(new Font("Arial", Font.PLAIN, 12));
-        vehicleTypeCombo.setPreferredSize(new Dimension(140, 30));
-        vehicleTypeCombo.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        vehicleTypeCombo.addActionListener(e -> {
-            currentPage = 1;
-            applyFiltersAndSort();
-        });
-        sortPanel.add(vehicleTypeCombo);
-
+    
         panel.add(sortPanel);
     }
 
@@ -195,17 +174,6 @@ public class StoreScreen extends Screen {
         List<Product> filtered = productService.filterProducts(
             selectedCategories, selectedBrands, 0, maxPrice
         );
-        
-        // Apply car's brand filter
-        if (vehicleTypeCombo != null) {
-            String selectedVehicleType = (String) vehicleTypeCombo.getSelectedItem();
-            if (selectedVehicleType != null && !"All Vehicles".equals(selectedVehicleType)) {
-                String finalSelectedVehicleType = selectedVehicleType.toLowerCase();
-                filtered.removeIf(product -> 
-                    !product.getCarBrand().toLowerCase().contains(finalSelectedVehicleType)
-                );
-            }
-        }
 
         // Sort products
         currentProducts = productService.sortProducts(filtered, currentSort);

@@ -12,7 +12,7 @@ public class Product {
     private String imageUrl;
     private String description;
     private boolean isAvailable;
-    private String carBrand; // e.g., "Toyota", "Honda", "Porsche", "BMW", etc.
+    //private String carBrand; // e.g., "Toyota", "Honda", "Porsche", "BMW", etc.
     
     // Additional fields for product details
     private String partNumber;
@@ -35,7 +35,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.description = description;
         this.isAvailable = isAvailable;
-        this.carBrand = "All Vehicles"; // Default value
+        //this.carBrand = "All Vehicles"; // Default value
         this.specifications = new HashMap<>();
         this.stockQuantity = 0;
         this.inStock = false;
@@ -60,7 +60,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.category = category;
 
-        this.carBrand = "All Vehicles"; // Default value
+        //this.carBrand = "All Vehicles"; // Default value
         this.inStock = stockQuantity > 0;
     }
 
@@ -78,7 +78,7 @@ public class Product {
     public int getStockQuantity() { return stockQuantity; }
     public boolean isInStock() { return inStock; }
     public Map<String, String> getSpecifications() { return specifications; }
-    public String getCarBrand() { return carBrand; }
+    //public String getCarBrand() { return carBrand; }
 
     public String getPartNumber() { return partNumber; }
 
@@ -99,7 +99,7 @@ public class Product {
     }
     public void setInStock(boolean inStock) { this.inStock = inStock; }
     public void setSpecifications(Map<String, String> specifications) { this.specifications = specifications; }
-    public void setCarBrand(String carBrand) { this.carBrand = carBrand; }
+    //public void setCarBrand(String carBrand) { this.carBrand = carBrand; }
     public void setPartNumber(String partNumber) { this.partNumber = partNumber; }
     
     // Utility methods

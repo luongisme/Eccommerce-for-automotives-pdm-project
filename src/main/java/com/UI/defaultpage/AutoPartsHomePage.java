@@ -2,14 +2,23 @@ package com.UI.defaultpage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+
 import com.Main.AppFrame;
 import com.Main.Screen;
+import com.model.Product;
+import com.service.ProductService;
 import com.service.UserSession;
 import com.UI.admin.AdminDashboard;
 import com.UI.store.StoreScreen;
 import com.UI.Payment.PaymentScreen;
 
 public class AutoPartsHomePage extends Screen {
+
+    private final ProductService productService = ProductService.getInstance();
 
     public AutoPartsHomePage(AppFrame appFrame) {
         super(appFrame);
@@ -54,7 +63,7 @@ public class AutoPartsHomePage extends Screen {
             productsBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
             productsBtn.addActionListener(e -> {
                 if (isGuest) {
-                    navigateToLogin();
+                    navigateToLoginThenStore();
                 } else {
                     navigateToStore();
                 }
@@ -166,7 +175,7 @@ public class AutoPartsHomePage extends Screen {
             shopNowBtn.setHorizontalAlignment(SwingConstants.CENTER);
             shopNowBtn.addActionListener(e -> {
                 if (isGuest) {
-                    navigateToLogin();
+                    navigateToLoginThenStore();
                 } else {
                     navigateToStore();
                 }
@@ -189,7 +198,7 @@ public class AutoPartsHomePage extends Screen {
             browseCatBtn.setHorizontalAlignment(SwingConstants.CENTER);
             browseCatBtn.addActionListener(e -> {
                 if (isGuest) {
-                    navigateToLogin();
+                    navigateToLoginThenStore();
                 } else {
                     navigateToStore();
                 }
@@ -222,22 +231,33 @@ public class AutoPartsHomePage extends Screen {
             viewAllBtn.setBounds(833, 293, 160, 28);
             viewAllBtn.addActionListener(e -> {
                 if (isGuest) {
-                    navigateToLogin();
+                    navigateToLoginThenStore();
                 } else {
                     navigateToStore();
                 }
             });
             panel.add(viewAllBtn);
 
-            // Product grid 4x2 (placeholder for real data)
+            // Product grid 4x2 populated from database
             int cardW = 220;
             int cardH = 280;
-            int gapX = 32;
+            int gapX = 24;
             int gapY = 24;
             int startX = 30;
             int startY = 350;
 
-            for (int i = 0; i < 8; i++) {
+            java.util.List<Product> allProducts = productService.getAllProducts();
+            java.util.List<Product> featured = allProducts;
+            if (allProducts.size() > 8) {
+                featured = productService.sortProducts(allProducts, "new")
+                        .subList(0, 8);
+            }
+
+            NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.US);
+
+            for (int i = 0; i < featured.size(); i++) {
+                Product p = featured.get(i);
+
                 int row = i / 4;
                 int col = i % 4;
                 int x = startX + col * (cardW + gapX);
@@ -246,52 +266,80 @@ public class AutoPartsHomePage extends Screen {
                 JPanel card = new JPanel(null);
                 card.setBackground(Color.WHITE);
                 card.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+                    BorderFactory.createLineBorder(new Color(220, 220, 220), 5),
                     BorderFactory.createEmptyBorder(12, 12, 12, 12)
                 ));
                 card.setBounds(x, y, cardW, cardH);
 
-                // Image placeholder
+                // Product image
                 JLabel imgLabel = new JLabel();
                 imgLabel.setOpaque(true);
                 imgLabel.setBackground(new Color(245, 245, 245));
-                imgLabel.setBounds(0, 0, cardW, 150);
+                imgLabel.setBounds(5, 5, cardW, 150);
+
+                String imgFile = p.getImageUrl();
+                if (imgFile != null && !imgFile.trim().isEmpty()) {
+                    String path = "/images/Product/" + imgFile.trim();
+                    URL url = getClass().getResource(path);
+                    if (url != null) {
+                        ImageIcon icon = new ImageIcon(url);
+                        Image scaled = icon.getImage().getScaledInstance(cardW - 10, 150, Image.SCALE_SMOOTH);
+                        imgLabel.setIcon(new ImageIcon(scaled));
+                        imgLabel.setText("");
+                    }
+                }
                 card.add(imgLabel);
 
-                // Product name placeholder
-                JLabel nameLabel = new JLabel("");
+                // Product name (2-line max, bold)
+                String name = p.getName() != null ? p.getName() : "";
+                if (name.length() > 40) {
+                    name = name.substring(0, 37) + "...";
+                }
+                JLabel nameLabel = new JLabel(name);
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
                 nameLabel.setForeground(new Color(30, 30, 30));
-                nameLabel.setBounds(0, 160, cardW, 20);
+                nameLabel.setBounds(5, 156, cardW, 20);
                 card.add(nameLabel);
 
-                // Description placeholder
-                JLabel descLabel = new JLabel("");
-                descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+                // Brand (small, muted)
+                String brand = p.getBrand() != null ? p.getBrand() : "";
+                JLabel brandLabel = new JLabel(brand);
+                brandLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+                brandLabel.setForeground(new Color(130, 130, 130));
+                brandLabel.setBounds(5, 176, cardW, 16);
+                card.add(brandLabel);
+
+                // Short description (optional)
+                String desc = p.getDescription() != null ? p.getDescription() : "";
+                if (desc.length() > 70) {
+                    desc = desc.substring(0, 67) + "...";
+                }
+                JLabel descLabel = new JLabel(desc);
+                descLabel.setFont(new Font("Arial", Font.PLAIN, 11));
                 descLabel.setForeground(new Color(120, 120, 120));
-                descLabel.setBounds(0, 182, cardW, 32);
+                descLabel.setBounds(5, 194, cardW, 30);
                 card.add(descLabel);
 
-                // Price placeholder
-                JLabel priceLabel = new JLabel("");
-                priceLabel.setFont(new Font("Arial", Font.BOLD, 16));
-                priceLabel.setForeground(new Color(30, 30, 30));
-                priceLabel.setBounds(0, 218, cardW, 24);
+                // Price (highlighted)
+                JLabel priceLabel = new JLabel(currency.format(p.getPrice()));
+                priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
+                priceLabel.setForeground(new Color(25, 90, 230));
+                priceLabel.setBounds(5, 224, cardW, 22);
                 card.add(priceLabel);
 
-                // Add to cart button
+                // Add to cart button (same behavior as before)
                 JButton addBtn = new JButton("Add to Cart");
                 addBtn.setFont(new Font("Arial", Font.BOLD, 12));
                 addBtn.setBackground(Color.BLACK);
                 addBtn.setForeground(Color.WHITE);
                 addBtn.setFocusPainted(false);
-                addBtn.setBorderPainted(false);
+                addBtn.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
                 addBtn.setOpaque(true);
                 addBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 addBtn.setBounds(0, 248, cardW, 32);
                 addBtn.addActionListener(e -> {
                     if (!UserSession.getInstance().isLoggedIn()) {
-                        navigateToLogin();
+                        navigateToLoginThenStore();
                     } else {
                         navigateToCart();
                     }
@@ -305,6 +353,11 @@ public class AutoPartsHomePage extends Screen {
         // ===== NAVIGATION HELPERS =====
         private void navigateToLogin() {
             appFrame.setScreen(new com.UI.login.LoginScreen(appFrame));
+        }
+
+        private void navigateToLoginThenStore() {
+            appFrame.setScreen(new com.UI.login.LoginScreen(appFrame,
+                    () -> appFrame.setScreen(new StoreScreen(appFrame))));
         }
 
         private void navigateToRegister() {

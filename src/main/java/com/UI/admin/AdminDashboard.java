@@ -136,19 +136,16 @@ public class AdminDashboard extends Screen {
 
         JToggleButton overviewTab = createTabButton("Overview");
         JToggleButton productsTab = createTabButton("Products");
-        JToggleButton ordersTab = createTabButton("Orders");
 
         ButtonGroup tabGroup = new ButtonGroup();
         tabGroup.add(overviewTab);
         tabGroup.add(productsTab);
-        tabGroup.add(ordersTab);
 
         overviewTab.setSelected(true);
         styleTabSelection(overviewTab);
 
         tabBar.add(overviewTab);
         tabBar.add(productsTab);
-        tabBar.add(ordersTab);
 
         panel.add(tabBar);
 
@@ -160,26 +157,20 @@ public class AdminDashboard extends Screen {
 
         JPanel overviewPanel = new AdminOverviewPanel();
         JPanel productsPanel = new AdminProductsPanel();
-        JPanel ordersPanel = new AdminOrdersPanel();
 
         contentCards.add(overviewPanel, "overview");
         contentCards.add(productsPanel, "products");
-        contentCards.add(ordersPanel, "orders");
 
         panel.add(contentCards);
 
         // Tab interaction
         overviewTab.addActionListener(e -> {
-            styleTabSelection(overviewTab, productsTab, ordersTab);
+            styleTabSelection(overviewTab, productsTab);
             cardLayout.show(contentCards, "overview");
         });
         productsTab.addActionListener(e -> {
-            styleTabSelection(productsTab, overviewTab, ordersTab);
+            styleTabSelection(productsTab, overviewTab);
             cardLayout.show(contentCards, "products");
-        });
-        ordersTab.addActionListener(e -> {
-            styleTabSelection(ordersTab, overviewTab, productsTab);
-            cardLayout.show(contentCards, "orders");
         });
     }
 

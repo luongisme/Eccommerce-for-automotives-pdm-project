@@ -41,14 +41,15 @@ public class LoginScreen extends Screen {
     private JButton submitBtn;
     private JLabel errorLabel;
 
-    public LoginScreen (AppFrame appFrame) {
+    public LoginScreen(AppFrame appFrame) {
+        this(appFrame, () -> appFrame.setScreen(new com.UI.defaultpage.AutoPartsHomePage(appFrame)));
+    }
+
+    public LoginScreen(AppFrame appFrame, Runnable onSuccess) {
         super(appFrame);
         panel = new BackgroundPanel("/images/login_bg.jpg");
         panel.setLayout(null);
         initUI();
-        Runnable onSuccess = () -> {
-            appFrame.setScreen(new com.UI.defaultpage.AutoPartsHomePage(appFrame));
-        };
         new LoginController(this, onSuccess);
     }
 

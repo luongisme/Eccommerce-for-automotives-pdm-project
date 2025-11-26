@@ -3,7 +3,7 @@ package com.UI.Profile;
 import com.DAO.addressDAOimpl;
 import com.DAO.userDAOimpl;
 import com.Main.AppFrame;
-import com.UI.OrderHistory.OrderHistoryScreen;
+import com.UI.defaultpage.AutoPartsHomePage;
 import com.model.Address;
 import com.model.User;
 import com.service.UserSession;
@@ -96,17 +96,8 @@ public class ProfileController {
             saveUserData();
         });
 
-        // connect tab order history
-        view.tabOrders.addActionListener(e -> {
-            // chuyển màn hình sang OrderHistoryScreen
-            appFrame.setScreen(new OrderHistoryScreen(appFrame));
-        });
-
-        // if profile on then order history off
-        view.tabProfile.addActionListener(e -> {
-            view.tabProfile.setSelected(true);
-            view.tabOrders.setSelected(false);
-        });
+        // Back button: return to home screen
+        view.btnBack.addActionListener(e -> appFrame.setScreen(new AutoPartsHomePage(appFrame)));
     }
 
     /**
