@@ -50,7 +50,7 @@ public class orderitemDAOimpl implements orderitemDAO {
         List<OrderItem> orderItem = new ArrayList<>();
         try (Connection conn = JdbcConnector.connect();
              PreparedStatement ps = conn.prepareStatement(sql);
-             ) {
+        ) {
 
             ps.setString(1, orderID);
 

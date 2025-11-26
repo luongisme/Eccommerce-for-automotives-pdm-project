@@ -2,19 +2,28 @@ package com.UI.admin;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.text.NumberFormat;
+import java.util.List;
 
 import com.UI.components.RoundedPanel;
-import com.service.AdminProductService;
+import com.model.Product;
 
 public class AdminProductsPanel extends JPanel {
 
-    public AdminProductsPanel() {
+    private final AdminDashboardController controller;
+    private JTable table;
+    private javax.swing.table.DefaultTableModel tableModel;
+    private JComboBox<String> categoryFilter;
+    private JTextField searchField;
+
+    public AdminProductsPanel(AdminDashboardController controller) {
+        this.controller = controller;
         setLayout(null);
         setBackground(AdminDashboard.BG_COLOR);
         buildUI();
@@ -34,17 +43,36 @@ public class AdminProductsPanel extends JPanel {
         card.setBounds(0, 36, 976, 560);
         add(card);
 
-        JTextField searchField = new JTextField("Search products...");
+        // ===== Search + Filter =====
+        searchField = new JTextField("Search products...");
         searchField.setFont(new Font("Arial", Font.PLAIN, 12));
         searchField.setForeground(AdminDashboard.TEXT_SECONDARY);
         searchField.setBounds(20, 15, 260, 32);
         searchField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AdminDashboard.BORDER_COLOR, 1),
-                new EmptyBorder(4, 8, 4, 8)
+                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+                new EmptyBorder(6, 10, 6, 10)
         ));
         card.add(searchField);
 
-        JComboBox<String> categoryFilter = new JComboBox<>(new String[]{
+        // Clear placeholder on focus
+        searchField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if ("Search products...".equals(searchField.getText())) {
+                    searchField.setText("");
+                    searchField.setForeground(AdminDashboard.TEXT_PRIMARY);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (searchField.getText().trim().isEmpty()) {
+                    searchField.setText("Search products...");
+                    searchField.setForeground(AdminDashboard.TEXT_SECONDARY);
+                }
+            }
+        });
+
+        categoryFilter = new JComboBox<>(new String[]{
                 "All categories", "Engine", "Brakes", "Electrical", "Suspension", "Wheels & Tires"
         });
         categoryFilter.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -59,23 +87,30 @@ public class AdminProductsPanel extends JPanel {
         addProductBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         addProductBtn.setBorder(new EmptyBorder(4, 18, 4, 18));
         addProductBtn.setBounds(776, 15, 180, 32);
-        addProductBtn.addActionListener(e -> openAddProductDialog());
         card.add(addProductBtn);
 
-        AdminProductService productService = new AdminProductService();
-        DefaultTableModel model = productService.createProductTableModel();
+        // ===== BẢNG SẢN PHẨM =====
+        String[] columns = {"Product", "Category", "Price", "Stock", "Status", "Actions"};
 
-        JTable table = new JTable(model) {
+        tableModel = new javax.swing.table.DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Chỉ cho phép cột Actions (index 5) có editor để dùng các nút View/Edit/Delete
+                return column == 5;
+            }
+        };
+
+        table = new JTable(tableModel) {
             @Override
             public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                // Preserve custom backgrounds for Status (col 4) and Actions (col 5)
-                if (!isRowSelected(row) && column != 4 && column != 5) {
+                if (!isRowSelected(row)) {
                     c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 249, 251));
                 }
                 return c;
             }
         };
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         table.setFillsViewportHeight(true);
         table.setRowHeight(32);
         table.setShowGrid(false);
@@ -85,207 +120,346 @@ public class AdminProductsPanel extends JPanel {
         table.getTableHeader().setBackground(new Color(247, 248, 250));
         table.getTableHeader().setOpaque(true);
 
-        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        // Align phải cho Price + Stock
+        javax.swing.table.DefaultTableCellRenderer rightRenderer = new javax.swing.table.DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
         table.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
         table.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
 
-        DefaultTableCellRenderer statusRenderer = new DefaultTableCellRenderer() {
+        // Status badge
+        javax.swing.table.DefaultTableCellRenderer statusRenderer = new javax.swing.table.DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                          boolean hasFocus, int row, int column) {
+                                                           boolean hasFocus, int row, int column) {
                 JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 label.setHorizontalAlignment(SwingConstants.CENTER);
                 label.setOpaque(true);
                 label.setBorder(new EmptyBorder(4, 10, 4, 10));
-                label.setForeground(Color.WHITE);
 
-                String statusText = value != null ? value.toString() : "";
-                if ("Active".equalsIgnoreCase(statusText)) {
+                String status = (value != null) ? value.toString() : "";
+                if ("Inactive".equalsIgnoreCase(status)) {
+                    label.setBackground(new Color(220, 53, 69));   // đỏ
                     label.setForeground(Color.WHITE);
-                    label.setBackground(new Color(24, 119, 242)); // blue pill
                 } else {
-                    label.setForeground(new Color(60, 60, 60));
-                    label.setBackground(new Color(230, 232, 236)); // gray pill for inactive
+                    label.setBackground(new Color(24, 119, 242));  // xanh
+                    label.setForeground(Color.WHITE);
                 }
+                label.setText(status);
                 return label;
             }
         };
         table.getColumnModel().getColumn(4).setCellRenderer(statusRenderer);
         table.getColumnModel().getColumn(4).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setMinWidth(80);
+        table.getColumnModel().getColumn(4).setMaxWidth(120);
 
         // Actions column: custom renderer & editor with three buttons
         table.getColumnModel().getColumn(5).setCellRenderer(new ActionsRenderer());
-        table.getColumnModel().getColumn(5).setCellEditor(new ActionsEditor(table, model));
+        table.getColumnModel().getColumn(5).setCellEditor(new ActionsEditor(table, tableModel));
         table.getColumnModel().getColumn(5).setPreferredWidth(120);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createLineBorder(AdminDashboard.BORDER_COLOR, 1));
         scrollPane.setBounds(20, 63, 936, 468);
         card.add(scrollPane);
+
+        // load dữ liệu ban đầu
+        loadProductsToTable();
+
+        // Event search + filter
+        categoryFilter.addActionListener(e -> loadProductsToTable());
+        searchField.addActionListener(e -> loadProductsToTable()); // nhấn Enter để search
+
+        // 🔹 Nút Add New Product → mở form thêm sản phẩm
+        addProductBtn.addActionListener(e -> openAddProductDialog());
     }
 
+    // ====== LOAD DATA VÀO BẢNG ======
+    private void loadProductsToTable() {
+        String keyword = searchField.getText();
+        if ("Search products...".equals(keyword)) {
+            keyword = "";
+        }
+        String category = (String) categoryFilter.getSelectedItem();
+
+        List<Product> products = controller.searchProducts(keyword, category);
+
+        tableModel.setRowCount(0);
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(); // hoặc Locale.US
+
+        for (Product p : products) {
+            String name     = p.getName();
+            String cat      = p.getCategory();
+            String priceStr = currencyFormat.format(p.getPrice());
+            int stock       = p.getStockQuantity();
+            String status   = p.isAvailable() ? "Active" : "Inactive";
+
+            tableModel.addRow(new Object[]{
+                    name,
+                    cat,
+                    priceStr,
+                    stock,
+                    status,
+                    "..."          // Actions placeholder
+            });
+        }
+    }
+
+    // ====== FORM THÊM PRODUCT ======
     private void openAddProductDialog() {
-        Window window = SwingUtilities.getWindowAncestor(this);
-        JDialog dialog = new JDialog(window, "Add New Product", Dialog.ModalityType.APPLICATION_MODAL);
-        dialog.setSize(740, 540);
-        dialog.setLocationRelativeTo(window);
-        dialog.setLayout(null);
-
-        JPanel content = new JPanel(null);
-        content.setBackground(Color.WHITE);
-        content.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(225, 227, 232), 1),
-                new EmptyBorder(24, 32, 24, 32)
-        ));
-        content.setBounds(8, 8, 710, 510);
-        dialog.add(content);
-
-        JLabel titleLabel = new JLabel("Add New Product");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
-        titleLabel.setForeground(AdminDashboard.TEXT_PRIMARY);
-        titleLabel.setBounds(10, 0, 400, 28);
-        content.add(titleLabel);
-
-        // Row 1: Product Name, Brand
-        JLabel nameLabel = new JLabel("Product Name *");
-        nameLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        nameLabel.setBounds(10, 50, 200, 16);
-        content.add(nameLabel);
-
-        JTextField nameField = new JTextField("Enter product name");
-        nameField.setFont(new Font("Arial", Font.PLAIN, 13));
-        nameField.setForeground(AdminDashboard.TEXT_SECONDARY);
-        nameField.setBounds(10, 72, 320, 34);
-        nameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(230, 232, 236), 1),
-                new EmptyBorder(0, 10, 0, 10)
-        ));
-        content.add(nameField);
-
-        JLabel brandLabel = new JLabel("Brand *");
-        brandLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        brandLabel.setBounds(344, 50, 200, 16);
-        content.add(brandLabel);
-
-        JTextField brandField = new JTextField("Enter brand name");
-        brandField.setFont(new Font("Arial", Font.PLAIN, 13));
-        brandField.setForeground(AdminDashboard.TEXT_SECONDARY);
-        brandField.setBounds(344, 72, 320, 34);
-        brandField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(230, 232, 236), 1),
-                new EmptyBorder(0, 10, 0, 10)
-        ));
-        content.add(brandField);
-
-        // Row 2: Category, Price, Stock
-        JLabel categoryLabel = new JLabel("Category *");
-        categoryLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        categoryLabel.setBounds(10, 124, 200, 16);
-        content.add(categoryLabel);
-
-        JComboBox<String> categoryBox = new JComboBox<>(new String[]{
+        JTextField nameField   = new JTextField();
+        JTextField brandField  = new JTextField();
+        JComboBox<String> categoryCombo = new JComboBox<>(new String[]{
                 "Engine", "Brakes", "Electrical", "Suspension", "Wheels & Tires"
         });
-        categoryBox.setFont(new Font("Arial", Font.PLAIN, 13));
-        categoryBox.setBounds(10, 144, 200, 34);
-        content.add(categoryBox);
+        JTextField priceField  = new JTextField();
+        JTextField stockField  = new JTextField("0");
+        JTextArea descriptionArea = new JTextArea(4, 20);
+        JTextField imageUrlField = new JTextField("https://example.com/image.jpg");
+        JTextField skuField    = new JTextField();
+        JCheckBox activeCheck  = new JCheckBox("Product is active", true);
 
-        JLabel priceLabel = new JLabel("Price *");
-        priceLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        priceLabel.setBounds(220, 124, 200, 16);
-        content.add(priceLabel);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
 
-        JTextField priceField = new JTextField("0.00");
-        priceField.setFont(new Font("Arial", Font.PLAIN, 13));
-        priceField.setForeground(AdminDashboard.TEXT_SECONDARY);
-        priceField.setBounds(220, 144, 150, 34);
-        priceField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(230, 232, 236), 1),
-                new EmptyBorder(0, 10, 0, 10)
-        ));
-        content.add(priceField);
+        JPanel form = new JPanel(new BorderLayout(10, 10));
+        form.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-        JLabel stockLabel = new JLabel("Stock *");
-        stockLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        stockLabel.setBounds(390, 124, 200, 16);
-        content.add(stockLabel);
+        JPanel grid = new JPanel(new GridLayout(0, 4, 10, 10));
 
-        JTextField stockField = new JTextField("0");
-        stockField.setFont(new Font("Arial", Font.PLAIN, 13));
-        stockField.setForeground(AdminDashboard.TEXT_SECONDARY);
-        stockField.setBounds(390, 144, 150, 34);
-        stockField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(230, 232, 236), 1),
-                new EmptyBorder(0, 10, 0, 10)
-        ));
-        content.add(stockField);
+        grid.add(new JLabel("Product Name *"));
+        grid.add(new JLabel("Brand *"));
+        grid.add(new JLabel("Category *"));
+        grid.add(new JLabel("Price *"));
 
-        // Description
-        JLabel descLabel = new JLabel("Description");
-        descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        descLabel.setBounds(10, 196, 200, 16);
-        content.add(descLabel);
+        grid.add(nameField);
+        grid.add(brandField);
+        grid.add(categoryCombo);
+        grid.add(priceField);
 
-        JTextArea descArea = new JTextArea("Enter product description");
-        descArea.setFont(new Font("Arial", Font.PLAIN, 13));
-        descArea.setForeground(AdminDashboard.TEXT_SECONDARY);
-        descArea.setLineWrap(true);
-        descArea.setWrapStyleWord(true);
-        JScrollPane descScroll = new JScrollPane(descArea);
-        descScroll.setBounds(10, 216, 660, 90);
-        descScroll.setBorder(BorderFactory.createLineBorder(new Color(230, 232, 236), 1));
-        content.add(descScroll);
+        grid.add(new JLabel("Stock *"));
+        grid.add(new JLabel());
+        grid.add(new JLabel());
+        grid.add(new JLabel());
 
-        // Image URL
-        JLabel imageLabel = new JLabel("Image URL");
-        imageLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        imageLabel.setBounds(10, 318, 200, 16);
-        content.add(imageLabel);
+        grid.add(stockField);
+        grid.add(new JLabel());
+        grid.add(new JLabel());
+        grid.add(new JLabel());
 
-        JTextField imageField = new JTextField("https://example.com/image.jpg");
-        imageField.setFont(new Font("Arial", Font.PLAIN, 13));
-        imageField.setForeground(AdminDashboard.TEXT_SECONDARY);
-        imageField.setBounds(10, 338, 660, 34);
-        imageField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(230, 232, 236), 1),
-                new EmptyBorder(0, 10, 0, 10)
-        ));
-        content.add(imageField);
+        form.add(grid, BorderLayout.NORTH);
 
-        // Active checkbox
-        JCheckBox activeCheck = new JCheckBox("Product is active", true);
-        activeCheck.setFont(new Font("Arial", Font.PLAIN, 13));
-        activeCheck.setBackground(Color.WHITE);
-        activeCheck.setBounds(10, 386, 200, 24);
-        content.add(activeCheck);
+        JPanel center = new JPanel(new BorderLayout(8, 8));
+        JPanel descLabelPanel = new JPanel(new BorderLayout());
+        descLabelPanel.add(new JLabel("Description"), BorderLayout.NORTH);
+        center.add(descLabelPanel, BorderLayout.NORTH);
 
-        // Buttons row
-        JButton cancelBtn = new JButton("Cancel");
-        cancelBtn.setFont(new Font("Arial", Font.PLAIN, 13));
-        cancelBtn.setFocusPainted(false);
-        cancelBtn.setBackground(Color.WHITE);
-        cancelBtn.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(210, 210, 210), 1),
-                new EmptyBorder(4, 18, 4, 18)
-        ));
-        cancelBtn.setBounds(396, 428, 110, 34);
-        cancelBtn.addActionListener(e -> dialog.dispose());
-        content.add(cancelBtn);
+        JScrollPane descScroll = new JScrollPane(descriptionArea);
+        center.add(descScroll, BorderLayout.CENTER);
 
-        JButton confirmBtn = new JButton("+  Add Product");
-        confirmBtn.setFont(new Font("Arial", Font.BOLD, 13));
-        confirmBtn.setForeground(Color.WHITE);
-        confirmBtn.setBackground(Color.BLACK);
-        confirmBtn.setFocusPainted(false);
-        confirmBtn.setBorder(new EmptyBorder(4, 22, 4, 22));
-        confirmBtn.setBounds(516, 428, 150, 34);
-        // For now, simply close the dialog; hook up real save logic later
-        confirmBtn.addActionListener(e -> dialog.dispose());
-        content.add(confirmBtn);
+        JPanel imagePanel = new JPanel(new GridLayout(2, 1, 4, 4));
+        imagePanel.add(new JLabel("Image URL"));
+        imagePanel.add(imageUrlField);
+        center.add(imagePanel, BorderLayout.SOUTH);
 
-        dialog.setResizable(false);
-        dialog.setVisible(true);
+        form.add(center, BorderLayout.CENTER);
+
+        JPanel bottom = new JPanel(new BorderLayout());
+        bottom.add(activeCheck, BorderLayout.WEST);
+        // Buttons (OK/Cancel) are handled by JOptionPane
+        form.add(bottom, BorderLayout.SOUTH);
+
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                form,
+                "Add New Product",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (result != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        // Validate đơn giản
+        String name = nameField.getText().trim();
+        String cat  = (String) categoryCombo.getSelectedItem();
+        String brand = brandField.getText().trim();
+        String sku   = skuField.getText().trim();
+        boolean active = activeCheck.isSelected();
+
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Product name is required.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        double price;
+        int stock;
+        try {
+            price = Double.parseDouble(priceField.getText().trim());
+            stock = Integer.parseInt(stockField.getText().trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Price and Stock must be numeric.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Tạo Product mới
+        Product p = new Product();
+        p.setId(generateProductId());   // PID mới
+        p.setName(name);
+        p.setCategory(cat);
+        p.setBrand(brand);
+        p.setSku(sku);
+        p.setPrice(price);
+        p.setStockQuantity(stock);
+        p.setAvailable(active);
+
+        // các field khác tạm để trống / default
+        p.setDescription(descriptionArea.getText().trim());
+        p.setPartNumber("");
+        p.setImageUrl(imageUrlField.getText().trim().isEmpty() ? null : imageUrlField.getText().trim());
+        // p.setSpecifications(...) nếu bạn muốn
+
+        boolean ok = controller.insertProduct(p);
+        if (ok) {
+            JOptionPane.showMessageDialog(this, "Product added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            loadProductsToTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to add product.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private String generateProductId() {
+        // đơn giản: P + timestamp, đủ dùng cho đồ án
+        return "P" + System.currentTimeMillis();
+    }
+
+    private Product findProductByName(String name) {
+        List<Product> products = controller.searchProducts("", "All categories");
+        for (Product p : products) {
+            if (name.equals(p.getName())) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    // ===== EDIT PRODUCT DIALOG =====
+    private void openEditProductDialog(Product product) {
+        JTextField nameField = new JTextField(product.getName());
+        JTextField brandField = new JTextField(product.getBrand());
+        JComboBox<String> categoryCombo = new JComboBox<>(new String[]{
+                "Engine", "Brakes", "Electrical", "Suspension", "Wheels & Tires"
+        });
+        categoryCombo.setSelectedItem(product.getCategory());
+        JTextField priceField = new JTextField(String.valueOf(product.getPrice()));
+        JTextField stockField = new JTextField(String.valueOf(product.getStockQuantity()));
+        JTextArea descriptionArea = new JTextArea(4, 20);
+        descriptionArea.setText(product.getDescription() != null ? product.getDescription() : "");
+        JTextField imageUrlField = new JTextField(product.getImageUrl() != null ? product.getImageUrl() : "https://example.com/image.jpg");
+        JTextField skuField = new JTextField(product.getSku());
+        JCheckBox activeCheck = new JCheckBox("Product is active", product.isAvailable());
+
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
+
+        JPanel form = new JPanel(new BorderLayout(10, 10));
+        form.setBorder(new EmptyBorder(12, 12, 12, 12));
+
+        JPanel grid = new JPanel(new GridLayout(0, 4, 10, 10));
+
+        grid.add(new JLabel("Product Name *"));
+        grid.add(new JLabel("Brand *"));
+        grid.add(new JLabel("Category *"));
+        grid.add(new JLabel("Price *"));
+
+        grid.add(nameField);
+        grid.add(brandField);
+        grid.add(categoryCombo);
+        grid.add(priceField);
+
+        grid.add(new JLabel("Stock *"));
+        grid.add(new JLabel());
+        grid.add(new JLabel());
+        grid.add(new JLabel());
+
+        grid.add(stockField);
+        grid.add(new JLabel());
+        grid.add(new JLabel());
+        grid.add(new JLabel());
+
+        form.add(grid, BorderLayout.NORTH);
+
+        JPanel center = new JPanel(new BorderLayout(8, 8));
+        JPanel descLabelPanel = new JPanel(new BorderLayout());
+        descLabelPanel.add(new JLabel("Description"), BorderLayout.NORTH);
+        center.add(descLabelPanel, BorderLayout.NORTH);
+
+        JScrollPane descScroll = new JScrollPane(descriptionArea);
+        center.add(descScroll, BorderLayout.CENTER);
+
+        JPanel imagePanel = new JPanel(new GridLayout(2, 1, 4, 4));
+        imagePanel.add(new JLabel("Image URL"));
+        imagePanel.add(imageUrlField);
+        center.add(imagePanel, BorderLayout.SOUTH);
+
+        form.add(center, BorderLayout.CENTER);
+
+        JPanel bottom = new JPanel(new BorderLayout());
+        bottom.add(activeCheck, BorderLayout.WEST);
+        form.add(bottom, BorderLayout.SOUTH);
+
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                form,
+                "Edit Product",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (result != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        String name = nameField.getText().trim();
+        String cat = (String) categoryCombo.getSelectedItem();
+        String brand = brandField.getText().trim();
+        String sku = skuField.getText().trim();
+        boolean active = activeCheck.isSelected();
+
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Product name is required.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        double price;
+        int stock;
+        try {
+            price = Double.parseDouble(priceField.getText().trim());
+            stock = Integer.parseInt(stockField.getText().trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Price and Stock must be numeric.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        product.setName(name);
+        product.setCategory(cat);
+        product.setBrand(brand);
+        product.setSku(sku);
+        product.setPrice(price);
+        product.setStockQuantity(stock);
+        product.setAvailable(active);
+        product.setDescription(descriptionArea.getText().trim());
+        product.setImageUrl(imageUrlField.getText().trim().isEmpty() ? null : imageUrlField.getText().trim());
+
+        boolean ok = controller.updateProduct(product);
+        if (ok) {
+            loadProductsToTable();
+            JOptionPane.showMessageDialog(this, "Product updated.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to update product.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // ===== TABLE ACTIONS (VIEW / EDIT / DELETE) =====
@@ -336,21 +510,19 @@ public class AdminProductsPanel extends JPanel {
         }
     }
 
-    private static class ActionsEditor extends AbstractCellEditor implements javax.swing.table.TableCellEditor, ActionListener {
+    private class ActionsEditor extends AbstractCellEditor implements javax.swing.table.TableCellEditor, ActionListener {
 
         private final JPanel panel;
         private final JButton viewBtn;
         private final JButton editBtn;
         private final JButton deleteBtn;
         private final JTable table;
-        private final DefaultTableModel model;
-        private final AdminProductService productService;
+        private final javax.swing.table.DefaultTableModel model;
         private int row;
 
-        public ActionsEditor(JTable table, DefaultTableModel model) {
+        public ActionsEditor(JTable table, javax.swing.table.DefaultTableModel model) {
             this.table = table;
             this.model = model;
-            this.productService = new AdminProductService();
 
             panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 4));
 
@@ -398,12 +570,13 @@ public class AdminProductsPanel extends JPanel {
             String command = e.getActionCommand();
 
             String productName = String.valueOf(model.getValueAt(row, 0));
-            String category = String.valueOf(model.getValueAt(row, 1));
-            String price = String.valueOf(model.getValueAt(row, 2));
-            String stock = String.valueOf(model.getValueAt(row, 3));
-            String status = String.valueOf(model.getValueAt(row, 4));
 
             if ("view".equals(command)) {
+                String category = String.valueOf(model.getValueAt(row, 1));
+                String price = String.valueOf(model.getValueAt(row, 2));
+                String stock = String.valueOf(model.getValueAt(row, 3));
+                String status = String.valueOf(model.getValueAt(row, 4));
+
                 JOptionPane.showMessageDialog(table,
                         "Product: " + productName + "\n" +
                                 "Category: " + category + "\n" +
@@ -413,10 +586,10 @@ public class AdminProductsPanel extends JPanel {
                         "Product Details",
                         JOptionPane.INFORMATION_MESSAGE);
             } else if ("edit".equals(command)) {
-                JOptionPane.showMessageDialog(table,
-                        "Edit product: " + productName + " (placeholder action)",
-                        "Edit Product",
-                        JOptionPane.INFORMATION_MESSAGE);
+                Product p = findProductByName(productName);
+                if (p != null) {
+                    AdminProductsPanel.this.openEditProductDialog(p);
+                }
             } else if ("delete".equals(command)) {
                 int confirm = JOptionPane.showConfirmDialog(table,
                         "Delete product '" + productName + "'?",
@@ -424,7 +597,16 @@ public class AdminProductsPanel extends JPanel {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    productService.deleteRow(model, row);
+                    Product p = findProductByName(productName);
+                    if (p != null) {
+                        boolean ok = controller.deleteProduct(p.getPid());
+                        if (ok) {
+                            loadProductsToTable();
+                            JOptionPane.showMessageDialog(table, "Product deleted.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(table, "Failed to delete product.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
                 }
             }
 

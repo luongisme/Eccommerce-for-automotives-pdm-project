@@ -24,7 +24,17 @@ public class userDAOimpl implements userDAO {
         user.setLastName(rs.getString("LastName"));
         // Giả sử cột trong DB là DateCreated kiểu TIMESTAMP
         user.setDateCreated(rs.getTimestamp("DateCreated").toLocalDateTime());
-        user.setRole(User.UserRole.valueOf(rs.getString("Role")));
+        String roleStr = rs.getString("Role");
+        if (roleStr != null) {
+            try {
+                user.setRole(User.UserRole.valueOf(roleStr.trim().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Default to CUSTOMER if role is unrecognized
+                user.setRole(User.UserRole.CUSTOMER);
+            }
+        } else {
+            user.setRole(User.UserRole.CUSTOMER);
+        }
         return user;
     }
 

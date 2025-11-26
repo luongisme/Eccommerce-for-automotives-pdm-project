@@ -2,14 +2,21 @@ package com.UI.defaultpage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import com.Main.AppFrame;
 import com.Main.Screen;
+import com.model.Product;
+import com.service.ProductService;
 import com.service.UserSession;
 import com.UI.admin.AdminDashboard;
 import com.UI.store.StoreScreen;
 import com.UI.Payment.PaymentScreen;
-
 public class AutoPartsHomePage extends Screen {
+
+    private final ProductService productService = ProductService.getInstance();
 
     public AutoPartsHomePage(AppFrame appFrame) {
         super(appFrame);
@@ -229,71 +236,116 @@ public class AutoPartsHomePage extends Screen {
             });
             panel.add(viewAllBtn);
 
-            // Product grid 3x2
-            String[][] products = {
-                {"Nguyễn Việt Sơn", "Description of first product", "$10.99"},
-                {"Lê Viết Hà", "Description of second product", "$10.99"},
-                {"Dương Gia Lương", "Description of third product", "$10.99"},
-                {"Nguyễn Đồng Nhật Huy", "Description of fourth product", "$10.99"},
-                {"Lê Hoàng Phúc", "Description of fifth product", "$10.99"},
-                    {"Nguyễn Vũ Thuần", "Description of sixth product", "$10.99"},
-                    {"Nguyễn Minh Đức", "Description of seventh product", "$10.99"},
-                    {"Nguyễn Hoàng Minh Khoa", "Description of eighth product", "$10.99"}
-            };
+            // Product grid 4x2 populated from database
+            int cardW = 220;
+            int cardH = 280;
+            int gapX = 32;
+            int gapY = 24;
+            int startX = 30;
+            int startY = 350;
 
-            int startX = 30, startY = 350, cardW = 225, cardH = 200, gapX = 16, gapY = 16;
-            for (int i = 0; i < products.length; i++) {
-                int row = i / 4;
-                int col = i % 4;
-                JPanel card = createProductCard(products[i][0], products[i][1], products[i][2]);
-                card.setBounds(startX + col * (cardW + gapX), startY + row * (cardH + gapY), cardW, cardH);
-                panel.add(card);
+            java.util.List<Product> allProducts = productService.getAllProducts();
+            java.util.List<Product> featured = allProducts;
+            if (allProducts.size() > 8) {
+                featured = productService.sortProducts(allProducts, "new")
+                        .subList(0, 8);
             }
 
-            // ===== SUBSCRIBE SECTION =====
-            JPanel subscribePanel = new JPanel(null);
-            subscribePanel.setBackground(new Color(30, 100, 220));
-            subscribePanel.setBounds(0, 818, 1024, 220);
+            NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.US);
 
-            JLabel subsTitle = new JLabel("Stay Updated with Latest Deals");
-            subsTitle.setFont(new Font("Arial", Font.BOLD, 18));
-            subsTitle.setForeground(Color.WHITE);
-            subsTitle.setBounds(0, 55, 1024, 28);
-            subsTitle.setHorizontalAlignment(SwingConstants.CENTER);
-            subscribePanel.add(subsTitle);
+            for (int i = 0; i < featured.size(); i++) {
+                Product p = featured.get(i);
 
-            JLabel subsSubtitle = new JLabel("Subscribe to our newsletter and be the first to know about new products and exclusive offers");
-            subsSubtitle.setFont(new Font("Arial", Font.PLAIN, 12));
-            subsSubtitle.setForeground(new Color(220, 230, 250));
-            subsSubtitle.setBounds(0, 85, 1024, 20);
-            subsSubtitle.setHorizontalAlignment(SwingConstants.CENTER);
-            subscribePanel.add(subsSubtitle);
+                int row = i / 4;
+                int col = i % 4;
+                int x = startX + col * (cardW + gapX);
+                int y = startY + row * (cardH + gapY);
 
-            // Center the email field and subscribe button as a group
-            int formWidth = 170 + 12 + 100; // email width + gap + button width
-            int formStartX = (1024 - formWidth) / 2;
+                JPanel card = new JPanel(null);
+                card.setBackground(Color.WHITE);
+                card.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(220, 220, 220), 5),
+                    BorderFactory.createEmptyBorder(12, 12, 12, 12)
+                ));
+                card.setBounds(x, y, cardW, cardH);
 
-            JTextField emailField = new JTextField("Enter your email");
-            emailField.setFont(new Font("Arial", Font.PLAIN, 12));
-            emailField.setForeground(new Color(120, 120, 120));
-            emailField.setBounds(formStartX, 125, 170, 34);
-            emailField.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
-            emailField.setHorizontalAlignment(JTextField.LEFT);
-            subscribePanel.add(emailField);
+                // Product image
+                JLabel imgLabel = new JLabel();
+                imgLabel.setOpaque(true);
+                imgLabel.setBackground(new Color(245, 245, 245));
+                imgLabel.setBounds(5, 2, cardW, 150);
 
-            JButton subscribeBtn = new JButton("Subscribe");
-            subscribeBtn.setFont(new Font("Arial", Font.BOLD, 12));
-            subscribeBtn.setBackground(new Color(30, 140, 255));
-            subscribeBtn.setForeground(Color.WHITE);
-            subscribeBtn.setFocusPainted(false);
-            subscribeBtn.setBorder(BorderFactory.createEmptyBorder(7, 16, 7, 16));
-            subscribeBtn.setBounds(formStartX + 170 + 12, 125, 100, 34);
-            subscribeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            subscribeBtn.setVerticalAlignment(SwingConstants.CENTER);
-            subscribeBtn.setHorizontalAlignment(SwingConstants.CENTER);
-            subscribePanel.add(subscribeBtn);
+                String imgFile = p.getImageUrl();
+                if (imgFile != null && !imgFile.trim().isEmpty()) {
+                    String path = "/images/Product/" + imgFile.trim();
+                    URL url = getClass().getResource(path);
+                    if (url != null) {
+                        ImageIcon icon = new ImageIcon(url);
+                        Image scaled = icon.getImage().getScaledInstance(cardW - 10, 140, Image.SCALE_SMOOTH);
+                        imgLabel.setIcon(new ImageIcon(scaled));
+                        imgLabel.setText("");
+                    }
+                }
+                card.add(imgLabel);
 
-            panel.add(subscribePanel);
+                // Product name (2-line max, bold)
+                String name = p.getName() != null ? p.getName() : "";
+                if (name.length() > 40) {
+                    name = name.substring(0, 37) + "...";
+                }
+                JLabel nameLabel = new JLabel(name);
+                nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                nameLabel.setForeground(new Color(30, 30, 30));
+                nameLabel.setBounds(5, 156, cardW, 20);
+                card.add(nameLabel);
+
+                // Brand (small, muted)
+                String brand = p.getBrand() != null ? p.getBrand() : "";
+                JLabel brandLabel = new JLabel(brand);
+                brandLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+                brandLabel.setForeground(new Color(130, 130, 130));
+                brandLabel.setBounds(5, 176, cardW, 16);
+                card.add(brandLabel);
+
+                // Short description (optional)
+                String desc = p.getDescription() != null ? p.getDescription() : "";
+                if (desc.length() > 70) {
+                    desc = desc.substring(0, 67) + "...";
+                }
+                JLabel descLabel = new JLabel(desc);
+                descLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+                descLabel.setForeground(new Color(120, 120, 120));
+                descLabel.setBounds(5, 194, cardW, 30);
+                card.add(descLabel);
+
+                // Price (highlighted)
+                JLabel priceLabel = new JLabel(currency.format(p.getPrice()));
+                priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
+                priceLabel.setForeground(new Color(25, 90, 230));
+                priceLabel.setBounds(5, 224, cardW, 22);
+                card.add(priceLabel);
+
+                // Add to cart button (same behavior as before)
+                JButton addBtn = new JButton("Add to Cart");
+                addBtn.setFont(new Font("Arial", Font.BOLD, 12));
+                addBtn.setBackground(Color.BLACK);
+                addBtn.setForeground(Color.WHITE);
+                addBtn.setFocusPainted(false);
+                addBtn.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
+                addBtn.setOpaque(true);
+                addBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                addBtn.setBounds(0, 248, cardW, 32);
+                addBtn.addActionListener(e -> {
+                    if (!UserSession.getInstance().isLoggedIn()) {
+                        navigateToLogin();
+                    } else {
+                        navigateToCart();
+                    }
+                });
+                card.add(addBtn);
+
+                panel.add(card);
+            }
     }
 
     private void navigateToLogin() {
@@ -318,53 +370,5 @@ public class AutoPartsHomePage extends Screen {
 
     private void navigateToProfile() {
         appFrame.setScreen(new com.UI.Profile.ProfilePage(appFrame));
-    }
-
-    private JPanel createProductCard(String name, String description, String price) {
-        JPanel card = new JPanel(null);
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createLineBorder(new Color(235, 235, 235), 5));
-        card.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Product image placeholder
-        JPanel imagePlaceholder = new JPanel();
-        imagePlaceholder.setBackground(new Color(245, 245, 245));
-        imagePlaceholder.setBounds(6, 6, 213, 110);
-        card.add(imagePlaceholder);
-
-        // Product name
-        JLabel nameLabel = new JLabel(name);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 13));
-        nameLabel.setForeground(new Color(30, 30, 30));
-        nameLabel.setBounds(10, 120, 213, 15);
-        card.add(nameLabel);
-
-        // Product description
-        JLabel descLabel = new JLabel(description);
-        descLabel.setFont(new Font("Arial", Font.PLAIN, 11));
-        descLabel.setForeground(new Color(120, 120, 120));
-        descLabel.setBounds(10, 135, 213, 13);
-        card.add(descLabel);
-
-        // Product price
-        JLabel priceLabel = new JLabel(price);
-        priceLabel.setFont(new Font("Arial", Font.BOLD, 17));
-        priceLabel.setForeground(new Color(30, 30, 30));
-        priceLabel.setBounds(10, 170, 213, 14);
-        card.add(priceLabel);
-
-        // Click handler
-        card.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (!UserSession.getInstance().isLoggedIn()) {
-                    navigateToLogin();
-                } else {
-                    navigateToStore();
-                }
-            }
-        });
-
-        return card;
     }
 }

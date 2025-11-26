@@ -9,6 +9,31 @@ import com.UI.store.StoreScreen;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
+
+class RegisterBackgroundPanel extends JPanel {
+    private final Image backgroundImage;
+
+    public RegisterBackgroundPanel(String resourcePath) {
+        setLayout(null);
+        Image img = null;
+        try {
+            URL url = getClass().getResource(resourcePath);
+            if (url != null) {
+                img = new ImageIcon(url).getImage();
+            }
+        } catch (Exception ignored) {}
+        backgroundImage = img;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+}
 
 public class RegisterScreen extends Screen {
     private JTextField usernameField;
@@ -21,14 +46,14 @@ public class RegisterScreen extends Screen {
 
     public RegisterScreen(AppFrame appFrame) {
         super(appFrame);
+        panel = new RegisterBackgroundPanel("/images/login_bg.jpg");
         panel.setLayout(null);
-        panel.setBackground(new Color(245, 245, 245));
         initUI();
     }
 
     @Override
     protected void initUI() {
-        int frameW = 700;
+        int frameW = 1024;
         int brandH = 56;
 
         // Brand bar
@@ -169,7 +194,7 @@ public class RegisterScreen extends Screen {
         loginLinkBtn = new JButton("Login");
         loginLinkBtn.setFont(new Font("Arial", Font.BOLD, 13));
         loginLinkBtn.setForeground(new Color(37, 99, 235));
-        loginLinkBtn.setBackground(new Color(245, 245, 245));
+        //loginLinkBtn.setBackground(new Color(245, 245, 245));
         loginLinkBtn.setBorder(BorderFactory.createEmptyBorder());
         loginLinkBtn.setFocusPainted(false);
         loginLinkBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));

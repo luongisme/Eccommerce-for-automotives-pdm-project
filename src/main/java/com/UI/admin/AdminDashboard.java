@@ -9,13 +9,11 @@ import java.net.URL;
 
 import com.Main.AppFrame;
 import com.Main.Screen;
-import com.model.User;
 import com.service.UserSession;
 import com.UI.Payment.PaymentScreen;
 import com.UI.defaultpage.AutoPartsHomePage;
 import com.UI.login.LoginScreen;
 import com.UI.store.StoreScreen;
-import com.UI.components.RoundedPanel;
 
 public class AdminDashboard extends Screen {
 
@@ -28,8 +26,11 @@ public class AdminDashboard extends Screen {
     private CardLayout cardLayout;
     private JPanel contentCards;
 
+    private final AdminDashboardController controller;
+
     public AdminDashboard(AppFrame appFrame) {
         super(appFrame);
+        this.controller = new AdminDashboardController();
         panel = new JPanel(null);
         panel.setBackground(BG_COLOR);
         initUI();
@@ -155,8 +156,8 @@ public class AdminDashboard extends Screen {
         contentCards.setBackground(BG_COLOR);
         contentCards.setBounds(24, 184, 976, 920);
 
-        JPanel overviewPanel = new AdminOverviewPanel();
-        JPanel productsPanel = new AdminProductsPanel();
+        JPanel overviewPanel = new AdminOverviewPanel(controller);
+        JPanel productsPanel = new AdminProductsPanel(controller);
 
         contentCards.add(overviewPanel, "overview");
         contentCards.add(productsPanel, "products");
@@ -245,7 +246,7 @@ public class AdminDashboard extends Screen {
         if (!session.isLoggedIn()) {
             appFrame.setScreen(new LoginScreen(appFrame));
         } else {
-            appFrame.setScreen(new PaymentScreen(appFrame));
+            appFrame.setScreen(new PaymentScreen(appFrame,"ORDER001", "P001"));
         }
     }
 
