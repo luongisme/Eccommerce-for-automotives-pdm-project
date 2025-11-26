@@ -1,5 +1,6 @@
 package com.DAO.Interface;
 
+import com.model.OrderItem;
 import com.model.Payment;
 
 import java.util.List;

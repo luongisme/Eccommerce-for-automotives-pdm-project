@@ -161,7 +161,7 @@ public class AdminDashboard extends Screen {
         contentCards.setBackground(BG_COLOR);
         contentCards.setBounds(24, 184, 976, 920);
 
-        JPanel overviewPanel = new AdminOverviewPanel();
+        JPanel overviewPanel = new AdminOverviewPanel(controller);
         JPanel productsPanel = new AdminProductsPanel(controller);
         JPanel ordersPanel = new AdminOrdersPanel();
 

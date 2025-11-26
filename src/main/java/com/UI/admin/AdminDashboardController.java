@@ -1,7 +1,14 @@
 package com.UI.admin;
 
+import com.DAO.Interface.orderDAO;
+import com.DAO.Interface.orderitemDAO;
 import com.DAO.Interface.productDAO;
+import com.DAO.Interface.userDAO;
+import com.DAO.orderDAOimpl;
+import com.DAO.orderitemDAOimpl;
 import com.DAO.productDAOimpl;
+import com.DAO.userDAOimpl;
+import com.model.OrderItem;
 import com.model.Product;
 
 import java.util.List;
@@ -9,14 +16,54 @@ import java.util.List;
 public class AdminDashboardController {
 
     private final productDAO productDAO;
+    private final userDAO userDAO;
+    private final orderDAO orderDAO;
+    private final orderitemDAO orderitemDAO;
 
     public AdminDashboardController() {
         this.productDAO = new productDAOimpl();
+        this.userDAO=new userDAOimpl();
+        this.orderDAO=new orderDAOimpl();
+        this.orderitemDAO=new orderitemDAOimpl();
+    }
+
+    public int getTotalUsers() {
+        List<com.model.User> users = userDAO.findAll();
+        return users.size();
+    }
+
+    public int totalRevenue() {
+        List<com.model.Order> orders = orderDAO.findAll();
+        int total = 0;
+        for (com.model.Order order : orders) {
+            total += order.getTotalAmount().intValue();
+        }
+        return total;
+    }
+
+    public List<OrderItem> getBestSellingItems() {
+        return orderitemDAO.findMostSaleProduct();
     }
 
 
-    public List<Product> getAllProducts() {
-        return productDAO.findAll();
+    public int getTotalOrders() {
+        List<com.model.Order> orders = orderDAO.findAll();
+        return orders.size();
+    }
+
+    public int getLowStockProductsCount(int threshold) {
+        List<Product> products = productDAO.findAll();
+        return (int) products.stream().filter(p -> p.getStockQuantity() <= threshold).count();
+    }
+
+    public int getHighStockProductsCount(int threshold) {
+        List<Product> products = productDAO.findAll();
+        return (int) products.stream().filter(p -> p.getStockQuantity() > threshold).count();
+    }
+
+    public List<Product> getUnderStockProducts(int threshold) {
+        List<Product> products = productDAO.findAll();
+        return products.stream().filter(p -> p.getStockQuantity() <= threshold).toList();
     }
 
 
@@ -49,6 +96,10 @@ public class AdminDashboardController {
 
     public boolean deleteProduct(String pid) {
         return productDAO.delete(pid);
+    }
+
+    public Product getProductById(String pid) {
+        return productDAO.findById(pid);
     }
 
 }
