@@ -10,6 +10,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Random;
 
 import com.UI.components.RoundedPanel;
 import com.model.Product;
@@ -310,14 +311,14 @@ public class AdminProductsPanel extends JPanel {
         p.setName(name);
         p.setCategory(cat);
         p.setBrand(brand);
-        p.setSku(sku);
+        p.setSku("SKU-" + System.currentTimeMillis());
         p.setPrice(price);
         p.setStockQuantity(stock);
         p.setAvailable(active);
 
         // các field khác tạm để trống / default
         p.setDescription(descriptionArea.getText().trim());
-        p.setPartNumber("");
+        p.setPartNumber("PN-" + System.currentTimeMillis());
         p.setImageUrl(imageUrlField.getText().trim().isEmpty() ? null : imageUrlField.getText().trim());
         // p.setSpecifications(...) nếu bạn muốn
 
@@ -331,8 +332,9 @@ public class AdminProductsPanel extends JPanel {
     }
 
     private String generateProductId() {
+        Random rand= new Random();
         // đơn giản: P + timestamp, đủ dùng cho đồ án
-        return "P" + System.currentTimeMillis();
+        return "P" + String.valueOf(rand.nextInt(10000000));
     }
 
     private Product findProductByName(String name) {
@@ -567,6 +569,9 @@ public class AdminProductsPanel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Hủy việc chỉnh sửa ngay để tránh lỗi khi bảng thay đổi
+            fireEditingCanceled();
+
             String command = e.getActionCommand();
 
             String productName = String.valueOf(model.getValueAt(row, 0));
@@ -609,8 +614,6 @@ public class AdminProductsPanel extends JPanel {
                     }
                 }
             }
-
-            fireEditingStopped();
         }
     }
 }

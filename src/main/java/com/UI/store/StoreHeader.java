@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.function.Consumer;
 
 public class StoreHeader extends JPanel {
     private AppFrame appFrame;
@@ -22,9 +23,15 @@ public class StoreHeader extends JPanel {
     private JButton registerBtn;
     private JLabel userLabel;
     private JLabel cartIcon;
+    private Consumer<String> searchHandler; // Add search handler
 
     public StoreHeader(AppFrame appFrame) {
+        this(appFrame, null);
+    }
+
+    public StoreHeader(AppFrame appFrame, Consumer<String> searchHandler) {
         this.appFrame = appFrame;
+        this.searchHandler = searchHandler;
         setLayout(null);
         setBackground(new Color(245, 245, 245));
         setPreferredSize(new Dimension(1024, 70));
@@ -66,18 +73,6 @@ public class StoreHeader extends JPanel {
         searchIcon.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
         searchPanel.add(searchIcon, BorderLayout.EAST);
 
-        // Non-focusable search bar at beginning
-        searchField.setFocusable(false);
-
-        // Make it focusable when clicked
-        searchField.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                searchField.setFocusable(true);
-                searchField.requestFocusInWindow();
-            }
-        });
-
         // Placeholder behaviour
         searchField.addFocusListener(new java.awt.event.FocusAdapter() {
             // Case: Entering the search bar
@@ -95,6 +90,42 @@ public class StoreHeader extends JPanel {
                 if (searchField.getText().isEmpty()) {
                     searchField.setText(placeholder);
                     searchField.setForeground(new Color(150, 150, 150));
+                }
+            }
+        });
+
+        // Add Enter key listener to trigger search
+        searchField.addActionListener(e -> {
+            String query = searchField.getText();
+            System.out.println(">>> Enter key pressed in search field");
+            System.out.println(">>> Query text: \"" + query + "\"");
+            System.out.println(">>> Placeholder: \"" + placeholder + "\"");
+            System.out.println(">>> Is placeholder? " + query.equals(placeholder));
+            System.out.println(">>> Is empty after trim? " + query.trim().isEmpty());
+
+            if (!query.equals(placeholder) && !query.trim().isEmpty()) {
+                System.out.println(">>> Triggering search with: \"" + query.trim() + "\"");
+                performSearch(query.trim());
+            } else {
+                System.out.println(">>> Search NOT triggered (placeholder or empty)");
+            }
+        });
+
+        // Add click listener to search icon
+        searchIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        searchIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String query = searchField.getText();
+                System.out.println(">>> Search icon clicked");
+                System.out.println(">>> Query text: \"" + query + "\"");
+                System.out.println(">>> Placeholder: \"" + placeholder + "\"");
+
+                if (!query.equals(placeholder) && !query.trim().isEmpty()) {
+                    System.out.println(">>> Triggering search with: \"" + query.trim() + "\"");
+                    performSearch(query.trim());
+                } else {
+                    System.out.println(">>> Search NOT triggered (placeholder or empty)");
                 }
             }
         });
@@ -274,6 +305,22 @@ public class StoreHeader extends JPanel {
             System.out.println("Opening PaymentScreen for user: " + userID + " with orderID: " + orderID);
             // Navigate to payment screen with user's cart (allow empty cart)
             appFrame.setScreen(new PaymentScreen(appFrame, userID, orderID, true));
+        }
+    }
+
+    /**
+     * Perform search by calling the search handler if available
+     * @param query The search query
+     */
+    private void performSearch(String query) {
+        System.out.println(">>> StoreHeader.performSearch() called with query: \"" + query + "\"");
+        if (searchHandler != null) {
+            System.out.println(">>> Using search handler callback");
+            searchHandler.accept(query);
+        } else {
+            System.out.println(">>> No handler, navigating to new StoreScreen with search");
+            // If no handler provided (e.g., from non-store pages), navigate to store with search
+            appFrame.setScreen(new StoreScreen(appFrame, "new", 1, query));
         }
     }
 }

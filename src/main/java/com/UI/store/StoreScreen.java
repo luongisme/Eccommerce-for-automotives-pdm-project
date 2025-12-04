@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class StoreScreen extends Screen {
     private ProductService productService;
@@ -23,15 +24,21 @@ public class StoreScreen extends Screen {
     private int currentPage = 1;
     private int productsPerPage = 12;
     private String currentSort = "new";
+    private String searchQuery = null; // Add search query field
 
     public StoreScreen(AppFrame appFrame) {
-        this(appFrame, "new", 1);
+        this(appFrame, "new", 1, null);
     }
 
     public StoreScreen(AppFrame appFrame, String sortType, int page) {
+        this(appFrame, sortType, page, null);
+    }
+
+    public StoreScreen(AppFrame appFrame, String sortType, int page, String searchQuery) {
         super(appFrame);
         this.currentSort = sortType != null ? sortType : "new";
         this.currentPage = page > 0 ? page : 1;
+        this.searchQuery = searchQuery; // Store search query
         productService = ProductService.getInstance();
         panel = new JPanel(null);
         panel.setBackground(Color.WHITE);
@@ -41,8 +48,8 @@ public class StoreScreen extends Screen {
 
     @Override
     protected void initUI() {
-        // Header
-        StoreHeader header = new StoreHeader(appFrame);
+        // Header with search functionality
+        StoreHeader header = new StoreHeader(appFrame, this::handleSearch);
         header.setBounds(0, 0, 1024, 70);
         panel.add(header);
 
@@ -155,7 +162,16 @@ public class StoreScreen extends Screen {
     }
 
     private void loadProducts() {
-        currentProducts = productService.getAllProducts();
+        // If search query exists, use search results; otherwise get all products
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            System.out.println(">>> Loading products with SEARCH query: \"" + searchQuery + "\"");
+            currentProducts = productService.searchProducts(searchQuery);
+            System.out.println(">>> Found " + currentProducts.size() + " products matching search");
+        } else {
+            System.out.println(">>> Loading ALL products (no search)");
+            currentProducts = productService.getAllProducts();
+            System.out.println(">>> Loaded " + currentProducts.size() + " total products");
+        }
         applyFiltersAndSort();
     }
 
@@ -170,13 +186,23 @@ public class StoreScreen extends Screen {
         Set<String> selectedBrands = sidebar.getSelectedBrands();
         double maxPrice = sidebar.getMaxPrice();
 
-        // Filter products
-        List<Product> filtered = productService.filterProducts(
-            selectedCategories, selectedBrands, 0, maxPrice
-        );
+        // Start with currentProducts (which may be search results or all products)
+        List<Product> filtered = currentProducts;
+
+        // Apply filters on top of current products (search results or all)
+        if (!selectedCategories.isEmpty() || !selectedBrands.isEmpty() || maxPrice < Double.MAX_VALUE) {
+            filtered = currentProducts.stream()
+                .filter(p -> selectedCategories.isEmpty() || selectedCategories.contains(p.getCategory()))
+                .filter(p -> selectedBrands.isEmpty() || selectedBrands.contains(p.getBrand()))
+                .filter(p -> p.getPrice() <= maxPrice)
+                .collect(Collectors.toList());
+        }
 
         // Sort products
-        currentProducts = productService.sortProducts(filtered, currentSort);
+        List<Product> sorted = productService.sortProducts(filtered, currentSort);
+
+        // Store sorted results back to currentProducts for display
+        currentProducts = sorted;
 
         // Update display
         displayProducts();
@@ -306,5 +332,16 @@ public class StoreScreen extends Screen {
 
         paginationPanel.revalidate();
         paginationPanel.repaint();
+    }
+
+    /**
+     * Handle search query from the search bar
+     * @param query The search keyword entered by user
+     */
+    private void handleSearch(String query) {
+        System.out.println(">>> SEARCH triggered with query: \"" + query + "\"");
+        this.searchQuery = query;
+        this.currentPage = 1; // Reset to first page
+        loadProducts(); // Reload products with search query
     }
 }

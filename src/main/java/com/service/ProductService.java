@@ -177,4 +177,18 @@ public class ProductService {
             .sorted()
             .collect(Collectors.toList());
     }
+
+    /**
+     * Search products by keyword using DAO implementation.
+     * Searches across product name, brand, description, and category.
+     *
+     * @param keyword The search keyword
+     * @return List of products matching the keyword, ranked by relevance
+     */
+    public List<Product> searchProducts(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllProducts();
+        }
+        return productDAO.searchProducts(keyword.trim());
+    }
 }

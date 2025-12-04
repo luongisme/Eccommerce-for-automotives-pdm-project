@@ -168,6 +168,50 @@ public class productDAOimpl implements productDAO {
 
         return products;
     }
+    public List<Product> searchProducts(String keyword) {
+        String sql = """
+        SELECT p.*,
+                CASE
+                    WHEN p.PName LIKE CONCAT(?, '%') THEN 1
+                    WHEN p.PName LIKE CONCAT('% ', ?, '%') THEN 2
+                    WHEN p.PName LIKE CONCAT('%', ?, '%') THEN 3
+                    ELSE 4
+                END AS RankScore
+        FROM Product p
+        WHERE p.PName LIKE CONCAT('%', ?, '%')
+        ORDER BY RankScore, p.PName
+    """;
+
+        List<Product> list = new ArrayList<>();
+
+        System.out.println(">>> [DAO] Searching for keyword: \"" + keyword + "\" (Name only)");
+
+        try (Connection conn = JdbcConnector.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Set 4 parameters for the search (all for PName)
+            ps.setString(1, keyword); // CONCAT(?, '%') - starts with
+            ps.setString(2, keyword); // CONCAT('% ', ?, '%') - word boundary
+            ps.setString(3, keyword); // CONCAT('%', ?, '%') - contains
+            ps.setString(4, keyword); // WHERE PName LIKE
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product p = mapRow(rs);
+                    System.out.println(">>> [MATCH] " + p.getName());
+                    list.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(">>> [DAO] Total products found: " + list.size());
+        return list;
+    }
+
 
 
 
